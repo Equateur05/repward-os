@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Repward OS — Plateforme de Réputation Intelligente</title>
+    <meta name="description" content="Repward OS transforme vos avis clients en levier de croissance grâce à l'IA. Réponses automatiques, QR codes, récompenses et analyse multi-plateformes.">
+    <meta name="theme-color" content="#0f172a">
+    <meta property="og:title" content="Repward OS — Plateforme de Réputation Intelligente">
+    <meta property="og:description" content="Transformez vos avis clients en levier de croissance grâce à l'IA.">
+    <meta property="og:type" content="website">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        slate: { 750: '#293548', 850: '#172033' },
+                        brand: { 50: '#eef2ff', 100: '#e0e7ff', light: '#818cf8', DEFAULT: '#6366f1', dark: '#4f46e5', darker: '#3730a3' },
+                        success: { light: '#34d399', DEFAULT: '#10b981', dark: '#059669' },
+                        danger: { light: '#fb7185', DEFAULT: '#f43f5e', dark: '#e11d48' },
+                        warning: { light: '#fbbf24', DEFAULT: '#f59e0b', dark: '#d97706' },
+                        google: '#4285F4', airbnb: '#FF5A5F', booking: '#003580',
+                        tripadvisor: '#34E0A1', yelp: '#FF1A1A', thefork: '#5C8A47',
+                        ubereats: '#06C167', deliveroo: '#00CCBC', trustpilot: '#00B67A',
+                        facebook: '#1877F2', instagram: '#E1306C', justeat: '#FF8000', expedia: '#00008C'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-down': 'slideDown 0.3s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        slideDown: { '0%': { opacity: '0', transform: 'translateY(-10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-10px)' } },
+                        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Outfit', system-ui, sans-serif; background: #0f172a; color: #f8fafc; overflow: hidden; height: 100dvh; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+        /* Glassmorphism */
+        .glass { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: linear-gradient(145deg, rgba(41, 53, 72, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%); border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+
+        /* Background effects */
+        .bg-mesh { background: linear-gradient(135deg, #0f172a 0%, #172033 50%, #1a1a2e 100%); position: relative; }
+        .bg-mesh::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.12), transparent), radial-gradient(ellipse 60% 40% at 80% 50%, rgba(16,185,129,0.06), transparent); pointer-events: none; z-index: 0; }
+
+        /* iPhone Frame */
+        .iphone-frame { width: 100%; max-width: 340px; height: 650px; border-radius: 44px; padding: 10px; background: linear-gradient(145deg, #1e293b, #0f172a); box-shadow: 0 0 0 2px #334155, inset 0 0 0 1px rgba(255,255,255,0.05), 0 25px 60px rgba(0,0,0,0.6); position: relative; margin: 0 auto; }
+        .iphone-screen { width: 100%; height: 100%; border-radius: 34px; overflow-y: auto; overflow-x: hidden; background: #f8fafc; position: relative; color: #0f172a; }
+        .iphone-notch { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #0f172a; border-radius: 20px; z-index: 50; }
+
+        /* Views */
+        .app-view { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; inset: 0; }
+        .view-hidden { opacity: 0; pointer-events: none; transform: scale(0.98); z-index: -1; }
+        .view-active { opacity: 1; pointer-events: auto; transform: scale(1); z-index: 10; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(51, 65, 85, 0.8); }
+
+        /* Toggle */
+        .toggle-checkbox { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .toggle-checkbox:checked { left: calc(100% - 1.5rem); border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+
+        /* Reward card */
+        .reward-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .reward-card:hover { transform: translateY(-2px); }
+        .reward-card.selected { box-shadow: 0 0 20px rgba(99,102,241,0.25), 0 0 0 1px rgba(99,102,241,0.5); }
+
+        /* Buttons */
+        .btn-primary { background: white; color: #0f172a; font-weight: 700; padding: 0.875rem 1.5rem; border-radius: 0.75rem; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+        .btn-primary:hover { background: #f1f5f9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* Nav active indicator */
+        .nav-item { position: relative; transition: all 0.2s ease; }
+        .nav-item.active { color: #818cf8 !important; }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #818cf8; border-radius: 50%; }
+
+        /* Toast */
+        .toast { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .toast.show { transform: translateX(0) !important; opacity: 1 !important; }
+
+        /* Message item */
+        .message-item { transition: all 0.2s ease; }
+        .message-item:hover { background: rgba(255,255,255,0.03); }
+        .message-item.active { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.3) !important; }
+
+        /* Shimmer loading */
+        .shimmer { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 2s linear infinite; }
+
+        /* Gradient text */
+        .gradient-text { background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* KPI card glow */
+        .kpi-card { position: relative; overflow: hidden; }
+        .kpi-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%); pointer-events: none; }
+
+        /* Platform badge */
+        .platform-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.06); backdrop-filter: blur(4px); }
+
+        /* Insight bar animation */
+        .insight-bar { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Mobile customer view */
+        @media (max-width: 767px) {
+            .iphone-frame-customer { max-width: 100%; height: calc(100dvh - 120px); border-radius: 0; padding: 0; background: transparent; box-shadow: none; }
+            .iphone-frame-customer .iphone-screen { border-radius: 0; }
+        }
+
+        /* Print styles for QR */
+        @media print {
+            body { background: white !important; overflow: visible !important; }
+            .no-print { display: none !important; }
+        }
+
+        /* Focus styles for accessibility */
+        :focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; border-radius: 4px; }
+
+        /* Smooth number counter */
+        .counter { display: inline-block; }
+    </style>
+</head>
+<body class="bg-mesh flex flex-col relative">
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="toast fixed bottom-6 right-6 bg-gradient-to-r from-success to-success-dark text-white px-6 py-4 rounded-2xl shadow-2xl shadow-success/20 flex items-center gap-3 transform translate-x-[150%] opacity-0 z-[200]" role="alert" aria-live="polite">
+        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-check text-sm"></i>
+        </div>
+        <div>
+            <p class="font-bold text-sm">Réponse publiée</p>
+            <p class="text-[11px] text-white/80">L'avis a été traité avec succès</p>
+        </div>
+    </div>
+
+    <!-- Master Navigation -->
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] no-print">
+        <div class="glass rounded-2xl p-1.5 flex shadow-2xl border border-white/10">
+            <button onclick="switchMasterView('merchant')" id="btn-merchant" class="px-5 md:px-8 py-2.5 rounded-xl text-xs md:text-sm font-bold bg-white text-slate-900 transition-all duration-300 whitespace-nowrap" aria-label="Vue tableau de bord commerçant">
+                <i class="fa-solid fa-chart-pie mr-1.5 hidden sm:inline"></i> Tableau de Bord
+            </button>
+            <button onclick="switchMasterView('customer')" id="btn-customer" class="px-5 md:px-8 py-2.5 rounded-xl text-xs md:text-sm font-bold text-slate-400 hover:text-white transition-all duration-300 whitespace-nowrap" aria-label="Vue client mobile">
+                <i class="fa-solid fa-mobile-screen mr-1.5 hidden sm:inline"></i> Vue Client
+            </button>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- VUE COMMERÇANT                             -->
+    <!-- ========================================== -->
+    <div id="view-merchant" class="app-view view-active flex h-[100dvh] w-full flex-col md:flex-row pb-20 md:pb-0">
+
+        <!-- Sidebar Desktop -->
+        <aside class="hidden md:flex w-64 lg:w-72 border-r border-white/5 glass flex-col py-6 z-20 flex-shrink-0">
+            <div class="px-6 mb-10 flex items-center">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center shadow-lg shadow-brand/20">
+                    <i class="fa-solid fa-award text-white text-lg"></i>
+                </div>
+                <div class="ml-3">
+                    <span class="font-extrabold text-xl tracking-tight">Repward</span>
+                    <span class="text-[9px] font-bold text-brand-light bg-brand/10 px-1.5 py-0.5 rounded ml-1 uppercase tracking-wider">OS</span>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 space-y-1" aria-label="Navigation principale">
+                <button onclick="switchTab('analytics')" id="nav-analytics-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i><span class="ml-3">Analyses</span>
+                </button>
+                <button onclick="switchTab('triage')" id="nav-triage-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all relative">
+                    <i class="fa-solid fa-inbox w-5 text-center"></i><span class="ml-3">Messageries</span>
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-danger rounded-full text-[10px] font-bold flex items-center justify-center text-white">3</span>
+                </button>
+                <button onclick="switchTab('portal')" id="nav-portal-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all">
+                    <i class="fa-solid fa-qrcode w-5 text-center"></i><span class="ml-3">QR & Cadeaux</span>
+                </button>
+                <button onclick="switchTab('integrations')" id="nav-integrations-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all">
+                    <i class="fa-solid fa-plug w-5 text-center"></i><span class="ml-3">Intégrations</span>
+                    <span class="ml-auto text-[10px] font-bold text-brand-light bg-brand/10 px-2 py-0.5 rounded-full">18</span>
+                </button>
+
+                <div class="pt-4 pb-2"><div class="border-t border-white/5"></div></div>
+
+                <button onclick="switchTab('settings')" id="nav-settings-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all">
+                    <i class="fa-solid fa-gear w-5 text-center"></i><span class="ml-3">Compte & Pro</span>
+                </button>
+            </nav>
+
+            <!-- Sidebar footer -->
+            <div class="px-4 mt-auto">
+                <div class="glass-card rounded-xl p-4 border-brand/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center text-xs font-bold text-white">CR</div>
+                        <div>
+                            <p class="text-xs font-bold text-white">Mon Commerce</p>
+                            <p class="text-[10px] text-slate-400">Plan Gratuit</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-1.5">
+                        <div class="bg-brand rounded-full h-1.5 w-[30%] transition-all"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-1.5">3/10 réponses IA ce mois</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 relative overflow-y-auto pt-20 md:pt-8 p-4 md:p-8 lg:p-10 xl:p-12 w-full" id="main-content">
+
+            <!-- CONTENU : PORTAL (QR & CADEAUX) -->
+            <div id="tab-portal" class="hidden animate-fade-in">
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-white">QR Code & Récompenses</h2>
+                            <p class="text-sm text-slate-400 mt-1">Configurez votre système de collecte d'avis</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col xl:flex-row gap-8">
+                        <div class="flex-1 space-y-6">
+                            <!-- Industry selector -->
+                            <div class="glass-card p-5 md:p-6 rounded-2xl border-brand/20 border">
+                                <h3 class="font-bold mb-1 flex items-center text-white">
+                                    <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-store text-brand text-sm"></i></span>
+                                    Type de commerce
+                                </h3>
+                                <p class="text-xs text-slate-400 mb-4 ml-11">L'IA s'adapte automatiquement à votre secteur</p>
+                                <label for="ind-selector" class="sr-only">Type de commerce</label>
+                                <select id="ind-selector" onchange="updateInd()" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-4 text-white font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none appearance-none cursor-pointer transition-all">
+                                    <option value="restaurant">🍽️ Restaurant & Bar</option>
+                                    <option value="coffee">☕ Coffee Shop & Salon de Thé</option>
+                                    <option value="streetfood">🍮 Street Food & Fast Food</option>
+                                    <option value="hotel">🏨 Hôtel & Spa</option>
+                                    <option value="airbnb">🔑 Airbnb & Conciergerie</option>
+                                    <option value="beauty">✂️ Coiffure & Beauté</option>
+                                    <option value="retail">🛍️ Boutique & Retail</option>
+                                </select>
+                            </div>
+
+                            <!-- Rewards grid -->
+                            <div class="glass-card p-5 md:p-6 rounded-2xl">
+                                <h3 class="font-bold mb-1 flex items-center text-white">
+                                    <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-gift text-brand text-sm"></i></span>
+                                    Récompense pour 5 étoiles
+                                </h3>
+                                <p class="text-xs text-slate-400 mb-4 ml-11">Choisissez le cadeau à offrir à vos clients</p>
+                                <div id="rew-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                                <div class="mt-6 pt-5 border-t border-white/5">
+                                    <button class="btn-primary w-full flex items-center justify-center" onclick="window.print()">
+                                        <i class="fa-solid fa-print mr-2"></i> Imprimer les Chevalets QR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phone preview -->
+                        <div class="w-full xl:w-[370px] flex flex-col items-center flex-shrink-0">
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
+                                Aperçu en temps réel
+                            </p>
+                            <div class="iphone-frame animate-float">
+                                <div class="iphone-notch"></div>
+                                <div class="iphone-screen" id="preview-screen"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENU : ANALYSES -->
+            <div id="tab-analytics" class="hidden animate-fade-in">
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Performances & Croissance</h2>
+                        <p class="text-sm text-slate-400 mt-1">Vue d'ensemble de votre réputation en ligne</p>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                        <div class="glass-card kpi-card p-5 md:p-6 rounded-2xl">
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-slate-400 text-[10px] md:text-xs uppercase font-bold tracking-wider">Avis 5★ ce mois</p>
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center"><i class="fa-solid fa-star text-yellow-400 text-xs"></i></div>
+                            </div>
+                            <p id="kpi-reviews" class="text-3xl md:text-4xl font-black text-white">+84</p>
+                            <p class="text-xs text-success mt-1.5 font-medium"><i class="fa-solid fa-arrow-trend-up mr-1"></i> +12% vs mois dernier</p>
+                        </div>
+                        <div class="glass-card kpi-card p-5 md:p-6 rounded-2xl border-brand/10">
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-slate-400 text-[10px] md:text-xs uppercase font-bold tracking-wider">Temps gagné (IA)</p>
+                                <div class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center"><i class="fa-solid fa-clock text-brand-light text-xs"></i></div>
+                            </div>
+                            <p id="kpi-time" class="text-3xl md:text-4xl font-black text-brand-light">16h</p>
+                            <p class="text-xs text-slate-400 mt-1.5 font-medium">≈ 2 jours de travail économisés</p>
+                        </div>
+                        <div class="glass-card kpi-card p-5 md:p-6 rounded-2xl border-success/10">
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-slate-400 text-[10px] md:text-xs uppercase font-bold tracking-wider">R.O.I Win-Back</p>
+                                <div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center"><i class="fa-solid fa-euro-sign text-success text-xs"></i></div>
+                            </div>
+                            <p id="kpi-roi" class="text-3xl md:text-4xl font-black text-success">1 240 €</p>
+                            <p class="text-xs text-success mt-1.5 font-medium"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Revenus récupérés</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="glass-card p-5 md:p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-white flex items-center">
+                                <span class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center mr-3"><i class="fa-solid fa-brain text-danger text-sm"></i></span>
+                                Radar Oprationnel IA
+                            </h3>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-800 px-3 py-1 rounded-full">Mis à jour il y a 2h</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-4">Problèmes récurrents détectés automatiquement dans vos avis</p>
+                        <div class="space-y-3" id="ai-insights"></div>
+                    </div>
+
+                    <!-- Activity Chart Placeholder -->
+                    <div class="glass-card p-5 md:p-6 rounded-2xl">
+                        <h3 class="font-bold text-white flex items-center mb-4">
+                            <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-chart-bar text-brand text-sm"></i></span>
+                            Activité des 30 derniers jours
+                        </h3>
+                        <div class="flex items-end gap-1 h-32 px-2">
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:40%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:55%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:30%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:70%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:85%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:60%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:45%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:90%"></div>
+                            <div class="flex-1 bg-brand/20 rounded-t-md transition-all hover:bg-brand/40" style="height:75%"></div>
+                            <div class="flex-1 bg-brand/30 rounded-t-md transition-all hover:bg-brand/40" style="height:65%"></div>
+                            <div class="flex-1 bg-brand/30 rounded-t-md transition-all hover:bg-brand/40" style="height:80%"></div>
+                            <div class="flex-1 bg-brand rounded-t-md transition-all hover:bg-brand-dark" style="height:100%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 px-1">
+                            <span class="text-[10px] text-slate-500">Jan</span>
+                            <span class="text-[10px] text-slate-500">Fév</span>
+                            <span class="text-[10px] text-slate-500">Mar</span>
+                            <span class="text-[10px] text-slate-500">Avr</span>
+                            <span class="text-[10px] text-slate-500">Mai</span>
+                            <span class="text-[10px] text-slate-500">Jun</span>
+                            <span class="text-[10px] text-slate-500">Jul</span>
+                            <span class="text-[10px] text-slate-500">Août</span>
+                            <span class="text-[10px] text-slate-500">Sep</span>
+                            <span class="text-[10px] text-slate-500">Oct</span>
+                            <span class="text-[10px] text-slate-500">Nov</span>
+                            <span class="text-[10px] text-slate-500 font-bold text-brand-light">Déc</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENU : TRIAGE (MESSAGERIE) -->
+            <div id="tab-triage" class="hidden animate-fade-in">
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Hub Messagerie</h2>
+                        <p class="text-sm text-slate-400 mt-1">Gérez et répondez à tous vos avis depuis un seul endroit</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[500px]">
+                        <!-- Messages List -->
+                        <div class="glass-card rounded-2xl flex flex-col overflow-hidden">
+                            <div class="p-4 border-b border-white/5 bg-slate-800/30">
+                                <div class="flex items-center gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Filtrer par plateforme">
+                                    <button onclick="setFilter('all')" id="filter-all" role="tab" aria-selected="true" class="px-3 py-1.5 bg-white/10 text-white text-xs font-bold rounded-lg cursor-pointer transition-all whitespace-nowrap">Tous (3)</button>
+                                    <button onclick="setFilter('google')" id="filter-google" role="tab" aria-selected="false" class="px-3 py-1.5 text-slate-400 hover:text-white hover:bg-white/5 text-xs font-bold rounded-lg cursor-pointer transition-all whitespace-nowrap"><i class="fa-brands fa-google mr-1 text-google"></i> Google</button>
+                                    <button onclick="setFilter('airbnb')" id="filter-airbnb" role="tab" aria-selected="false" class="px-3 py-1.5 text-slate-400 hover:text-white hover:bg-white/5 text-xs font-bold rounded-lg cursor-pointer transition-all whitespace-nowrap"><i class="fa-brands fa-airbnb mr-1 text-airbnb"></i> Airbnb</button>
+                                    <button onclick="setFilter('thefork')" id="filter-thefork" role="tab" aria-selected="false" class="px-3 py-1.5 text-slate-400 hover:text-white hover:bg-white/5 text-xs font-bold rounded-lg cursor-pointer transition-all whitespace-nowrap"><i class="fa-solid fa-utensils mr-1 text-thefork"></i> TheFork</button>
+                                </div>
+                            </div>
+                            <div class="flex-1 p-3 space-y-2 overflow-y-auto" id="message-list-container" role="tabpanel"></div>
+                        </div>
+
+                        <!-- AI Response Panel -->
+                        <div class="glass-card rounded-2xl flex flex-col p-4 md:p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-white flex items-center">
+                                    <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-2"><i class="fa-solid fa-robot text-brand text-sm"></i></span>
+                                    Assistant IA
+                                </h3>
+                                <button onclick="regenerateDraft()" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded-lg hover:bg-slate-700 transition-all flex items-center gap-1.5" aria-label="Régénérer le brouillon">
+                                    <i class="fa-solid fa-rotate-right"></i> Régénérer
+                                </button>
+                            </div>
+
+                            <!-- Auto-pilot toggle -->
+                            <div class="mb-4 bg-slate-900/80 p-3.5 rounded-xl border border-white/10 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand/20 to-brand/10 flex items-center justify-center mr-3">
+                                        <i class="fa-solid fa-bolt text-brand"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-white leading-tight">Pilote Automatique</p>
+                                        <p class="text-[10px] text-slate-400">L'IA répond et publie seule</p>
+                                    </div>
+                                </div>
+                                <div class="relative inline-block w-12 align-middle select-none">
+                                    <input type="checkbox" id="auto-pilot-toggle" onchange="toggleAutoPilot()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 left-0 border-slate-600 transition-all duration-300" aria-label="Activer le pilote automatique"/>
+                                    <label for="auto-pilot-toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer bg-slate-600 transition-colors duration-300"></label>
+                                </div>
+                            </div>
+
+                            <!-- Win-back selector -->
+                            <div class="mb-4 bg-slate-800/40 p-4 rounded-xl border border-white/10 transition-all" id="winback-container">
+                                <label for="winback-selector" class="block text-xs font-bold text-brand-light uppercase tracking-widest mb-2">
+                                    <i class="fa-solid fa-gift mr-1"></i> Compensation Win-Back
+                                </label>
+                                <p class="text-[10px] text-slate-400 mb-3">L'IA générera un code unique à présenter en caisse.</p>
+                                <select id="winback-selector" onchange="regenerateDraft()" class="w-full bg-slate-900 border border-white/10 rounded-lg p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none cursor-pointer transition-all"></select>
+                            </div>
+
+                            <!-- Draft textarea -->
+                            <label for="ai-draft-textarea" class="sr-only">Brouillon IA</label>
+                            <textarea id="ai-draft-textarea" class="flex-1 w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm text-white resize-none focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 shadow-inner leading-relaxed transition-all min-h-[200px]" spellcheck="false" placeholder="L'IA génère votre réponse..."></textarea>
+
+                            <!-- Publish button -->
+                            <button id="publish-action-btn" onclick="publishAIResponse()" class="btn-primary mt-4 w-full flex justify-center items-center relative overflow-hidden">
+                                <span>Publier la réponse <i class="fa-solid fa-paper-plane ml-2"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENU : INTEGRATIONS -->
+            <div id="tab-integrations" class="hidden animate-fade-in">
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Intégrations Omni-Canal</h2>
+                        <p class="text-sm text-slate-400 mt-1">Connectez toutes vos plateformes d'avis en un clic</p>
+                    </div>
+
+                    <!-- Connected -->
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-success rounded-full"></span> Connectées
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between border-l-4 border-l-google">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-3 shadow-sm"><i class="fa-brands fa-google text-xl text-google"></i></div>
+                                    <div><p class="font-bold text-sm text-white">Google Maps</p><p class="text-[10px] text-slate-400">84 avis synchronisés</p></div>
+                                </div>
+                                <span class="bg-success/20 text-success text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1"><i class="fa-solid fa-check-circle"></i> Actif</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available -->
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-slate-600 rounded-full"></span> Disponibles (17)
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-airbnb/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-airbnb/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-airbnb text-xl text-airbnb"></i></div><div><p class="font-bold text-sm text-white">Airbnb</p><p class="text-[10px] text-slate-400">Locations & Expériences</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-thefork/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-thefork/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-utensils text-xl text-thefork"></i></div><div><p class="font-bold text-sm text-white">TheFork</p><p class="text-[10px] text-slate-400">Réservations resto</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-tripadvisor/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-tripadvisor/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-tripadvisor text-xl text-tripadvisor"></i></div><div><p class="font-bold text-sm text-white">TripAdvisor</p><p class="text-[10px] text-slate-400">Voyages & Hôtels</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-trustpilot/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-trustpilot/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-star text-xl text-trustpilot"></i></div><div><p class="font-bold text-sm text-white">Trustpilot</p><p class="text-[10px] text-slate-400">Avis vérifiés</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-booking/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-booking/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-bed text-xl text-blue-400"></i></div><div><p class="font-bold text-sm text-white">Booking.com</p><p class="text-[10px] text-slate-400">Hébergements</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-ubereats/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-ubereats/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-motorcycle text-xl text-ubereats"></i></div><div><p class="font-bold text-sm text-white">Uber Eats</p><p class="text-[10px] text-slate-400">Livraison repas</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-deliveroo/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-deliveroo/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-bag-shopping text-xl text-deliveroo"></i></div><div><p class="font-bold text-sm text-white">Deliveroo</p><p class="text-[10px] text-slate-400">Livraison express</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-yelp/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-yelp/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-yelp text-xl text-yelp"></i></div><div><p class="font-bold text-sm text-white">Yelp</p><p class="text-[10px] text-slate-400">Avis locaux</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-facebook/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-facebook/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-facebook text-xl text-facebook"></i></div><div><p class="font-bold text-sm text-white">Facebook</p><p class="text-[10px] text-slate-400">Pages & Recommandations</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-instagram/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-instagram/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-instagram text-xl text-instagram"></i></div><div><p class="font-bold text-sm text-white">Instagram</p><p class="text-[10px] text-slate-400">DMs & Commentaires</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-justeat/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-justeat/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-burger text-xl text-justeat"></i></div><div><p class="font-bold text-sm text-white">Just Eat</p><p class="text-[10px] text-slate-400">Commandes en ligne</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-expedia/30 transition-all">
+                                <div class="flex items-center"><div class="w-10 h-10 bg-expedia/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-plane text-xl text-blue-500"></i></div><div><p class="font-bold text-sm text-white">Expedia</p><p class="text-[10px] text-slate-400">Voyages & Séjours</p></div></div>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENU : PARAMÈTRES & FACTURATION -->
+            <div id="tab-settings" class="hidden animate-fade-in">
+                <div class="space-y-6 max-w-5xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Mon Compte Pro</h2>
+                        <p class="text-sm text-slate-400 mt-1">Gérez votre établissement et votre abonnement</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Account info -->
+                        <div class="glass-card p-6 rounded-2xl space-y-5">
+                            <h3 class="font-bold text-lg text-white flex items-center">
+                                <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-building text-brand text-sm"></i></span>
+                                Établissement
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="input-nom-etab" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Nom</label>
+                                    <input id="input-nom-etab" type="text" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" value="Mon Commerce">
+                                </div>
+                                <div>
+                                    <label for="input-email-etab" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Email</label>
+                                    <input id="input-email-etab" type="email" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" value="contact@moncommerce.com">
+                                </div>
+                                <div>
+                                    <label for="input-tel-etab" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Téléphone</label>
+                                    <input id="input-tel-etab" type="tel" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" value="+33 1 23 45 67 89" placeholder="+33 ...">
+                                </div>
+                            </div>
+                            <button class="btn-primary w-full">
+                                <i class="fa-solid fa-floppy-disk mr-2"></i> Sauvegarder
+                            </button>
+
+                            <!-- Clé API Gemini -->
+                            <div class="pt-4 border-t border-white/5">
+                                <h4 class="font-bold text-sm text-white flex items-center mb-3">
+                                    <span class="w-7 h-7 rounded-lg bg-success/10 flex items-center justify-center mr-2"><i class="fa-solid fa-robot text-success text-xs"></i></span>
+                                    Intelligence Artificielle
+                                </h4>
+                                <div id="api-key-status" class="mb-3"></div>
+                                <label for="input-gemini-key" class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Clé API Google Gemini</label>
+                                <div class="flex gap-2">
+                                    <input id="input-gemini-key" type="password" class="flex-1 bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all font-mono" placeholder="AIzaSy...">
+                                    <button onclick="saveGeminiKey()" class="bg-success/20 text-success border border-success/30 px-4 rounded-xl font-bold text-xs hover:bg-success/30 transition-all">
+                                        <i class="fa-solid fa-key mr-1"></i> Activer
+                                    </button>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2">
+                                    <i class="fa-solid fa-circle-info mr-1"></i>
+                                    Gratuit sur <a href="https://aistudio.google.com" target="_blank" rel="noopener" class="text-brand-light underline">aistudio.google.com</a> → "Get API Key" → "Create API Key"
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Premium card -->
+                        <div class="relative overflow-hidden rounded-2xl">
+                            <div class="absolute inset-0 bg-gradient-to-br from-brand/30 to-brand-darker/30"></div>
+                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIj48cGF0aCBkPSJNMCAyMGgyME0yMCAwdjIwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNhKSIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiLz48L3N2Zz4=')] opacity-50"></div>
+                            <div class="relative z-10 p-6 border border-brand/30 rounded-2xl flex flex-col justify-between h-full">
+                                <div>
+                                    <span class="bg-danger text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block animate-pulse-slow">Offre de lancement</span>
+                                    <h3 class="font-extrabold text-2xl text-white">Repward Premium</h3>
+                                    <p class="text-sm text-slate-300 mt-2">Réponses IA illimitées, pilote automatique, analytics avancés</p>
+                                    <div class="flex items-end mt-5">
+                                        <span class="text-xl line-through text-slate-500 mr-2">29,90€</span>
+                                        <span class="text-5xl font-black text-success">9,90€</span>
+                                        <span class="text-sm text-slate-400 ml-1 mb-1">/mois</span>
+                                    </div>
+                                    <ul class="mt-5 space-y-2">
+                                        <li class="text-sm text-slate-300 flex items-center gap-2"><i class="fa-solid fa-check text-success text-xs"></i> Réponses IA illimitées</li>
+                                        <li class="text-sm text-slate-300 flex items-center gap-2"><i class="fa-solid fa-check text-success text-xs"></i> Pilote automatique activé</li>
+                                        <li class="text-sm text-slate-300 flex items-center gap-2"><i class="fa-solid fa-check text-success text-xs"></i> 18 plateformes connectées</li>
+                                        <li class="text-sm text-slate-300 flex items-center gap-2"><i class="fa-solid fa-check text-success text-xs"></i> Win-Back & codes promos</li>
+                                        <li class="text-sm text-slate-300 flex items-center gap-2"><i class="fa-solid fa-check text-success text-xs"></i> Analytics & Radar IA</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-6 bg-slate-900/60 p-4 rounded-xl border border-white/10">
+                                    <button onclick="redirectToStripe()" class="btn-primary w-full flex items-center justify-center text-base">
+                                        Profiter de l'offre <i class="fa-brands fa-stripe ml-2 text-brand text-xl"></i>
+                                    </button>
+                                    <p class="text-[10px] text-slate-500 text-center mt-2">Sans engagement · Annulable à tout moment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 flex justify-around py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] z-50 no-print" aria-label="Navigation mobile">
+            <button onclick="switchTab('portal')" id="nav-portal-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="QR Code">
+                <i class="fa-solid fa-qrcode text-lg mb-0.5"></i><span class="text-[10px] font-bold">QR</span>
+            </button>
+            <button onclick="switchTab('triage')" id="nav-triage-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem] relative" aria-label="Messagerie">
+                <i class="fa-solid fa-inbox text-lg mb-0.5"></i>
+                <span class="absolute top-0 right-1 w-4 h-4 bg-danger rounded-full text-[8px] font-bold flex items-center justify-center text-white">3</span>
+                <span class="text-[10px] font-bold">Avis</span>
+            </button>
+            <button onclick="switchTab('analytics')" id="nav-analytics-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Analyses">
+                <i class="fa-solid fa-chart-line text-lg mb-0.5"></i><span class="text-[10px] font-bold">Stats</span>
+            </button>
+            <button onclick="switchTab('integrations')" id="nav-integrations-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Intégrations">
+                <i class="fa-solid fa-plug text-lg mb-0.5"></i><span class="text-[10px] font-bold">Plugs</span>
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Paramètres">
+                <i class="fa-solid fa-gear text-lg mb-0.5"></i><span class="text-[10px] font-bold">Pro</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VUE CLIENT (MOBILE SCAN)                   -->
+    <!-- ========================================== -->
+    <div id="view-customer" class="app-view view-hidden flex items-center justify-center h-[100dvh] w-full px-4">
+        <div class="iphone-frame iphone-frame-customer w-full max-w-[390px] h-[90dvh] md:h-[750px] shadow-2xl">
+            <div class="iphone-notch hidden md:block"></div>
+            <div class="iphone-screen bg-slate-50" id="app-customer-container"></div>
+        </div>
+    </div>
+
+    <script>
+    // ============================================
+    // GOOGLE GEMINI AI CONFIG
+    // ============================================
+    // 👉 Collez votre clé API Google AI Studio ici (gratuite sur aistudio.google.com)
+    const GEMINI_API_KEY = "";
+    const GEMINI_MODEL = "gemini-2.0-flash";
+    const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+
+    // Fonction pour générer une réponse IA via Gemini
+    async function generateAIResponse(reviewText, reviewRating, authorName, platform, industryName, winbackOffer) {
+        const activeKey = getActiveApiKey();
+        if (!activeKey) {
+            console.warn("Repward OS: Pas de clé API Gemini configurée. Utilisation du brouillon par défaut.");
+            return null; // Fallback sur le brouillon statique
+        }
+
+        const winbackInstruction = winbackOffer && winbackOffer !== 'none'
+            ? `\n\nIMPORTANT: Inclus une offre de compensation win-back dans ta réponse. L'offre est : "${winbackOffer}". Génère un code promo unique au format RWD-XXXX-WB (remplace XXXX par 4 chiffres aléatoires). Présente le code de manière élégante.`
+            : '';
+
+        const systemPrompt = `Tu es l'assistant IA de Repward OS, spécialisé dans la gestion de réputation en ligne pour les commerces.
+Tu rédiges des réponses professionnelles, empathiques et personnalisées aux avis clients.
+
+Règles :
+- Écris en français, ton professionnel mais chaleureux
+- Personnalise avec le prénom du client si disponible
+- Adresse chaque point soulevé dans l'avis
+- Montre de l'empathie pour les avis négatifs, propose des solutions concrètes
+- Pour les avis positifs, remercie sincèrement et mentionne des détails spécifiques
+- Termine toujours par "À très vite,\nLa Direction."
+- Garde la réponse concise (max 150 mots)
+- N'utilise PAS de markdown, écris en texte brut${winbackInstruction}`;
+
+        const userPrompt = `Contexte :
+- Type de commerce : ${industryName}
+- Plateforme : ${platform}
+- Note : ${reviewRating}/5 étoiles
+- Auteur : ${authorName}
+- Avis du client : "${reviewText}"
+
+Rédige une réponse professionnelle à cet avis.`;
+
+        try {
+            const response = await fetch(`${GEMINI_ENDPOINT}?key=${activeKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: systemPrompt + "\n\n" + userPrompt }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        topP: 0.9,
+                        maxOutputTokens: 500
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                console.error("Erreur Gemini API:", response.status, errData);
+                return null;
+            }
+
+            const data = await response.json();
+            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            return text || null;
+        } catch (error) {
+            console.error("Erreur appel Gemini:", error);
+            return null;
+        }
+    }
+
+    // ============================================
+    // DATA
+    // ============================================
+    const industries = {
+        restaurant: {
+            name: "Restaurant",
+            img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80&auto=format",
+            rewards: ["Dessert Offert", "Un Café Offert", "-10% sur l'addition", "Apéritif Maison"],
+            insights: [
+                { label: "Plat froid", count: 12, severity: "high" },
+                { label: "Service lent", count: 8, severity: "medium" },
+                { label: "Bruit ambiant", count: 4, severity: "low" }
+            ],
+            kpis: { reviews: '+112', timeSaved: '24h', roi: '1 850 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir (Excuses simples)' },
+                { val: 'dessert', label: '🍰 Dessert offert' },
+                { val: 'drink', label: '🍷 Boisson ou Apéritif offert' },
+                { val: 'discount', label: '📄 -10% sur l\'addition' }
+            ]
+        },
+        coffee: {
+            name: "Coffee Shop",
+            img: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&q=80&auto=format",
+            rewards: ["Cookie Offert", "Shot de Vanille", "2ème Café Offert", "Lait Végétal"],
+            insights: [
+                { label: "Musique trop forte", count: 5, severity: "medium" },
+                { label: "WiFi capricieux", count: 4, severity: "medium" },
+                { label: "Manque prises élec.", count: 2, severity: "low" }
+            ],
+            kpis: { reviews: '+84', timeSaved: '16h', roi: '1 240 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir (Excuses simples)' },
+                { val: 'coffee', label: '☕ Café de spécialité offert' },
+                { val: 'cookie', label: '🍪 Pâtisserie offerte' }
+            ]
+        },
+        streetfood: {
+            name: "Street Food",
+            img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80&auto=format",
+            rewards: ["Boisson Offerte", "Frites Cheddar Suppl.", "Menu XL", "Sauce Maison"],
+            insights: [
+                { label: "Frites froides", count: 11, severity: "high" },
+                { label: "Commande incomplète", count: 6, severity: "medium" },
+                { label: "Temps d'attente", count: 3, severity: "low" }
+            ],
+            kpis: { reviews: '+156', timeSaved: '12h', roi: '890 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir' },
+                { val: 'drink', label: '🥤 Boisson offerte' },
+                { val: 'fries', label: '🍟 Frites offertes' }
+            ]
+        },
+        hotel: {
+            name: "Hôtel & Spa",
+            img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80&auto=format",
+            rewards: ["Late Check-out 14h", "Accès Spa Gratuit", "Surclassement", "Petit-Déjeuner"],
+            insights: [
+                { label: "Bruit couloirs", count: 22, severity: "high" },
+                { label: "Petit-déj incomplet", count: 15, severity: "high" },
+                { label: "Climatisation bruyante", count: 6, severity: "medium" }
+            ],
+            kpis: { reviews: '+45', timeSaved: '32h', roi: '4 500 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir' },
+                { val: 'upgrade', label: '🛏️ Surclassement prochaine visite' },
+                { val: 'breakfast', label: '🥐 Petit-déjeuner offert' }
+            ]
+        },
+        airbnb: {
+            name: "Airbnb / Booking",
+            img: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=600&q=80&auto=format",
+            rewards: ["Late Check-out 13h", "Ménage Offert", "-15% Prochain Séjour", "Panier Local"],
+            insights: [
+                { label: "Poussière SdB", count: 10, severity: "high" },
+                { label: "Bruit rue", count: 3, severity: "low" },
+                { label: "WiFi lent", count: 2, severity: "low" }
+            ],
+            kpis: { reviews: '+28', timeSaved: '18h', roi: '2 100 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir' },
+                { val: 'discount', label: '📄 -15% Prochain Séjour' },
+                { val: 'latecheckout', label: '⏰ Late Check-out offert' }
+            ]
+        },
+        beauty: {
+            name: "Coiffure & Beauté",
+            img: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80&auto=format",
+            rewards: ["Soin Profond Offert", "-15% sur les produits", "Massage Crânien", "Échantillon Premium"],
+            insights: [
+                { label: "Retard sur rdv", count: 8, severity: "high" },
+                { label: "Coupe trop courte", count: 3, severity: "medium" },
+                { label: "Produits manquants", count: 2, severity: "low" }
+            ],
+            kpis: { reviews: '+62', timeSaved: '8h', roi: '950 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir' },
+                { val: 'care', label: '💆‍♀️ Soin profond offert' },
+                { val: 'discount', label: '🛍️ -15% sur boutique' }
+            ]
+        },
+        retail: {
+            name: "Boutique & Retail",
+            img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80&auto=format",
+            rewards: ["-10% Immédiat", "Tote Bag Offert", "Statut VIP", "Cadeau Surprise"],
+            insights: [
+                { label: "Manque de tailles", count: 14, severity: "high" },
+                { label: "Attente en caisse", count: 9, severity: "medium" },
+                { label: "Éclairage cabines", count: 3, severity: "low" }
+            ],
+            kpis: { reviews: '+95', timeSaved: '10h', roi: '1 600 €' },
+            winbackOptions: [
+                { val: 'none', label: 'Ne rien offrir' },
+                { val: 'discount', label: '📄 -10% prochaine visite' },
+                { val: 'gift', label: '🎁 Cadeau surprise offert' }
+            ]
+        }
+    };
+
+    const mockMessages = [
+        {
+            id: 1, platform: 'google', icon: 'fa-google', color: 'text-google',
+            author: 'Jean-Pierre M.', time: 'Il y a 1h', rating: 1,
+            text: "Très déçu de ma visite. Le service était beaucoup trop lent et le plat est arrivé froid. Je ne recommande pas.",
+            baseDraft: "Bonjour Jean-Pierre,\n\nNous sommes sincèrement désolés d'apprendre que votre expérience n'a pas été à la hauteur de vos attentes. Nous prenons très au sérieux vos remarques concernant la lenteur du service et la température de votre plat.\n\nNous avons immédiatement fait le point avec notre équipe en cuisine et en salle pour corriger ces deux points. L'excellence de notre accueil et de nos plats est notre priorité absolue.\n\nNous aimerions avoir l'opportunité de vous prouver notre engagement."
+        },
+        {
+            id: 2, platform: 'airbnb', icon: 'fa-airbnb', color: 'text-airbnb',
+            author: 'Sophie L.', time: 'Hier', rating: 3,
+            text: "Le logement est vraiment propre et bien décoré. Seul bémol : la rue est très bruyante la nuit, difficile de dormir.",
+            baseDraft: "Bonjour Sophie,\n\nMerci beaucoup d'avoir souligné la propreté et la décoration de notre logement, cela nous touche !\n\nNous sommes navrés que le bruit de la rue ait perturbé votre sommeil. Étant situés en plein centre-ville, l'animation nocturne peut effectivement être présente certains soirs. Nous avons d'ailleurs mis à disposition des bouchons d'oreilles dans la table de chevet pour plus de confort.\n\nNous envisageons également l'installation de doubles vitrages renforcés dans les prochaines semaines."
+        },
+        {
+            id: 3, platform: 'thefork', icon: 'fa-utensils', color: 'text-thefork',
+            author: 'Marc T.', time: 'Il y a 2 jours', rating: 4,
+            text: "Très bon repas dans l'ensemble, le serveur Maxime était très agréable et de bon conseil. Un petit peu cher pour les portions proposées cependant.",
+            baseDraft: "Bonjour Marc,\n\nMerci infiniment pour ce retour très positif ! Nous sommes ravis que le repas et le service de Maxime vous aient plu — nous lui transmettrons votre compliment, il en sera ravi.\n\nConcernant nos tarifs, ils reflètent notre choix d'utiliser exclusivement des produits frais et locaux, préparés chaque jour par notre chef. Nous pensons que la qualité justifie cet investissement, et nous travaillons continuellement à offrir le meilleur rapport qualité-prix."
+        }
+    ];
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentInd = 'restaurant';
+    let currentRew = "Dessert Offert";
+    let currentFilter = 'all';
+    let currentMessageId = 1;
+
+    // ============================================
+    // VIEW SWITCHING
+    // ============================================
+    function switchMasterView(view) {
+        const vM = document.getElementById('view-merchant');
+        const vC = document.getElementById('view-customer');
+        const bM = document.getElementById('btn-merchant');
+        const bC = document.getElementById('btn-customer');
+        if (!vM || !vC || !bM || !bC) return;
+
+        vM.className = `app-view flex h-[100dvh] w-full flex-col md:flex-row pb-20 md:pb-0 ${view === 'merchant' ? 'view-active' : 'view-hidden'}`;
+        vC.className = `app-view h-[100dvh] w-full flex items-center justify-center px-4 ${view === 'customer' ? 'view-active' : 'view-hidden'}`;
+
+        bM.className = `px-5 md:px-8 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 whitespace-nowrap ${view === 'merchant' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-white'}`;
+        bC.className = `px-5 md:px-8 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 whitespace-nowrap ${view === 'customer' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-white'}`;
+
+        if (view === 'customer') updateCustomerApp();
+    }
+
+    // ============================================
+    // TAB NAVIGATION
+    // ============================================
+    function switchTab(tab) {
+        const tabs = ['analytics', 'triage', 'portal', 'integrations', 'settings'];
+
+        tabs.forEach(t => {
+            const content = document.getElementById('tab-' + t);
+            const dBtn = document.getElementById('nav-' + t + '-desk');
+            const mBtn = document.getElementById('nav-' + t + '-mob');
+
+            if (content) content.classList.add('hidden');
+            if (dBtn) {
+                dBtn.classList.remove('bg-brand/10', 'text-brand-light', 'active');
+                dBtn.classList.add('text-slate-400');
+            }
+            if (mBtn) {
+                mBtn.classList.remove('text-brand', 'active');
+                mBtn.classList.add('text-slate-500');
+            }
+        });
+
+        const activeContent = document.getElementById('tab-' + tab);
+        const dBtnActive = document.getElementById('nav-' + tab + '-desk');
+        const mBtnActive = document.getElementById('nav-' + tab + '-mob');
+
+        if (activeContent) activeContent.classList.remove('hidden');
+        if (dBtnActive) {
+            dBtnActive.classList.remove('text-slate-400');
+            dBtnActive.classList.add('bg-brand/10', 'text-brand-light', 'active');
+        }
+        if (mBtnActive) {
+            mBtnActive.classList.remove('text-slate-500');
+            mBtnActive.classList.add('text-brand', 'active');
+        }
+
+        if (tab === 'portal') updateInd();
+        if (tab === 'triage') { renderMessages(); regenerateDraft(); }
+    }
+
+    // ============================================
+    // MESSAGE FILTERING & RENDERING
+    // ============================================
+    function setFilter(platform) {
+        currentFilter = platform;
+        const filters = ['all', 'google', 'airbnb', 'thefork'];
+        filters.forEach(b => {
+            const el = document.getElementById('filter-' + b);
+            if (!el) return;
+            const isActive = platform === b;
+            el.className = `px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all whitespace-nowrap ${isActive ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'}`;
+            el.setAttribute('aria-selected', isActive);
+        });
+        renderMessages();
+    }
+
+    function renderMessages() {
+        const container = document.getElementById('message-list-container');
+        if (!container) return;
+
+        const filtered = mockMessages.filter(m => currentFilter === 'all' || m.platform === currentFilter);
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-slate-500 py-16">
+                    <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-inbox text-2xl"></i>
+                    </div>
+                    <p class="text-sm font-bold text-center">Aucun avis sur cette plateforme</p>
+                    <p class="text-xs text-slate-600 mt-1">Les nouveaux avis apparaîtront ici</p>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(m => {
+            const platformName = m.platform.charAt(0).toUpperCase() + m.platform.slice(1);
+            const isActive = m.id === currentMessageId;
+            return `
+                <div onclick="selectMessage(${m.id})" class="message-item p-4 rounded-xl cursor-pointer border ${isActive ? 'active border-brand/30' : 'border-transparent'}" role="button" tabindex="0" aria-label="Avis de ${m.author}">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="platform-badge"><i class="fa-brands ${m.icon} ${m.color} mr-1"></i> ${platformName}</span>
+                        <span class="text-[10px] text-slate-500 font-medium">${m.time}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm font-bold text-white">${m.author}</p>
+                        <div class="flex gap-0.5">
+                            ${[1,2,3,4,5].map(i => `<i class="fa-solid fa-star text-[10px] ${i <= m.rating ? 'text-yellow-400' : 'text-slate-700'}"></i>`).join('')}
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 line-clamp-2 mt-1.5 leading-relaxed">"${m.text}"</p>
+                </div>`;
+        }).join('');
+    }
+
+    function selectMessage(id) {
+        currentMessageId = id;
+        renderMessages();
+        regenerateDraft();
+    }
+
+    // ============================================
+    // AI DRAFT & WIN-BACK
+    // ============================================
+    let isGenerating = false;
+
+    async function regenerateDraft() {
+        const winback = document.getElementById('winback-selector');
+        const textarea = document.getElementById('ai-draft-textarea');
+        if (!textarea) return;
+
+        const msg = mockMessages.find(m => m.id === currentMessageId);
+        if (!msg) return;
+
+        const data = industries[currentInd];
+        const winbackVal = winback ? winback.value : 'none';
+        const winbackLabel = (winback && winbackVal !== 'none')
+            ? winback.options[winback.selectedIndex].text.replace(/^[^\w]*/, '').trim()
+            : null;
+
+        // Si clé Gemini configurée → appel IA en temps réel
+        if (getActiveApiKey() && !isGenerating) {
+            isGenerating = true;
+            textarea.value = "🤖 L'IA génère votre réponse personnalisée...";
+            textarea.style.opacity = '0.5';
+            textarea.classList.add('shimmer');
+
+            const aiResponse = await generateAIResponse(
+                msg.text,
+                msg.rating,
+                msg.author,
+                msg.platform,
+                data ? data.name : 'Commerce',
+                winbackLabel
+            );
+
+            textarea.classList.remove('shimmer');
+            isGenerating = false;
+
+            if (aiResponse) {
+                textarea.value = aiResponse;
+                textarea.style.opacity = '1';
+                return;
+            }
+            // Si échec → fallback sur brouillon statique ci-dessous
+        }
+
+        // Brouillon statique (fallback ou mode sans clé API)
+        let draft = msg.baseDraft;
+
+        if (winbackVal !== 'none' && winbackLabel) {
+            const code = "RWD-" + Math.floor(Math.random() * 9000 + 1000) + "-WB";
+            draft += `\n\n🎁 Pour vous remercier de votre retour et vous témoigner notre bonne foi, nous serions ravis de vous offrir : ${winbackLabel} lors de votre prochaine visite.\n\nPrésentez simplement ce code à notre équipe : ${code}`;
+        }
+
+        if (!draft.endsWith("La Direction.")) {
+            draft += "\n\nÀ très vite,\nLa Direction.";
+        }
+
+        textarea.style.opacity = '0.3';
+        textarea.value = draft;
+        requestAnimationFrame(() => {
+            textarea.style.opacity = '1';
+        });
+    }
+
+    // ============================================
+    // PUBLISH RESPONSE
+    // ============================================
+    function publishAIResponse() {
+        const btn = document.getElementById('publish-action-btn');
+        const toast = document.getElementById('toast-notification');
+        const toggle = document.getElementById('auto-pilot-toggle');
+        if (!btn || !toast) return;
+        if (toggle && toggle.checked) return;
+
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Publication en cours...`;
+        btn.classList.add('opacity-70', 'pointer-events-none');
+
+        setTimeout(() => {
+            btn.innerHTML = `<i class="fa-solid fa-check mr-2 text-success"></i> Publié !`;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('opacity-70', 'pointer-events-none');
+                toast.classList.remove('show');
+            }, 3000);
+        }, 1500);
+    }
+
+    // ============================================
+    // AUTO-PILOT
+    // ============================================
+    function toggleAutoPilot() {
+        const toggle = document.getElementById('auto-pilot-toggle');
+        const btn = document.getElementById('publish-action-btn');
+        const textarea = document.getElementById('ai-draft-textarea');
+        const winbackContainer = document.getElementById('winback-container');
+        if (!toggle || !btn || !textarea || !winbackContainer) return;
+
+        if (toggle.checked) {
+            btn.innerHTML = `<i class="fa-solid fa-bolt text-yellow-400 mr-2"></i> Mode Auto-Pilot activé`;
+            btn.className = "mt-4 bg-success/20 text-success border border-success/40 font-bold py-3.5 rounded-xl w-full flex justify-center items-center cursor-default transition-all";
+            textarea.setAttribute('readonly', 'true');
+            textarea.classList.add('opacity-50', 'cursor-not-allowed');
+            winbackContainer.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+            btn.innerHTML = `<span>Publier la réponse <i class="fa-solid fa-paper-plane ml-2"></i></span>`;
+            btn.className = "btn-primary mt-4 w-full flex justify-center items-center relative overflow-hidden";
+            textarea.removeAttribute('readonly');
+            textarea.classList.remove('opacity-50', 'cursor-not-allowed');
+            winbackContainer.classList.remove('opacity-50', 'pointer-events-none');
+        }
+    }
+
+    // ============================================
+    // STRIPE REDIRECT
+    // ============================================
+    function redirectToStripe() {
+        window.open("https://buy.stripe.com/eVq8wP4VA3g76QH5O21VK0C", '_blank', 'noopener,noreferrer');
+    }
+
+    // ============================================
+    // INDUSTRY UPDATE
+    // ============================================
+    function updateInd() {
+        const indSelector = document.getElementById('ind-selector');
+        if (!indSelector) return;
+
+        currentInd = indSelector.value;
+        const data = industries[currentInd];
+        if (!data) return;
+
+        // KPIs
+        const kpiMap = { 'kpi-reviews': data.kpis.reviews, 'kpi-time': data.kpis.timeSaved, 'kpi-roi': data.kpis.roi };
+        Object.entries(kpiMap).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        });
+
+        // Insights with severity bars
+        const insDiv = document.getElementById('ai-insights');
+        if (insDiv) {
+            const maxCount = Math.max(...data.insights.map(i => i.count));
+            insDiv.innerHTML = data.insights.map(i => {
+                const pct = Math.round((i.count / maxCount) * 100);
+                const severityColor = i.severity === 'high' ? 'bg-danger' : i.severity === 'medium' ? 'bg-warning' : 'bg-slate-500';
+                const badgeColor = i.severity === 'high' ? 'bg-danger/20 text-danger' : i.severity === 'medium' ? 'bg-warning/20 text-warning' : 'bg-slate-700 text-slate-400';
+                return `
+                    <div class="p-3.5 bg-white/[0.03] border border-white/5 rounded-xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-white font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-xs ${i.severity === 'high' ? 'text-danger' : i.severity === 'medium' ? 'text-warning' : 'text-slate-500'}"></i>
+                                ${i.label}
+                            </span>
+                            <span class="text-[10px] ${badgeColor} px-2 py-1 rounded-md font-bold">${i.count} mentions</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="insight-bar ${severityColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // Rewards grid
+        const grid = document.getElementById('rew-grid');
+        if (grid) {
+            if (!data.rewards.includes(currentRew)) currentRew = data.rewards[0];
+            grid.innerHTML = data.rewards.map(r => `
+                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-4 border rounded-xl text-sm font-bold text-center cursor-pointer flex items-center justify-center min-h-[72px] transition-all ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
+                    ${r}
+                </div>`).join('');
+        }
+
+        // Winback selector
+        const winbackSelect = document.getElementById('winback-selector');
+        if (winbackSelect) {
+            winbackSelect.innerHTML = data.winbackOptions.map(opt => `<option value="${opt.val}">${opt.label}</option>`).join('');
+            regenerateDraft();
+        }
+
+        updateCustomerApp();
+    }
+
+    function setRew(r, el) {
+        currentRew = r;
+        document.querySelectorAll('.reward-card').forEach(c => {
+            c.classList.remove('selected', 'border-brand', 'bg-brand/10', 'text-white');
+            c.classList.add('border-white/10', 'text-slate-300', 'hover:bg-white/5', 'hover:border-white/20');
+        });
+        if (el) {
+            el.classList.remove('border-white/10', 'text-slate-300', 'hover:bg-white/5', 'hover:border-white/20');
+            el.classList.add('selected', 'border-brand', 'bg-brand/10', 'text-white');
+        }
+        updateCustomerApp();
+    }
+
+    // ============================================
+    // CUSTOMER APP (MOBILE PREVIEW)
+    // ============================================
+    function updateCustomerApp() {
+        const data = industries[currentInd];
+        if (!data) return;
+
+        const app = document.getElementById('app-customer-container');
+        const preview = document.getElementById('preview-screen');
+
+        const getHtml = (isInteractive) => {
+            const starsId = isInteractive ? 'id="mobile-stars"' : '';
+            const btnId = isInteractive ? 'id="btn-publish-review"' : '';
+            const onStarClick = isInteractive ? (i) => `onclick="selectStar(${i})"` : () => '';
+            const onBtnClick = isInteractive ? `onclick="claim()"` : '';
+            const pointerCls = isInteractive ? 'cursor-pointer' : '';
+
+            return `
+                <div class="flex flex-col h-full bg-slate-50 overflow-y-auto">
+                    <div class="h-48 md:h-52 bg-cover bg-center shrink-0 relative" style="background-image: url('${data.img}')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="px-5 -mt-8 flex-1 flex flex-col items-center pb-8 relative z-10">
+                        <div class="bg-white w-full rounded-2xl shadow-sm border border-slate-100 p-5 text-center mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center mx-auto mb-3 shadow-lg shadow-brand/20">
+                                <i class="fa-solid fa-award text-white text-lg"></i>
+                            </div>
+                            <h2 class="text-xl font-black text-slate-800">${data.name}</h2>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Merci pour votre visite !</p>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-br from-brand via-brand to-brand-dark text-white rounded-[20px] p-6 shadow-xl shadow-brand/25 text-center mb-6 relative overflow-hidden">
+                            <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                            <div class="absolute -left-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+                            <div class="bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full inline-block mb-3 shadow-sm relative z-10">Cadeau Immédiat</div>
+                            <h3 class="text-2xl font-black mb-2 relative z-10">${currentRew}</h3>
+                            <p class="text-xs text-white/90 font-medium relative z-10 leading-relaxed">Laissez-nous 5 étoiles pour<br>débloquer votre cadeau</p>
+                        </div>
+
+                        <div class="bg-white w-full rounded-2xl p-6 text-center shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-slate-800 mb-1">Votre avis nous aide !</h4>
+                            <p class="text-[11px] text-slate-400 mb-4">Touchez les étoiles pour nous noter</p>
+                            <div class="flex justify-center gap-2 mb-5" ${starsId}>
+                                ${[1,2,3,4,5].map(i => `<i class="fa-solid fa-star text-3xl sm:text-4xl text-slate-200 transition-all duration-200 ${pointerCls} hover:scale-110" ${onStarClick(i)}></i>`).join('')}
+                            </div>
+                            <button ${btnId} ${onBtnClick} class="w-full bg-slate-200 text-slate-400 py-3.5 rounded-xl font-bold flex items-center justify-center pointer-events-none transition-all text-sm">
+                                Sélectionnez vos étoiles
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+        };
+
+        if (app) app.innerHTML = getHtml(true);
+        if (preview) {
+            preview.innerHTML = getHtml(false);
+            preview.style.pointerEvents = 'none';
+        }
+    }
+
+    // ============================================
+    // STAR RATING (Customer view)
+    // ============================================
+    function selectStar(rating) {
+        const customerView = document.getElementById('view-customer');
+        if (!customerView) return;
+        const starsContainer = customerView.querySelector('#mobile-stars');
+        const btn = customerView.querySelector('#btn-publish-review');
+        if (!starsContainer || !btn) return;
+
+        const stars = starsContainer.children;
+        for (let i = 0; i < 5; i++) {
+            const isActive = i < rating;
+            stars[i].className = `fa-solid fa-star text-3xl sm:text-4xl cursor-pointer transition-all duration-200 hover:scale-110 ${isActive ? 'text-yellow-400 scale-110' : 'text-slate-200'}`;
+        }
+
+        if (rating >= 4) {
+            btn.classList.remove('pointer-events-none', 'bg-slate-200', 'text-slate-400');
+            btn.classList.add('bg-google', 'text-white', 'shadow-lg', 'shadow-google/30', 'pointer-events-auto');
+            btn.innerHTML = `<i class="fa-brands fa-google mr-2 text-lg"></i> Publier sur Google`;
+        } else if (rating >= 1) {
+            btn.classList.remove('pointer-events-none', 'bg-google', 'text-white', 'shadow-lg', 'shadow-google/30');
+            btn.classList.add('bg-slate-200', 'text-slate-500', 'pointer-events-none');
+            btn.innerHTML = `<i class="fa-solid fa-star mr-2"></i> Notez 4★ minimum`;
+        }
+    }
+
+    // ============================================
+    // CLAIM REWARD (Customer view)
+    // ============================================
+    function claim() {
+        const customerView = document.getElementById('view-customer');
+        if (!customerView) return;
+        const app = customerView.querySelector('#app-customer-container');
+        if (!app) return;
+
+        const code = "RWD-" + Math.floor(Math.random() * 9000 + 1000);
+
+        app.innerHTML = `
+            <div class="flex flex-col h-full bg-gradient-to-b from-brand to-brand-dark items-center justify-center p-6 text-white text-center">
+                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl shadow-brand/30 animate-[bounceIn_0.6s_ease]">
+                    <i class="fa-solid fa-check text-4xl text-brand"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold mb-2">Merci !</h2>
+                <p class="text-sm text-white/80 mb-8">Votre avis compte énormément pour nous</p>
+                <div class="bg-white w-full rounded-3xl p-6 text-slate-900 shadow-2xl relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-wider px-4 py-1.5 rounded-full whitespace-nowrap">Votre Cadeau</div>
+                    <h3 class="text-xl font-black mt-4 mb-4">${currentRew}</h3>
+                    <div class="border-2 border-dashed border-slate-200 bg-slate-50 rounded-2xl py-5">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Code à présenter</p>
+                        <p class="text-3xl font-mono font-black text-brand tracking-wider">${code}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3">Présentez ce code à l'équipe lors de votre prochaine visite</p>
+                </div>
+                <button onclick="resetCustomerApp()" class="mt-8 text-sm font-bold text-white/60 hover:text-white transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left text-xs"></i> Retour
+                </button>
+            </div>`;
+
+        setTimeout(() => {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#ffffff', '#6366f1', '#4f46e5', '#10b981'] });
+            }
+        }, 300);
+    }
+
+    function resetCustomerApp() {
+        updateCustomerApp();
+    }
+
+    // ============================================
+    // GEMINI KEY MANAGEMENT
+    // ============================================
+    function loadGeminiKey() {
+        try {
+            const savedKey = localStorage.getItem('repward_gemini_key');
+            if (savedKey) {
+                // On écrit directement dans la variable globale (pas const)
+                window._geminiKey = savedKey;
+            }
+        } catch (e) { /* localStorage indisponible */ }
+        updateApiKeyStatus();
+    }
+
+    function saveGeminiKey() {
+        const input = document.getElementById('input-gemini-key');
+        if (!input) return;
+        const key = input.value.trim();
+        if (!key) return;
+
+        try { localStorage.setItem('repward_gemini_key', key); } catch (e) {}
+        window._geminiKey = key;
+        input.value = '';
+        updateApiKeyStatus();
+
+        // Toast de confirmation
+        const toast = document.getElementById('toast-notification');
+        if (toast) {
+            toast.querySelector('p.font-bold').textContent = 'IA activée !';
+            toast.querySelector('p.text-\\[11px\\]') && (toast.querySelectorAll('p')[1].textContent = 'Les réponses seront générées par Gemini');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    }
+
+    function getActiveApiKey() {
+        return window._geminiKey || GEMINI_API_KEY || '';
+    }
+
+    function updateApiKeyStatus() {
+        const statusEl = document.getElementById('api-key-status');
+        if (!statusEl) return;
+        const hasKey = !!getActiveApiKey();
+        statusEl.innerHTML = hasKey
+            ? `<div class="flex items-center gap-2 p-2.5 bg-success/10 border border-success/20 rounded-lg">
+                    <span class="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+                    <span class="text-xs font-bold text-success">IA Gemini connectée</span>
+                    <button onclick="clearGeminiKey()" class="ml-auto text-[10px] text-slate-500 hover:text-danger transition-colors">Déconnecter</button>
+               </div>`
+            : `<div class="flex items-center gap-2 p-2.5 bg-slate-800/60 border border-white/5 rounded-lg">
+                    <span class="w-2 h-2 bg-slate-600 rounded-full"></span>
+                    <span class="text-xs font-medium text-slate-400">IA en mode démo (réponses pré-écrites)</span>
+               </div>`;
+    }
+
+    function clearGeminiKey() {
+        try { localStorage.removeItem('repward_gemini_key'); } catch (e) {}
+        window._geminiKey = '';
+        updateApiKeyStatus();
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        loadGeminiKey();
+        renderMessages();
+        switchTab('portal');
+        updateInd();
+    });
+
+    // Keyboard navigation for messages
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList.contains('message-item')) {
+            e.target.click();
+        }
+    });
+    </script>
+</body>
+</html>
