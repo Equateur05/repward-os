@@ -17,6 +17,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -150,12 +151,12 @@
 
     <!-- Toast Notification -->
     <div id="toast-notification" class="toast fixed bottom-6 right-6 bg-gradient-to-r from-success to-success-dark text-white px-6 py-4 rounded-2xl shadow-2xl shadow-success/20 flex items-center gap-3 transform translate-x-[150%] opacity-0 z-[200]" role="alert" aria-live="polite">
-        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+        <div class="toast-icon w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
             <i class="fa-solid fa-check text-sm"></i>
         </div>
         <div>
-            <p class="font-bold text-sm">Réponse publiée</p>
-            <p class="text-[11px] text-white/80">L'avis a été traité avec succès</p>
+            <p class="toast-title font-bold text-sm">Réponse publiée</p>
+            <p class="toast-msg text-[11px] text-white/80">L'avis a été traité avec succès</p>
         </div>
     </div>
 
@@ -216,7 +217,7 @@
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center text-xs font-bold text-white">CR</div>
                         <div>
-                            <p class="text-xs font-bold text-white">Mon Commerce</p>
+                            <p class="text-xs font-bold text-white" id="sidebar-biz-name">Mon Commerce</p>
                             <p class="text-[10px] text-slate-400">Plan Gratuit</p>
                         </div>
                     </div>
@@ -254,7 +255,7 @@
                                 <select id="ind-selector" onchange="updateInd()" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-4 text-white font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none appearance-none cursor-pointer transition-all">
                                     <option value="restaurant">🍽️ Restaurant & Bar</option>
                                     <option value="coffee">☕ Coffee Shop & Salon de Thé</option>
-                                    <option value="streetfood">🍮 Street Food & Fast Food</option>
+                                    <option value="streetfood">🌮 Street Food & Fast Food</option>
                                     <option value="hotel">🏨 Hôtel & Spa</option>
                                     <option value="airbnb">🔑 Airbnb & Conciergerie</option>
                                     <option value="beauty">✂️ Coiffure & Beauté</option>
@@ -270,9 +271,15 @@
                                 </h3>
                                 <p class="text-xs text-slate-400 mb-4 ml-11">Choisissez le cadeau à offrir à vos clients</p>
                                 <div id="rew-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-                                <div class="mt-6 pt-5 border-t border-white/5">
-                                    <button class="btn-primary w-full flex items-center justify-center" onclick="window.print()">
-                                        <i class="fa-solid fa-print mr-2"></i> Imprimer les Chevalets QR
+                                <div class="mt-6 pt-5 border-t border-white/5 space-y-3">
+                                    <div id="qr-code-container" class="flex justify-center p-4 bg-white rounded-xl hidden">
+                                        <canvas id="qr-canvas"></canvas>
+                                    </div>
+                                    <button class="btn-primary w-full flex items-center justify-center" onclick="generateQRCode()">
+                                        <i class="fa-solid fa-qrcode mr-2"></i> Générer le QR Code
+                                    </button>
+                                    <button id="btn-download-qr" class="w-full flex items-center justify-center text-sm font-bold text-brand-light hover:text-white transition-all py-2 hidden" onclick="downloadQR()">
+                                        <i class="fa-solid fa-download mr-2"></i> Télécharger en PNG
                                     </button>
                                 </div>
                             </div>
@@ -286,7 +293,7 @@
                             </p>
                             <div class="iphone-frame animate-float">
                                 <div class="iphone-notch"></div>
-                                <div class="iphone-screen" id="preview-screen"></div>
+                                <div class="iphone-screen" id="preview-screen" aria-hidden="true"></div>
                             </div>
                         </div>
                     </div>
@@ -334,7 +341,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="font-bold text-white flex items-center">
                                 <span class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center mr-3"><i class="fa-solid fa-brain text-danger text-sm"></i></span>
-                                Radar Oprationnel IA
+                                Radar Opérationnel IA
                             </h3>
                             <span class="text-[10px] font-bold text-slate-500 bg-slate-800 px-3 py-1 rounded-full">Mis à jour il y a 2h</span>
                         </div>
@@ -370,7 +377,7 @@
                             <span class="text-[10px] text-slate-500">Mai</span>
                             <span class="text-[10px] text-slate-500">Jun</span>
                             <span class="text-[10px] text-slate-500">Jul</span>
-                            <span class="text-[10px] text-slate-500">Août</span>
+                            <span class="text-[10px] text-slate-500">Aoû</span>
                             <span class="text-[10px] text-slate-500">Sep</span>
                             <span class="text-[10px] text-slate-500">Oct</span>
                             <span class="text-[10px] text-slate-500">Nov</span>
@@ -426,7 +433,7 @@
                                     </div>
                                 </div>
                                 <div class="relative inline-block w-12 align-middle select-none">
-                                    <input type="checkbox" id="auto-pilot-toggle" onchange="toggleAutoPilot()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 left-0 border-slate-600 transition-all duration-300" aria-label="Activer le pilote automatique"/>
+                                    <input type="checkbox" id="auto-pilot-toggle" onchange="toggleAutoPilot()" role="switch" aria-checked="false" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 left-0 border-slate-600 transition-all duration-300" aria-label="Activer le pilote automatique"/>
                                     <label for="auto-pilot-toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer bg-slate-600 transition-colors duration-300"></label>
                                 </div>
                             </div>
@@ -485,51 +492,51 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-airbnb/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-airbnb/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-airbnb text-xl text-airbnb"></i></div><div><p class="font-bold text-sm text-white">Airbnb</p><p class="text-[10px] text-slate-400">Locations & Expériences</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Airbnb">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-thefork/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-thefork/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-utensils text-xl text-thefork"></i></div><div><p class="font-bold text-sm text-white">TheFork</p><p class="text-[10px] text-slate-400">Réservations resto</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter TheFork">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-tripadvisor/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-tripadvisor/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-tripadvisor text-xl text-tripadvisor"></i></div><div><p class="font-bold text-sm text-white">TripAdvisor</p><p class="text-[10px] text-slate-400">Voyages & Hôtels</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter TripAdvisor">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-trustpilot/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-trustpilot/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-star text-xl text-trustpilot"></i></div><div><p class="font-bold text-sm text-white">Trustpilot</p><p class="text-[10px] text-slate-400">Avis vérifiés</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Trustpilot">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-booking/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-booking/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-bed text-xl text-blue-400"></i></div><div><p class="font-bold text-sm text-white">Booking.com</p><p class="text-[10px] text-slate-400">Hébergements</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Booking">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-ubereats/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-ubereats/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-motorcycle text-xl text-ubereats"></i></div><div><p class="font-bold text-sm text-white">Uber Eats</p><p class="text-[10px] text-slate-400">Livraison repas</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Uber Eats">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-deliveroo/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-deliveroo/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-bag-shopping text-xl text-deliveroo"></i></div><div><p class="font-bold text-sm text-white">Deliveroo</p><p class="text-[10px] text-slate-400">Livraison express</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Deliveroo">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-yelp/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-yelp/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-yelp text-xl text-yelp"></i></div><div><p class="font-bold text-sm text-white">Yelp</p><p class="text-[10px] text-slate-400">Avis locaux</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Yelp">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-facebook/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-facebook/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-facebook text-xl text-facebook"></i></div><div><p class="font-bold text-sm text-white">Facebook</p><p class="text-[10px] text-slate-400">Pages & Recommandations</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Facebook">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-instagram/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-instagram/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-brands fa-instagram text-xl text-instagram"></i></div><div><p class="font-bold text-sm text-white">Instagram</p><p class="text-[10px] text-slate-400">DMs & Commentaires</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Instagram">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-justeat/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-justeat/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-burger text-xl text-justeat"></i></div><div><p class="font-bold text-sm text-white">Just Eat</p><p class="text-[10px] text-slate-400">Commandes en ligne</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Just Eat">Connecter</button>
                             </div>
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between hover:border-expedia/30 transition-all">
                                 <div class="flex items-center"><div class="w-10 h-10 bg-expedia/10 rounded-lg flex items-center justify-center mr-3"><i class="fa-solid fa-plane text-xl text-blue-500"></i></div><div><p class="font-bold text-sm text-white">Expedia</p><p class="text-[10px] text-slate-400">Voyages & Séjours</p></div></div>
-                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all">Connecter</button>
+                                <button class="text-[10px] bg-white text-slate-900 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-200 transition-all" aria-label="Connecter Expedia">Connecter</button>
                             </div>
                         </div>
                     </div>
@@ -565,7 +572,7 @@
                                     <input id="input-tel-etab" type="tel" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" value="+33 1 23 45 67 89" placeholder="+33 ...">
                                 </div>
                             </div>
-                            <button class="btn-primary w-full">
+                            <button onclick="saveAccountSettings()" class="btn-primary w-full" id="btn-save-account">
                                 <i class="fa-solid fa-floppy-disk mr-2"></i> Sauvegarder
                             </button>
 
@@ -659,9 +666,16 @@
 
     <script>
     // ============================================
+    // SECURITY: HTML ESCAPE FUNCTION
+    // ============================================
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    // ============================================
     // GOOGLE GEMINI AI CONFIG
     // ============================================
-    // 👉 Collez votre clé API Google AI Studio ici (gratuite sur aistudio.google.com)
     const GEMINI_API_KEY = "";
     const GEMINI_MODEL = "gemini-2.0-flash";
     const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
@@ -671,7 +685,7 @@
         const activeKey = getActiveApiKey();
         if (!activeKey) {
             console.warn("Repward OS: Pas de clé API Gemini configurée. Utilisation du brouillon par défaut.");
-            return null; // Fallback sur le brouillon statique
+            return null;
         }
 
         const winbackInstruction = winbackOffer && winbackOffer !== 'none'
@@ -732,6 +746,130 @@ Rédige une réponse professionnelle à cet avis.`;
     }
 
     // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(title, message, type = 'success') {
+        const toast = document.getElementById('toast-notification');
+        if (!toast) return;
+        const icon = toast.querySelector('.toast-icon');
+        const titleEl = toast.querySelector('.toast-title');
+        const msgEl = toast.querySelector('.toast-msg');
+
+        if (type === 'error') {
+            toast.className = toast.className.replace(/from-success to-success-dark/g, 'from-danger to-danger-dark').replace(/shadow-success/g, 'shadow-danger');
+        } else {
+            toast.className = toast.className.replace(/from-danger to-danger-dark/g, 'from-success to-success-dark').replace(/shadow-danger/g, 'shadow-success');
+        }
+        if (titleEl) titleEl.textContent = title;
+        if (msgEl) msgEl.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // ============================================
+    // PREFERENCES PERSISTENCE
+    // ============================================
+    const PREFS_KEY = 'repward_prefs';
+
+    function savePrefs() {
+        const prefs = {
+            industry: currentInd,
+            reward: currentRew,
+            autoPilot: document.getElementById('auto-pilot-toggle')?.checked || false,
+            filter: currentFilter,
+            account: {
+                name: document.getElementById('input-nom-etab')?.value || '',
+                email: document.getElementById('input-email-etab')?.value || '',
+                tel: document.getElementById('input-tel-etab')?.value || ''
+            }
+        };
+        try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch(e) {}
+    }
+
+    function loadPrefs() {
+        try {
+            const raw = localStorage.getItem(PREFS_KEY);
+            if (!raw) return;
+            const prefs = JSON.parse(raw);
+            if (prefs.industry) {
+                const sel = document.getElementById('ind-selector');
+                if (sel) { sel.value = prefs.industry; currentInd = prefs.industry; }
+            }
+            if (prefs.reward) currentRew = prefs.reward;
+            if (prefs.autoPilot) {
+                const toggle = document.getElementById('auto-pilot-toggle');
+                if (toggle) { toggle.checked = true; toggleAutoPilot(); }
+            }
+            if (prefs.filter) { currentFilter = prefs.filter; }
+            if (prefs.account) {
+                if (prefs.account.name) { const el = document.getElementById('input-nom-etab'); if(el) el.value = prefs.account.name; }
+                if (prefs.account.email) { const el = document.getElementById('input-email-etab'); if(el) el.value = prefs.account.email; }
+                if (prefs.account.tel) { const el = document.getElementById('input-tel-etab'); if(el) el.value = prefs.account.tel; }
+            }
+        } catch(e) {}
+    }
+
+    function saveAccountSettings() {
+        const name = document.getElementById('input-nom-etab')?.value?.trim();
+        const email = document.getElementById('input-email-etab')?.value?.trim();
+        const btn = document.getElementById('btn-save-account');
+
+        if (!name) { showToast('Erreur', 'Le nom est obligatoire', 'error'); return; }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Erreur', 'Email invalide', 'error'); return; }
+
+        savePrefs();
+
+        const sidebarName = document.getElementById('sidebar-biz-name');
+        if (sidebarName) sidebarName.textContent = name || 'Mon Commerce';
+
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check mr-2 text-success"></i> Sauvegardé !';
+            btn.classList.add('opacity-70', 'pointer-events-none');
+            setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('opacity-70', 'pointer-events-none'); }, 2000);
+        }
+        showToast('Sauvegardé', 'Vos informations ont été mises à jour', 'success');
+    }
+
+    // ============================================
+    // QR CODE GENERATION
+    // ============================================
+    function generateQRCode() {
+        const container = document.getElementById('qr-code-container');
+        const canvas = document.getElementById('qr-canvas');
+        const dlBtn = document.getElementById('btn-download-qr');
+        if (!canvas || !container) return;
+
+        const data = industries[currentInd];
+        const businessName = document.getElementById('input-nom-etab')?.value || 'Mon Commerce';
+        const qrUrl = `https://repward.vercel.app?biz=${encodeURIComponent(businessName)}&ind=${currentInd}&rew=${encodeURIComponent(currentRew)}`;
+
+        if (typeof QRCode !== 'undefined') {
+            QRCode.toCanvas(canvas, qrUrl, {
+                width: 250,
+                margin: 2,
+                color: { dark: '#0f172a', light: '#ffffff' }
+            }, function(error) {
+                if (error) { showToast('Erreur', 'Impossible de générer le QR code', 'error'); return; }
+                container.classList.remove('hidden');
+                if (dlBtn) dlBtn.classList.remove('hidden');
+                showToast('QR Code généré', 'Prêt à télécharger', 'success');
+            });
+        } else {
+            showToast('Erreur', 'Librairie QR non chargée', 'error');
+        }
+    }
+
+    function downloadQR() {
+        const canvas = document.getElementById('qr-canvas');
+        if (!canvas) return;
+        const link = document.createElement('a');
+        link.download = 'repward-qrcode.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+
+    // ============================================
     // DATA
     // ============================================
     const industries = {
@@ -748,8 +886,8 @@ Rédige une réponse professionnelle à cet avis.`;
             winbackOptions: [
                 { val: 'none', label: 'Ne rien offrir (Excuses simples)' },
                 { val: 'dessert', label: '🍰 Dessert offert' },
-                { val: 'drink', label: '🍷 Boisson ou Apéritif offert' },
-                { val: 'discount', label: '📄 -10% sur l\'addition' }
+                { val: 'drink', label: '🍹 Boisson ou Apéritif offert' },
+                { val: 'discount', label: '📉 -10% sur l\'addition' }
             ]
         },
         coffee: {
@@ -796,7 +934,7 @@ Rédige une réponse professionnelle à cet avis.`;
             kpis: { reviews: '+45', timeSaved: '32h', roi: '4 500 €' },
             winbackOptions: [
                 { val: 'none', label: 'Ne rien offrir' },
-                { val: 'upgrade', label: '🛏️ Surclassement prochaine visite' },
+                { val: 'upgrade', label: '🗝️ Surclassement prochaine visite' },
                 { val: 'breakfast', label: '🥐 Petit-déjeuner offert' }
             ]
         },
@@ -812,7 +950,7 @@ Rédige une réponse professionnelle à cet avis.`;
             kpis: { reviews: '+28', timeSaved: '18h', roi: '2 100 €' },
             winbackOptions: [
                 { val: 'none', label: 'Ne rien offrir' },
-                { val: 'discount', label: '📄 -15% Prochain Séjour' },
+                { val: 'discount', label: '📉 -15% Prochain Séjour' },
                 { val: 'latecheckout', label: '⏰ Late Check-out offert' }
             ]
         },
@@ -844,7 +982,7 @@ Rédige une réponse professionnelle à cet avis.`;
             kpis: { reviews: '+95', timeSaved: '10h', roi: '1 600 €' },
             winbackOptions: [
                 { val: 'none', label: 'Ne rien offrir' },
-                { val: 'discount', label: '📄 -10% prochaine visite' },
+                { val: 'discount', label: '📉 -10% prochaine visite' },
                 { val: 'gift', label: '🎁 Cadeau surprise offert' }
             ]
         }
@@ -952,6 +1090,7 @@ Rédige une réponse professionnelle à cet avis.`;
             el.setAttribute('aria-selected', isActive);
         });
         renderMessages();
+        savePrefs();
     }
 
     function renderMessages() {
@@ -976,18 +1115,18 @@ Rédige une réponse professionnelle à cet avis.`;
             const platformName = m.platform.charAt(0).toUpperCase() + m.platform.slice(1);
             const isActive = m.id === currentMessageId;
             return `
-                <div onclick="selectMessage(${m.id})" class="message-item p-4 rounded-xl cursor-pointer border ${isActive ? 'active border-brand/30' : 'border-transparent'}" role="button" tabindex="0" aria-label="Avis de ${m.author}">
+                <div onclick="selectMessage(${m.id})" class="message-item p-4 rounded-xl cursor-pointer border ${isActive ? 'active border-brand/30' : 'border-transparent'}" role="button" tabindex="0" aria-label="Avis de ${escapeHtml(m.author)}">
                     <div class="flex justify-between items-center mb-2">
                         <span class="platform-badge"><i class="fa-brands ${m.icon} ${m.color} mr-1"></i> ${platformName}</span>
                         <span class="text-[10px] text-slate-500 font-medium">${m.time}</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <p class="text-sm font-bold text-white">${m.author}</p>
+                        <p class="text-sm font-bold text-white">${escapeHtml(m.author)}</p>
                         <div class="flex gap-0.5">
                             ${[1,2,3,4,5].map(i => `<i class="fa-solid fa-star text-[10px] ${i <= m.rating ? 'text-yellow-400' : 'text-slate-700'}"></i>`).join('')}
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400 line-clamp-2 mt-1.5 leading-relaxed">"${m.text}"</p>
+                    <p class="text-xs text-slate-400 line-clamp-2 mt-1.5 leading-relaxed">"${escapeHtml(m.text)}"</p>
                 </div>`;
         }).join('');
     }
@@ -1017,7 +1156,12 @@ Rédige une réponse professionnelle à cet avis.`;
             ? winback.options[winback.selectedIndex].text.replace(/^[^\w]*/, '').trim()
             : null;
 
-        // Si clé Gemini configurée → appel IA en temps réel
+        const regenBtn = document.querySelector('[onclick="regenerateDraft()"]');
+        if (regenBtn) {
+            regenBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Génération...';
+            regenBtn.classList.add('opacity-50', 'pointer-events-none');
+        }
+
         if (getActiveApiKey() && !isGenerating) {
             isGenerating = true;
             textarea.value = "🤖 L'IA génère votre réponse personnalisée...";
@@ -1039,12 +1183,17 @@ Rédige une réponse professionnelle à cet avis.`;
             if (aiResponse) {
                 textarea.value = aiResponse;
                 textarea.style.opacity = '1';
+                if (regenBtn) {
+                    regenBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Régénérer';
+                    regenBtn.classList.remove('opacity-50', 'pointer-events-none');
+                }
                 return;
             }
-            // Si échec → fallback sur brouillon statique ci-dessous
+
+            showToast('Erreur IA', 'Impossible de générer la réponse. Vérifiez votre clé API.', 'error');
+            textarea.style.opacity = '1';
         }
 
-        // Brouillon statique (fallback ou mode sans clé API)
         let draft = msg.baseDraft;
 
         if (winbackVal !== 'none' && winbackLabel) {
@@ -1061,6 +1210,11 @@ Rédige une réponse professionnelle à cet avis.`;
         requestAnimationFrame(() => {
             textarea.style.opacity = '1';
         });
+
+        if (regenBtn) {
+            regenBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Régénérer';
+            regenBtn.classList.remove('opacity-50', 'pointer-events-none');
+        }
     }
 
     // ============================================
@@ -1099,6 +1253,8 @@ Rédige une réponse professionnelle à cet avis.`;
         const winbackContainer = document.getElementById('winback-container');
         if (!toggle || !btn || !textarea || !winbackContainer) return;
 
+        toggle.setAttribute('aria-checked', toggle.checked);
+
         if (toggle.checked) {
             btn.innerHTML = `<i class="fa-solid fa-bolt text-yellow-400 mr-2"></i> Mode Auto-Pilot activé`;
             btn.className = "mt-4 bg-success/20 text-success border border-success/40 font-bold py-3.5 rounded-xl w-full flex justify-center items-center cursor-default transition-all";
@@ -1112,6 +1268,7 @@ Rédige une réponse professionnelle à cet avis.`;
             textarea.classList.remove('opacity-50', 'cursor-not-allowed');
             winbackContainer.classList.remove('opacity-50', 'pointer-events-none');
         }
+        savePrefs();
     }
 
     // ============================================
@@ -1132,14 +1289,12 @@ Rédige une réponse professionnelle à cet avis.`;
         const data = industries[currentInd];
         if (!data) return;
 
-        // KPIs
         const kpiMap = { 'kpi-reviews': data.kpis.reviews, 'kpi-time': data.kpis.timeSaved, 'kpi-roi': data.kpis.roi };
         Object.entries(kpiMap).forEach(([id, val]) => {
             const el = document.getElementById(id);
             if (el) el.textContent = val;
         });
 
-        // Insights with severity bars
         const insDiv = document.getElementById('ai-insights');
         if (insDiv) {
             const maxCount = Math.max(...data.insights.map(i => i.count));
@@ -1163,17 +1318,15 @@ Rédige une réponse professionnelle à cet avis.`;
             }).join('');
         }
 
-        // Rewards grid
         const grid = document.getElementById('rew-grid');
         if (grid) {
             if (!data.rewards.includes(currentRew)) currentRew = data.rewards[0];
             grid.innerHTML = data.rewards.map(r => `
-                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-4 border rounded-xl text-sm font-bold text-center cursor-pointer flex items-center justify-center min-h-[72px] transition-all ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
+                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-4 border rounded-xl text-sm font-bold text-center cursor-pointer flex items-center justify-center min-h-[72px] transition-all tabindex='0' role='button' ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
                     ${r}
                 </div>`).join('');
         }
 
-        // Winback selector
         const winbackSelect = document.getElementById('winback-selector');
         if (winbackSelect) {
             winbackSelect.innerHTML = data.winbackOptions.map(opt => `<option value="${opt.val}">${opt.label}</option>`).join('');
@@ -1181,6 +1334,7 @@ Rédige une réponse professionnelle à cet avis.`;
         }
 
         updateCustomerApp();
+        savePrefs();
     }
 
     function setRew(r, el) {
@@ -1194,6 +1348,7 @@ Rédige une réponse professionnelle à cet avis.`;
             el.classList.add('selected', 'border-brand', 'bg-brand/10', 'text-white');
         }
         updateCustomerApp();
+        savePrefs();
     }
 
     // ============================================
@@ -1215,7 +1370,7 @@ Rédige une réponse professionnelle à cet avis.`;
 
             return `
                 <div class="flex flex-col h-full bg-slate-50 overflow-y-auto">
-                    <div class="h-48 md:h-52 bg-cover bg-center shrink-0 relative" style="background-image: url('${data.img}')">
+                    <div class="h-48 md:h-52 bg-cover bg-center shrink-0 relative" style="background-image: url('${escapeHtml(data.img)}')">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent"></div>
                     </div>
                     <div class="px-5 -mt-8 flex-1 flex flex-col items-center pb-8 relative z-10">
@@ -1223,7 +1378,7 @@ Rédige une réponse professionnelle à cet avis.`;
                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center mx-auto mb-3 shadow-lg shadow-brand/20">
                                 <i class="fa-solid fa-award text-white text-lg"></i>
                             </div>
-                            <h2 class="text-xl font-black text-slate-800">${data.name}</h2>
+                            <h2 class="text-xl font-black text-slate-800">${escapeHtml(data.name)}</h2>
                             <p class="text-xs text-slate-500 font-medium mt-1">Merci pour votre visite !</p>
                         </div>
 
@@ -1231,7 +1386,7 @@ Rédige une réponse professionnelle à cet avis.`;
                             <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                             <div class="absolute -left-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
                             <div class="bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full inline-block mb-3 shadow-sm relative z-10">Cadeau Immédiat</div>
-                            <h3 class="text-2xl font-black mb-2 relative z-10">${currentRew}</h3>
+                            <h3 class="text-2xl font-black mb-2 relative z-10">${escapeHtml(currentRew)}</h3>
                             <p class="text-xs text-white/90 font-medium relative z-10 leading-relaxed">Laissez-nous 5 étoiles pour<br>débloquer votre cadeau</p>
                         </div>
 
@@ -1303,10 +1458,10 @@ Rédige une réponse professionnelle à cet avis.`;
                 <p class="text-sm text-white/80 mb-8">Votre avis compte énormément pour nous</p>
                 <div class="bg-white w-full rounded-3xl p-6 text-slate-900 shadow-2xl relative">
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-wider px-4 py-1.5 rounded-full whitespace-nowrap">Votre Cadeau</div>
-                    <h3 class="text-xl font-black mt-4 mb-4">${currentRew}</h3>
+                    <h3 class="text-xl font-black mt-4 mb-4">${escapeHtml(currentRew)}</h3>
                     <div class="border-2 border-dashed border-slate-200 bg-slate-50 rounded-2xl py-5">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Code à présenter</p>
-                        <p class="text-3xl font-mono font-black text-brand tracking-wider">${code}</p>
+                        <p class="text-3xl font-mono font-black text-brand tracking-wider">${escapeHtml(code)}</p>
                     </div>
                     <p class="text-[10px] text-slate-400 mt-3">Présentez ce code à l'équipe lors de votre prochaine visite</p>
                 </div>
@@ -1333,10 +1488,9 @@ Rédige une réponse professionnelle à cet avis.`;
         try {
             const savedKey = localStorage.getItem('repward_gemini_key');
             if (savedKey) {
-                // On écrit directement dans la variable globale (pas const)
                 window._geminiKey = savedKey;
             }
-        } catch (e) { /* localStorage indisponible */ }
+        } catch (e) {}
         updateApiKeyStatus();
     }
 
@@ -1351,11 +1505,12 @@ Rédige une réponse professionnelle à cet avis.`;
         input.value = '';
         updateApiKeyStatus();
 
-        // Toast de confirmation
         const toast = document.getElementById('toast-notification');
         if (toast) {
-            toast.querySelector('p.font-bold').textContent = 'IA activée !';
-            toast.querySelector('p.text-\\[11px\\]') && (toast.querySelectorAll('p')[1].textContent = 'Les réponses seront générées par Gemini');
+            const titleEl = toast.querySelector('.toast-title');
+            const msgEl = toast.querySelector('.toast-msg');
+            if (titleEl) titleEl.textContent = 'IA activée !';
+            if (msgEl) msgEl.textContent = 'Les réponses seront générées par Gemini';
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
@@ -1392,12 +1547,12 @@ Rédige une réponse professionnelle à cet avis.`;
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
         loadGeminiKey();
+        loadPrefs();
         renderMessages();
         switchTab('portal');
         updateInd();
     });
 
-    // Keyboard navigation for messages
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.classList.contains('message-item')) {
             e.target.click();
