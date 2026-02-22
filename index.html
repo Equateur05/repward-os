@@ -592,8 +592,15 @@
             <div id="tab-triage" class="hidden">
                 <div class="space-y-6 max-w-7xl mx-auto">
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Hub Messagerie</h2>
-                        <p class="text-sm text-slate-400 mt-1">Gérez et répondez à tous vos avis depuis un seul endroit</p>
+                        <div class="flex items-center justify-between flex-wrap gap-3">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-extrabold text-white">Hub Messagerie</h2>
+                                <p class="text-sm text-slate-400 mt-1">Gérez et répondez à tous vos avis depuis un seul endroit</p>
+                            </div>
+                            <button onclick="openManualReviewModal()" class="px-4 py-2.5 bg-brand/20 text-brand-light border border-brand/30 rounded-xl text-xs font-bold hover:bg-brand/30 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i> Ajouter un avis manuellement
+                            </button>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[500px]">
@@ -669,10 +676,15 @@
                             <label for="ai-draft-textarea" class="sr-only">Brouillon IA</label>
                             <textarea id="ai-draft-textarea" class="flex-1 w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm text-white resize-none focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 shadow-inner leading-relaxed transition-all min-h-[200px]" spellcheck="false" placeholder="L'IA génère votre réponse..."></textarea>
 
-                            <!-- Publish button -->
-                            <button id="publish-action-btn" onclick="publishAIResponse()" class="btn-primary mt-4 w-full flex justify-center items-center relative overflow-hidden">
-                                <span>Publier la réponse <i class="fa-solid fa-paper-plane ml-2"></i></span>
-                            </button>
+                            <!-- Copier + Publier -->
+                            <div class="flex gap-2 mt-4">
+                                <button onclick="copyAIResponse()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-slate-800 text-white border border-white/10 hover:bg-slate-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-copy"></i> Copier la réponse
+                                </button>
+                                <button id="publish-action-btn" onclick="publishAIResponse()" class="flex-1 btn-primary py-3.5 flex justify-center items-center relative overflow-hidden">
+                                    <span>Publier <i class="fa-solid fa-paper-plane ml-2"></i></span>
+                                </button>
+                            </div>
                         </div>
 
                     </div>
@@ -1616,7 +1628,7 @@
     function checkOnboarding() {
         // Skip onboarding if client scanned QR (URL params present)
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('biz') || urlParams.get('ind')) return false;
+        if (urlParams.get('biz') || urlParams.get('ind') || urlParams.get('t')) return false;
 
         try {
             const account = JSON.parse(localStorage.getItem(ACCOUNT_KEY));
@@ -1944,48 +1956,11 @@
     }
 
     // ============================================
-    // GOOGLE GEMINI AI CONFIG
+    // AI RESPONSE CONFIG (clé Gemini sécurisée côté serveur via Edge Function)
     // ============================================
-    const GEMINI_API_KEY = "AIzaSyDtp1yzm2bmD3KNIph59kIQ8-OHHh79pzQ";
-    const GEMINI_MODEL = "gemini-2.0-flash";
-    const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
-    // Fonction pour générer une réponse IA via Gemini
+    // Fonction pour générer une réponse IA via l'Edge Function Supabase (sécurisé)
     async function generateAIResponse(reviewText, reviewRating, authorName, platform, industryName, winbackOffer) {
-        // Try Edge Function first if Supabase is configured
-        if (USE_SUPABASE && supabaseClient && supabaseMerchant) {
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session) {
-                    const edgeRes = await fetch(`${SUPABASE_URL}/functions/v1/generate-response`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${session.access_token}`,
-                        },
-                        body: JSON.stringify({
-                            review_id: currentMessageId, // will need mapping to real review UUID
-                            winback_offer: winbackOffer,
-                            winback_code: winbackOffer ? 'RWD-' + Math.floor(Math.random() * 9000 + 1000) + '-WB' : null,
-                        }),
-                    });
-                    if (edgeRes.ok) {
-                        const edgeData = await edgeRes.json();
-                        if (edgeData.draft_text) return edgeData.draft_text;
-                    }
-                }
-            } catch (edgeErr) {
-                console.warn('Edge Function fallback to client-side Gemini:', edgeErr);
-            }
-        }
-
-        // Fallback: client-side Gemini API call
-        const activeKey = getActiveApiKey();
-        if (!activeKey) {
-            console.warn("Repward OS: Pas de clé API Gemini configurée. Utilisation du brouillon par défaut.");
-            return null;
-        }
-
         const winbackInstruction = winbackOffer && winbackOffer !== 'none'
             ? `\n\nIMPORTANT: Inclus une offre de compensation win-back dans ta réponse. L'offre est : "${winbackOffer}". Génère un code promo unique au format RWD-XXXX-WB (remplace XXXX par 4 chiffres aléatoires). Présente le code de manière élégante.`
             : '';
@@ -1998,7 +1973,7 @@
         };
         const toneStyle = toneInstructions[currentAiTone] || toneInstructions.professional;
 
-        const systemPrompt = `Tu es l'assistant IA de Repward OS, spécialisé dans la gestion de réputation en ligne pour les commerces.
+        const fullPrompt = `Tu es l'assistant IA de Repward OS, spécialisé dans la gestion de réputation en ligne pour les commerces.
 Tu rédiges des réponses professionnelles, empathiques et personnalisées aux avis clients.
 
 STYLE DE TON : ${toneStyle}
@@ -2009,11 +1984,11 @@ Règles :
 - Adresse chaque point soulevé dans l'avis
 - Montre de l'empathie pour les avis négatifs, propose des solutions concrètes
 - Pour les avis positifs, remercie sincèrement et mentionne des détails spécifiques
-- Termine toujours par "À très vite,\nLa Direction."
+- Termine toujours par "À très vite,\\nLa Direction."
 - Garde la réponse concise (max 150 mots)
-- N'utilise PAS de markdown, écris en texte brut${winbackInstruction}`;
+- N'utilise PAS de markdown, écris en texte brut${winbackInstruction}
 
-        const userPrompt = `Contexte :
+Contexte :
 - Type de commerce : ${industryName}
 - Plateforme : ${platform}
 - Note : ${reviewRating}/5 étoiles
@@ -2022,35 +1997,35 @@ Règles :
 
 Rédige une réponse professionnelle à cet avis.`;
 
-        try {
-            const response = await fetch(`${GEMINI_ENDPOINT}?key=${activeKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: systemPrompt + "\n\n" + userPrompt }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        topP: 0.9,
-                        maxOutputTokens: 500
+        // Appel sécurisé via Edge Function Supabase
+        if (USE_SUPABASE && supabaseClient) {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    const edgeRes = await fetch(`${SUPABASE_URL}/functions/v1/generate-response`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${session.access_token}`,
+                        },
+                        body: JSON.stringify({ prompt: fullPrompt, maxTokens: 500 }),
+                    });
+                    if (edgeRes.ok) {
+                        const edgeData = await edgeRes.json();
+                        if (edgeData.response) return edgeData.response;
+                    } else {
+                        const errData = await edgeRes.json().catch(() => ({}));
+                        console.error('Edge Function error:', edgeRes.status, errData);
                     }
-                })
-            });
-
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                console.error("Erreur Gemini API:", response.status, errData);
-                return null;
+                }
+            } catch (edgeErr) {
+                console.error('Edge Function call failed:', edgeErr);
             }
-
-            const data = await response.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            return text || null;
-        } catch (error) {
-            console.error("Erreur appel Gemini:", error);
-            return null;
         }
+
+        // Si pas de Supabase, retourner null (plus d'appel direct Gemini côté client)
+        console.warn("Repward OS: Impossible de contacter l'IA. Vérifiez votre connexion.");
+        return null;
     }
 
     // ============================================
@@ -2142,15 +2117,43 @@ Rédige une réponse professionnelle à cet avis.`;
     // ============================================
     // QR CODE GENERATION
     // ============================================
-    function generateQRCode() {
+    // Génère un token aléatoire sécurisé
+    function generateSecureToken() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+        let token = 'RW-';
+        for (let i = 0; i < 16; i++) token += chars.charAt(Math.floor(Math.random() * chars.length));
+        return token;
+    }
+
+    async function generateQRCode() {
         const container = document.getElementById('qr-code-container');
         const canvas = document.getElementById('qr-canvas');
         const dlBtn = document.getElementById('btn-download-qr');
         if (!canvas || !container) return;
 
-        const data = industries[currentInd];
         const businessName = document.getElementById('input-nom-etab')?.value || 'Mon Commerce';
-        const qrUrl = `https://repward.vercel.app?biz=${encodeURIComponent(businessName)}&ind=${currentInd}&rew=${encodeURIComponent(currentRew)}`;
+        const token = generateSecureToken();
+
+        // Expiration dans 6 mois
+        const expiresAt = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
+
+        // Sauvegarder le token dans Supabase
+        if (USE_SUPABASE && supabaseClient && supabaseMerchant) {
+            try {
+                const { error } = await supabaseClient.from('qr_tokens').insert({
+                    merchant_id: supabaseMerchant.id,
+                    token: token,
+                    business_name: businessName,
+                    industry: currentInd,
+                    reward: currentRew,
+                    expires_at: expiresAt
+                });
+                if (error) { console.error('QR token save error:', error); }
+            } catch(e) { console.error('QR token insert failed:', e); }
+        }
+
+        // URL avec token unique (au lieu de paramètres en clair)
+        const qrUrl = `https://repward.vercel.app?t=${token}`;
 
         if (typeof QRCode !== 'undefined') {
             QRCode.toCanvas(canvas, qrUrl, {
@@ -2161,7 +2164,7 @@ Rédige une réponse professionnelle à cet avis.`;
                 if (error) { showToast('Erreur', 'Impossible de générer le QR code', 'error'); return; }
                 container.classList.remove('hidden');
                 if (dlBtn) dlBtn.classList.remove('hidden');
-                showToast('QR Code généré', 'Prêt à télécharger', 'success');
+                showToast('QR Code généré', 'Valable 6 mois · Usage unique', 'success');
             });
         } else {
             showToast('Erreur', 'Librairie QR non chargée', 'error');
@@ -2175,6 +2178,37 @@ Rédige une réponse professionnelle à cet avis.`;
         link.download = 'repward-qrcode.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+    }
+
+    // Affiche une erreur plein écran quand le token QR est invalide/expiré/utilisé
+    function showTokenError(message) {
+        document.getElementById('view-merchant')?.classList.add('view-hidden');
+        document.getElementById('view-customer')?.classList.add('view-hidden');
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:#0a0e1a;display:flex;align-items:center;justify-content:center;z-index:99999;padding:2rem;';
+        overlay.innerHTML = `
+            <div style="text-align:center;max-width:400px;">
+                <div style="width:80px;height:80px;margin:0 auto 1.5rem;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <svg width="40" height="40" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                </div>
+                <h2 style="color:#fff;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">Lien invalide</h2>
+                <p style="color:#94a3b8;font-size:0.95rem;line-height:1.6;margin-bottom:2rem;">${message}</p>
+                <p style="color:#475569;font-size:0.75rem;">Demandez un nouveau QR code au commerce.</p>
+            </div>`;
+        document.body.appendChild(overlay);
+    }
+
+    // Marque le token QR comme utilisé après que le client a laissé un avis
+    async function markQrTokenUsed() {
+        const token = window._activeQrToken;
+        if (!token || !USE_SUPABASE || !supabaseClient) return;
+        try {
+            await supabaseClient.from('qr_tokens').update({
+                used: true,
+                used_at: new Date().toISOString()
+            }).eq('token', token);
+            window._activeQrToken = null; // Empêche double-marquage
+        } catch(e) { console.error('Mark token used error:', e); }
     }
 
     // ============================================
@@ -3162,6 +3196,9 @@ Rédige une réponse professionnelle à cet avis.`;
     }
 
     function revealReward() {
+        // Marquer le token QR comme utilisé (anti-triche)
+        markQrTokenUsed();
+
         const customerView = document.getElementById('view-customer');
         if (!customerView) return;
         const app = customerView.querySelector('#app-customer-container');
@@ -3281,54 +3318,13 @@ Rédige une réponse professionnelle à cet avis.`;
     }
 
     // ============================================
-    // GEMINI KEY MANAGEMENT (internal - managed by Repward)
+    // AI KEY MANAGEMENT (clé sécurisée côté serveur — Edge Function)
     // ============================================
-    function loadGeminiKey() {
-        // La clé est gérée par Repward, pas par l'utilisateur
-        // En production, la clé sera injectée côté serveur via GEMINI_API_KEY
-        try {
-            const savedKey = localStorage.getItem('repward_gemini_key');
-            if (savedKey) {
-                window._geminiKey = savedKey;
-            }
-        } catch (e) {}
-    }
-
-    function saveGeminiKey() {
-        // Fonction interne pour l'admin Repward uniquement
-        const input = document.getElementById('input-gemini-key');
-        if (!input) return;
-        const key = input.value.trim();
-        if (!key) return;
-
-        try { localStorage.setItem('repward_gemini_key', key); } catch (e) {}
-        window._geminiKey = key;
-        input.value = '';
-        updateApiKeyStatus();
-
-        const toast = document.getElementById('toast-notification');
-        if (toast) {
-            const titleEl = toast.querySelector('.toast-title');
-            const msgEl = toast.querySelector('.toast-msg');
-            if (titleEl) titleEl.textContent = 'IA activée !';
-            if (msgEl) msgEl.textContent = 'Les réponses seront générées par Gemini';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-    }
-
-    function getActiveApiKey() {
-        return window._geminiKey || GEMINI_API_KEY || '';
-    }
-
-    function updateApiKeyStatus() {
-        // Plus de UI pour la clé API - gérée en interne par Repward
-    }
-
-    function clearGeminiKey() {
-        try { localStorage.removeItem('repward_gemini_key'); } catch (e) {}
-        window._geminiKey = '';
-    }
+    function loadGeminiKey() { /* Clé gérée côté serveur via Edge Function */ }
+    function saveGeminiKey() { /* Obsolète — clé côté serveur */ }
+    function getActiveApiKey() { return 'edge-function'; /* Plus de clé côté client */ }
+    function updateApiKeyStatus() {}
+    function clearGeminiKey() {}
 
     // ============================================
     // RENDER SUBSCRIPTION PLANS (Settings tab)
@@ -3979,7 +3975,63 @@ Rédige une réponse professionnelle à cet avis.`;
             const qrBiz = urlParams.get('biz');
             const qrInd = urlParams.get('ind');
             const qrRew = urlParams.get('rew');
+            const qrToken = urlParams.get('t');
 
+            // === Nouveau système anti-triche par token ===
+            if (qrToken) {
+                (async () => {
+                    try {
+                        if (!USE_SUPABASE || !supabaseClient) {
+                            showTokenError('Système indisponible');
+                            return;
+                        }
+                        // Vérifier le token dans Supabase
+                        const { data: tokenData, error } = await supabaseClient
+                            .from('qr_tokens')
+                            .select('*')
+                            .eq('token', qrToken)
+                            .single();
+
+                        if (error || !tokenData) {
+                            showTokenError('Ce lien est invalide ou n\'existe pas.');
+                            return;
+                        }
+                        if (tokenData.used) {
+                            showTokenError('Ce QR code a déjà été utilisé. Un seul avis par visite.');
+                            return;
+                        }
+                        if (new Date(tokenData.expires_at) < new Date()) {
+                            showTokenError('Ce QR code a expiré (validité 6 mois).');
+                            return;
+                        }
+
+                        // Token valide ! Charger les infos du commerce
+                        if (tokenData.industry && industries[tokenData.industry]) {
+                            currentInd = tokenData.industry;
+                            const indSelector = document.getElementById('ind-selector');
+                            if (indSelector) indSelector.value = tokenData.industry;
+                        }
+                        if (tokenData.reward) currentRew = tokenData.reward;
+                        if (tokenData.business_name) {
+                            const data = industries[currentInd];
+                            if (data) data.name = tokenData.business_name;
+                        }
+
+                        // Stocker le token pour le marquer comme utilisé après l'avis
+                        window._activeQrToken = qrToken;
+
+                        document.getElementById('view-merchant')?.classList.add('view-hidden');
+                        document.getElementById('view-customer')?.classList.remove('view-hidden');
+                        try { updateCustomerApp(); } catch(e) { console.error('updateCustomerApp error:', e); }
+                    } catch(e) {
+                        console.error('Token verification error:', e);
+                        showTokenError('Erreur de vérification. Réessayez.');
+                    }
+                })();
+                return;
+            }
+
+            // === Ancien système (rétro-compatibilité) ===
             if (qrBiz || qrInd || qrRew) {
                 if (qrInd && industries[qrInd]) {
                     currentInd = qrInd;
@@ -4013,6 +4065,7 @@ Rédige une réponse professionnelle à cet avis.`;
                 }
             } catch(e) { console.error('auto-pilot restore:', e); }
             try { loadGoogleMapsUrl(); } catch(e) { console.error('loadGoogleMapsUrl:', e); }
+            try { loadManualReviews(); } catch(e) { console.error('loadManualReviews:', e); }
             try { renderMessages(); } catch(e) { console.error('renderMessages:', e); }
 
             // CRITICAL: Show tab content
@@ -4054,7 +4107,161 @@ Rédige une réponse professionnelle à cet avis.`;
         }
     });
 
-    
+    // ============================================
+    // AJOUT MANUEL D'AVIS (Option 1)
+    // ============================================
+    let manualStarRating = 0;
+
+    function openManualReviewModal() {
+        document.getElementById('manual-review-modal').classList.remove('hidden');
+        manualStarRating = 0;
+        document.getElementById('manual-author').value = '';
+        document.getElementById('manual-review-text').value = '';
+        document.getElementById('manual-review-error').classList.add('hidden');
+        const stars = document.getElementById('manual-stars').children;
+        for (let i = 0; i < 5; i++) stars[i].className = 'fa-solid fa-star text-2xl text-slate-600 cursor-pointer hover:text-yellow-400 transition-colors';
+    }
+
+    function closeManualReviewModal() {
+        document.getElementById('manual-review-modal').classList.add('hidden');
+    }
+
+    function setManualStar(n) {
+        manualStarRating = n;
+        const stars = document.getElementById('manual-stars').children;
+        for (let i = 0; i < 5; i++) {
+            stars[i].className = `fa-solid fa-star text-2xl cursor-pointer transition-colors ${i < n ? 'text-yellow-400 scale-110' : 'text-slate-600 hover:text-yellow-400'}`;
+        }
+    }
+
+    function platformIcon(p) {
+        const icons = { google: 'fa-brands fa-google', airbnb: 'fa-brands fa-airbnb', booking: 'fa-solid fa-hotel', thefork: 'fa-solid fa-utensils', tripadvisor: 'fa-solid fa-map-location-dot', trustpilot: 'fa-solid fa-star', facebook: 'fa-brands fa-facebook', instagram: 'fa-brands fa-instagram', expedia: 'fa-solid fa-plane', other: 'fa-solid fa-comment' };
+        return icons[p] || icons.other;
+    }
+
+    function platformColor(p) {
+        const colors = { google: 'text-google', airbnb: 'text-airbnb', booking: 'text-blue-400', thefork: 'text-green-400', tripadvisor: 'text-emerald-400', trustpilot: 'text-trustpilot', facebook: 'text-blue-500', instagram: 'text-pink-400', expedia: 'text-yellow-400', other: 'text-slate-400' };
+        return colors[p] || colors.other;
+    }
+
+    async function submitManualReview() {
+        const platform = document.getElementById('manual-platform').value;
+        const author = document.getElementById('manual-author').value.trim();
+        const text = document.getElementById('manual-review-text').value.trim();
+        const errEl = document.getElementById('manual-review-error');
+
+        if (!author || !text || manualStarRating === 0) {
+            errEl.textContent = 'Remplissez tous les champs et sélectionnez une note';
+            errEl.classList.remove('hidden');
+            return;
+        }
+        errEl.classList.add('hidden');
+
+        const review = {
+            id: Date.now(),
+            platform: platform,
+            icon: platformIcon(platform),
+            color: platformColor(platform),
+            author: author,
+            time: "À l'instant",
+            rating: manualStarRating,
+            text: text,
+            baseDraft: '',
+            manual: true
+        };
+
+        mockMessages.unshift(review);
+        saveManualReview(review);
+        currentMessageId = review.id;
+        closeManualReviewModal();
+        switchTab('triage');
+        renderMessages();
+        await regenerateDraft();
+        showToast('Avis ajouté', `Réponse IA générée pour ${author}`, 'success');
+    }
+
+    function saveManualReview(review) {
+        try {
+            const saved = JSON.parse(localStorage.getItem('repward_manual_reviews') || '[]');
+            saved.unshift(review);
+            if (saved.length > 100) saved.length = 100;
+            localStorage.setItem('repward_manual_reviews', JSON.stringify(saved));
+        } catch(e) {}
+    }
+
+    function loadManualReviews() {
+        try {
+            const saved = JSON.parse(localStorage.getItem('repward_manual_reviews') || '[]');
+            if (saved.length > 0) {
+                const existingIds = new Set(mockMessages.map(m => m.id));
+                saved.forEach(r => { if (!existingIds.has(r.id)) mockMessages.unshift(r); });
+            }
+        } catch(e) {}
+    }
+
+    function copyAIResponse() {
+        const textarea = document.getElementById('ai-draft-textarea');
+        if (!textarea || !textarea.value.trim()) {
+            showToast('Rien à copier', "Générez d'abord une réponse IA", 'error');
+            return;
+        }
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const msg = mockMessages.find(m => m.id === currentMessageId);
+            const platform = msg ? msg.platform.charAt(0).toUpperCase() + msg.platform.slice(1) : 'la plateforme';
+            showToast('Réponse copiée !', `Allez la coller sur ${platform}`, 'success');
+        }).catch(() => {
+            textarea.select();
+            document.execCommand('copy');
+            showToast('Réponse copiée !', '', 'success');
+        });
+    }
+
     </script>
+
+<!-- Modal ajout manuel d'avis -->
+<div id="manual-review-modal" class="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-card rounded-2xl p-6 max-w-lg w-full border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto" style="animation: slideUp 0.3s ease">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
+                <span class="w-9 h-9 rounded-xl bg-brand/20 flex items-center justify-center"><i class="fa-solid fa-paste text-brand"></i></span>
+                Ajouter un avis manuellement
+            </h3>
+            <button onclick="closeManualReviewModal()" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p class="text-xs text-slate-400 mb-5">Copiez-collez un avis depuis n'importe quelle plateforme. L'IA générera la réponse automatiquement.</p>
+        <div class="mb-4">
+            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Plateforme</label>
+            <select id="manual-platform" class="w-full bg-slate-800 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand outline-none cursor-pointer" style="color-scheme:dark">
+                <option value="google">Google</option><option value="airbnb">Airbnb</option><option value="booking">Booking.com</option>
+                <option value="thefork">TheFork</option><option value="tripadvisor">TripAdvisor</option><option value="trustpilot">Trustpilot</option>
+                <option value="facebook">Facebook</option><option value="instagram">Instagram</option><option value="expedia">Expedia</option><option value="other">Autre</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Nom du client</label>
+            <input id="manual-author" type="text" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand outline-none" placeholder="Ex: Sophie L.">
+        </div>
+        <div class="mb-4">
+            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Note</label>
+            <div id="manual-stars" class="flex gap-2">
+                <i class="fa-solid fa-star text-2xl text-slate-600 cursor-pointer hover:text-yellow-400 transition-colors" onclick="setManualStar(1)"></i>
+                <i class="fa-solid fa-star text-2xl text-slate-600 cursor-pointer hover:text-yellow-400 transition-colors" onclick="setManualStar(2)"></i>
+                <i class="fa-solid fa-star text-2xl text-slate-600 cursor-pointer hover:text-yellow-400 transition-colors" onclick="setManualStar(3)"></i>
+                <i class="fa-solid fa-star text-2xl text-slate-600 cursor-pointer hover:text-yellow-400 transition-colors" onclick="setManualStar(4)"></i>
+                <i class="fa-solid fa-star text-2xl text-slate-600 cursor-pointer hover:text-yellow-400 transition-colors" onclick="setManualStar(5)"></i>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Texte de l'avis</label>
+            <textarea id="manual-review-text" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand outline-none resize-none h-32 leading-relaxed" placeholder="Collez l'avis du client ici..."></textarea>
+        </div>
+        <p id="manual-review-error" class="text-danger text-xs mb-3 hidden"></p>
+        <div class="flex gap-3">
+            <button onclick="closeManualReviewModal()" class="flex-1 py-3 border border-white/10 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 transition-all">Annuler</button>
+            <button onclick="submitManualReview()" class="flex-1 py-3 bg-white text-slate-900 rounded-xl text-sm font-black hover:bg-slate-100 transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-robot"></i> Générer la réponse IA</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
