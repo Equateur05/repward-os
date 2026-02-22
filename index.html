@@ -150,6 +150,162 @@
         /* Smooth number counter */
         .counter { display: inline-block; }
 
+        /* ========== FORTUNE WHEEL ========== */
+        .wheel-container { perspective: 1000px; }
+        .wheel-canvas {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        .wheel-spinning {
+            animation: wheelSpin 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1;
+        }
+        @keyframes wheelSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(1800deg); }
+        }
+        .wheel-btn {
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+        .wheel-btn:hover {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+        }
+        .wheel-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ========== FOMO BUBBLE ========== */
+        .fomo-bubble {
+            position: fixed;
+            bottom: 100px;
+            left: -400px;
+            width: 350px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            animation: fomoSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .fomo-bubble.slide-out {
+            animation: fomoSlideOut 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes fomoSlideIn {
+            from { left: -400px; opacity: 0; }
+            to { left: 20px; opacity: 1; }
+        }
+        @keyframes fomoSlideOut {
+            from { left: 20px; opacity: 1; }
+            to { left: -400px; opacity: 0; }
+        }
+        .fomo-close {
+            cursor: pointer;
+            color: white;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .fomo-close:hover { opacity: 1; }
+
+        /* ========== KIOSK MODE ========== */
+        .kiosk-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #172033 100%);
+            padding: 40px;
+        }
+        .kiosk-content {
+            text-align: center;
+            animation: kiosk-fade-in 1s ease-out;
+        }
+        @keyframes kiosk-fade-in {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .kiosk-logo {
+            font-size: 72px;
+            margin-bottom: 30px;
+            animation: kiosk-float 3s ease-in-out infinite;
+        }
+        @keyframes kiosk-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .kiosk-message {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        .kiosk-qr {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            margin: 40px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+        .kiosk-qr canvas {
+            width: 300px;
+            height: 300px;
+        }
+        .kiosk-reward-info {
+            color: #cbd5e1;
+            font-size: 20px;
+            margin-top: 30px;
+        }
+
+        /* ========== LEADERBOARD ========== */
+        .medal-gold { color: #fbbf24; }
+        .medal-silver { color: #d1d5db; }
+        .medal-bronze { color: #d97706; }
+        .podium {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 20px;
+            height: 300px;
+            margin: 40px 0;
+        }
+        .podium-place {
+            text-align: center;
+            padding: 20px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 0 1 150px;
+        }
+        .podium-place.first {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.1));
+            border-color: rgba(251, 191, 36, 0.3);
+            height: 280px;
+            order: 2;
+        }
+        .podium-place.second {
+            background: linear-gradient(135deg, rgba(209, 213, 219, 0.2), rgba(107, 114, 128, 0.1));
+            border-color: rgba(209, 213, 219, 0.3);
+            height: 220px;
+            order: 1;
+        }
+        .podium-place.third {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(120, 53, 15, 0.1));
+            border-color: rgba(217, 119, 6, 0.3);
+            height: 180px;
+            order: 3;
+        }
+        .medal { font-size: 48px; margin-bottom: 12px; }
+        .podium-rank { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+        .podium-name { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+        .podium-stats { font-size: 12px; color: #94a3b8; }
+
             </style>
 </head>
 <body class="bg-mesh flex flex-col relative">
@@ -335,6 +491,12 @@
                     <i class="fa-solid fa-plug w-5 text-center"></i><span class="ml-3">Intégrations</span>
                     <span class="ml-auto text-[10px] font-bold text-brand-light bg-brand/10 px-2 py-0.5 rounded-full">14</span>
                 </button>
+                <button onclick="switchTab('fortune')" id="nav-fortune-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all">
+                    <i class="fa-solid fa-circle-notch w-5 text-center"></i><span class="ml-3">Roue</span>
+                </button>
+                <button onclick="switchTab('team')" id="nav-team-desk" class="nav-item w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 font-medium text-sm transition-all">
+                    <i class="fa-solid fa-users w-5 text-center"></i><span class="ml-3">Équipe</span>
+                </button>
 
                 <div class="pt-4 pb-2"><div class="border-t border-white/5"></div></div>
 
@@ -441,6 +603,14 @@
                                                 <i class="fa-solid fa-copy"></i>
                                             </button>
                                         </div>
+                                    </div>
+                                    <!-- Kiosk Mode -->
+                                    <div class="mt-4 pt-4 border-t border-white/5">
+                                        <button onclick="activateKioskMode()" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                                            <span class="text-lg">📱</span> Mode Kiosque (iPad)
+                                            <span class="text-[10px] bg-white/30 px-2 py-0.5 rounded-full font-black">NEW</span>
+                                        </button>
+                                        <p class="text-[10px] text-slate-500 text-center mt-2">Interface client-facing pour comptoir · Tapez 5x le logo pour quitter</p>
                                     </div>
                                     <!-- NFC Plates Upsell -->
                                     <div class="mt-4 pt-4 border-t border-white/5">
@@ -825,6 +995,46 @@
                                 </div>
                             </div>
 
+                            <!-- Google Business Profile Connection -->
+                            <div class="pt-4 border-t border-white/5">
+                                <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                    <i class="fa-brands fa-google text-google"></i> Google Business Profile
+                                </h4>
+                                <div id="google-not-connected" class="">
+                                    <p class="text-xs text-slate-300 mb-3">Connectez votre Google pour que Repward réponde automatiquement à tous vos avis Google.</p>
+                                    <button onclick="initGoogleOAuth()" class="w-full py-2.5 rounded-lg bg-google hover:bg-google/90 text-white font-semibold flex items-center justify-center gap-2 transition-all text-sm">
+                                        <i class="fa-brands fa-google"></i> Connecter Google
+                                    </button>
+                                </div>
+                                <div id="google-connected" class="hidden">
+                                    <div class="flex items-center gap-2 text-success mb-2">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <span class="text-xs font-medium">Connecté</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mb-2" id="google-business-name"></p>
+                                    <div class="flex gap-2">
+                                        <button onclick="fetchGoogleReviews()" class="flex-1 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs transition-all">
+                                            <i class="fa-solid fa-sync mr-1"></i> Sync avis
+                                        </button>
+                                        <button onclick="disconnectGoogle()" class="py-2 px-3 rounded-lg bg-danger/20 hover:bg-danger/30 text-danger-light text-xs transition-all">
+                                            <i class="fa-solid fa-unlink"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="google-no-gbp" class="hidden">
+                                    <div class="bg-warning/10 border border-warning/30 rounded-lg p-3 mb-3">
+                                        <div class="flex items-center gap-2 text-warning mb-1">
+                                            <i class="fa-solid fa-exclamation-triangle"></i>
+                                            <span class="text-xs font-semibold">Aucune fiche Google trouvée</span>
+                                        </div>
+                                        <p class="text-[10px] text-slate-300">Votre compte Google n'a pas de fiche Google Business Profile. C'est gratuit et indispensable pour recevoir des avis.</p>
+                                    </div>
+                                    <a href="https://business.google.com/create" target="_blank" class="block w-full py-2 rounded-lg bg-warning hover:bg-warning/90 text-slate-900 font-semibold text-center text-sm transition-all">
+                                        <i class="fa-solid fa-plus mr-1"></i> Créer ma fiche Google
+                                    </a>
+                                </div>
+                            </div>
+
                             <!-- IA Status -->
                             <div class="pt-4 border-t border-white/5">
                                 <div class="flex items-center gap-2 p-3 bg-success/10 border border-success/20 rounded-xl">
@@ -916,6 +1126,25 @@
                         </div>
                     </div>
 
+                    <!-- FOMO Bubble Toggle -->
+                    <div class="glass-card p-6 rounded-2xl">
+                        <h3 class="font-bold text-lg text-white flex items-center mb-4">
+                            <span class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center mr-3"><i class="fa-solid fa-bell text-success text-sm"></i></span>
+                            Notifications FOMO
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">Affichage de bulles de preuve sociale pour créer un effet de manque</p>
+                        <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl">
+                            <div>
+                                <p class="text-sm font-bold text-white">Bulles sociales actives</p>
+                                <p class="text-[10px] text-slate-400">Les clients verront les actions d'autres</p>
+                            </div>
+                            <div class="relative inline-block w-12 align-middle select-none">
+                                <input type="checkbox" id="fomo-toggle" onchange="toggleFomoSetting()" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 left-0 border-slate-600 transition-all duration-300"/>
+                                <label for="fomo-toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer bg-success transition-colors duration-300"></label>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Widget intégrable -->
                     <div class="glass-card p-6 rounded-2xl">
                         <h3 class="font-bold text-lg text-white flex items-center mb-4">
@@ -971,10 +1200,114 @@
                     </div>
                 </div>
             </div>
+
+            <!-- CONTENU : ROUE DE LA FORTUNE -->
+            <div id="tab-fortune" class="hidden">
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">🎰 Roue de la Fortune</h2>
+                        <p class="text-sm text-slate-400 mt-1">Engagez vos clients avec une expérience ludique et mémorable</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Wheel Display -->
+                        <div class="lg:col-span-2">
+                            <div class="glass-card p-8 rounded-2xl">
+                                <h3 class="font-bold text-white mb-6 flex items-center">
+                                    <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-circle-notch text-brand text-sm"></i></span>
+                                    Aperçu de la roue
+                                </h3>
+                                <div class="flex flex-col items-center gap-8">
+                                    <div class="wheel-container">
+                                        <canvas id="wheel-canvas" class="wheel-canvas"></canvas>
+                                    </div>
+                                    <button id="spin-wheel-btn" onclick="spinWheel()" class="wheel-btn px-8 py-3.5 rounded-xl text-white font-bold transition-all">
+                                        <i class="fa-solid fa-play mr-2"></i> Tester la roue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings -->
+                        <div class="space-y-4">
+                            <!-- Enable/Disable -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <h4 class="font-bold text-white mb-3 flex items-center">
+                                    <i class="fa-solid fa-toggle-on text-brand mr-2"></i> Activation
+                                </h4>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-slate-300">Roue active</span>
+                                    <div class="relative inline-block w-12 align-middle select-none">
+                                        <input type="checkbox" id="fortune-toggle" onchange="toggleFortune()" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 left-0 border-slate-600 transition-all duration-300"/>
+                                        <label for="fortune-toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer bg-success transition-colors duration-300"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Segments Configuration -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <h4 class="font-bold text-white mb-3 flex items-center">
+                                    <i class="fa-solid fa-palette text-brand mr-2"></i> Segments
+                                </h4>
+                                <div class="space-y-2 max-h-[400px] overflow-y-auto">
+                                    <div id="wheel-segments-list"></div>
+                                </div>
+                            </div>
+
+                            <!-- Colors -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <h4 class="font-bold text-white mb-3 flex items-center">
+                                    <i class="fa-solid fa-palette text-brand mr-2"></i> Couleurs
+                                </h4>
+                                <div class="space-y-2">
+                                    <div class="flex gap-2">
+                                        <input type="color" id="wheel-color-1" value="#818cf8" onchange="updateWheelColors()" class="w-10 h-10 rounded cursor-pointer">
+                                        <input type="color" id="wheel-color-2" value="#10b981" onchange="updateWheelColors()" class="w-10 h-10 rounded cursor-pointer">
+                                        <input type="color" id="wheel-color-3" value="#f59e0b" onchange="updateWheelColors()" class="w-10 h-10 rounded cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENU : ÉQUIPE (LEADERBOARD) -->
+            <div id="tab-team" class="hidden">
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-white">🏆 Équipe & Leaderboard</h2>
+                            <p class="text-sm text-slate-400 mt-1">Gérez votre équipe et visualisez les performances mensuelles</p>
+                        </div>
+                        <button onclick="openAddEmployeeModal()" class="px-4 py-2.5 bg-brand/20 text-brand-light border border-brand/30 rounded-xl text-xs font-bold hover:bg-brand/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Ajouter un employé
+                        </button>
+                    </div>
+
+                    <!-- Podium -->
+                    <div class="glass-card p-8 rounded-2xl">
+                        <h3 class="font-bold text-white mb-6 flex items-center">
+                            <span class="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center mr-3"><i class="fa-solid fa-medal text-warning text-sm"></i></span>
+                            Classement du mois
+                        </h3>
+                        <div class="podium" id="podium-container"></div>
+                    </div>
+
+                    <!-- Employees List -->
+                    <div class="glass-card p-6 rounded-2xl">
+                        <h3 class="font-bold text-white mb-4 flex items-center">
+                            <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-users text-brand text-sm"></i></span>
+                            Tous les employés
+                        </h3>
+                        <div class="space-y-3" id="employees-list"></div>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- Mobile Bottom Nav -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 flex justify-around py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] z-50 no-print" aria-label="Navigation mobile">
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 flex justify-around py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] z-50 no-print overflow-x-auto" aria-label="Navigation mobile">
             <button onclick="switchTab('portal')" id="nav-portal-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="QR Code">
                 <i class="fa-solid fa-qrcode text-lg mb-0.5"></i><span class="text-[10px] font-bold">QR</span>
             </button>
@@ -985,6 +1318,12 @@
             </button>
             <button onclick="switchTab('analytics')" id="nav-analytics-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Analyses">
                 <i class="fa-solid fa-chart-line text-lg mb-0.5"></i><span class="text-[10px] font-bold">Stats</span>
+            </button>
+            <button onclick="switchTab('fortune')" id="nav-fortune-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Roue">
+                <i class="fa-solid fa-circle-notch text-lg mb-0.5"></i><span class="text-[10px] font-bold">Roue</span>
+            </button>
+            <button onclick="switchTab('team')" id="nav-team-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Équipe">
+                <i class="fa-solid fa-users text-lg mb-0.5"></i><span class="text-[10px] font-bold">Équipe</span>
             </button>
             <button onclick="switchTab('integrations')" id="nav-integrations-mob" class="nav-item flex flex-col items-center py-1 px-2 text-slate-500 min-w-[3rem]" aria-label="Intégrations">
                 <i class="fa-solid fa-plug text-lg mb-0.5"></i><span class="text-[10px] font-bold">Intég.</span>
@@ -2564,7 +2903,7 @@ Rédige une réponse professionnelle à cet avis.`;
     // TAB NAVIGATION
     // ============================================
     function switchTab(tab) {
-        const tabs = ['analytics', 'triage', 'portal', 'history', 'integrations', 'settings'];
+        const tabs = ['analytics', 'triage', 'portal', 'history', 'integrations', 'fortune', 'team', 'settings'];
 
         tabs.forEach(t => {
             const content = document.getElementById('tab-' + t);
@@ -2813,6 +3152,11 @@ Rédige une réponse professionnelle à cet avis.`;
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session) {
+                    // If this is a Google review with a googleReviewId, publish to Google as well
+                    if (msg.platform === 'google' && msg.googleReviewId) {
+                        await replyToGoogleReview(msg.googleReviewId, draft);
+                    }
+
                     const pubRes = await fetch(`${SUPABASE_URL}/functions/v1/publish-response`, {
                         method: 'POST',
                         headers: {
@@ -2853,6 +3197,213 @@ Rédige une réponse professionnelle à cet avis.`;
                 toast.classList.remove('show');
             }, 3000);
         }, 1500);
+    }
+
+    // ============================================
+    // GOOGLE BUSINESS PROFILE OAUTH
+    // ============================================
+    async function initGoogleOAuth() {
+        try {
+            const user = supabaseClient && supabaseClient.auth.getUser ? (await supabaseClient.auth.getUser()).data.user : null;
+            const merchantId = user ? user.id : null;
+
+            if (!merchantId) {
+                showToast('Erreur', 'Veuillez vous connecter d\'abord', 'error');
+                return;
+            }
+
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/google-oauth`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${(await supabaseClient.auth.getSession()).data.session?.access_token}`
+                },
+                body: JSON.stringify({ action: 'init', merchant_id: merchantId })
+            });
+
+            const data = await response.json();
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                showToast('Erreur', 'Erreur de connexion Google', 'error');
+            }
+        } catch (error) {
+            console.error('Google OAuth error:', error);
+            showToast('Erreur', 'Erreur de connexion Google', 'error');
+        }
+    }
+
+    async function checkGoogleConnection() {
+        try {
+            if (!USE_SUPABASE || !supabaseClient) return;
+
+            const user = supabaseClient.auth.getUser ? (await supabaseClient.auth.getUser()).data.user : null;
+            if (!user) return;
+
+            const { data, error } = await supabaseClient
+                .from('google_tokens')
+                .select('*')
+                .eq('merchant_id', user.id)
+                .single();
+
+            if (data && !error) {
+                document.getElementById('google-not-connected').classList.add('hidden');
+                document.getElementById('google-connected').classList.remove('hidden');
+                document.getElementById('google-no-gbp').classList.add('hidden');
+                if (data.business_name) {
+                    document.getElementById('google-business-name').textContent = data.business_name;
+                }
+            }
+        } catch (e) {
+            console.log('Google connection check:', e);
+        }
+    }
+
+    async function fetchGoogleReviews() {
+        try {
+            if (!USE_SUPABASE || !supabaseClient) return;
+
+            showToast('Synchronisation', 'Synchronisation des avis Google...', 'success');
+            const session = (await supabaseClient.auth.getSession()).data.session;
+            const user = (await supabaseClient.auth.getUser()).data.user;
+
+            if (!session || !user) {
+                showToast('Erreur', 'Session expirée', 'error');
+                return;
+            }
+
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/fetch-google-reviews`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ merchant_id: user.id })
+            });
+
+            const data = await response.json();
+
+            if (data.error === 'NO_LOCATIONS') {
+                document.getElementById('google-connected').classList.add('hidden');
+                document.getElementById('google-no-gbp').classList.remove('hidden');
+                showToast('Info', 'Aucune fiche Google Business trouvée. Créez-en une gratuitement !', 'info');
+                return;
+            }
+
+            if (data.reviews && data.reviews.length > 0) {
+                displayGoogleReviews(data.reviews);
+                showToast('Succès', `${data.reviews.length} avis Google synchronisés !`, 'success');
+            } else {
+                showToast('Info', 'Aucun nouvel avis Google', 'info');
+            }
+        } catch (error) {
+            console.error('Fetch reviews error:', error);
+            showToast('Erreur', 'Erreur de synchronisation', 'error');
+        }
+    }
+
+    function displayGoogleReviews(reviews) {
+        reviews.forEach(review => {
+            const starMap = {
+                'FIVE': 5,
+                'FOUR': 4,
+                'THREE': 3,
+                'TWO': 2,
+                'ONE': 1
+            };
+            const reviewData = {
+                id: review.reviewId,
+                author: review.reviewer?.displayName || 'Client Google',
+                rating: starMap[review.starRating] || 3,
+                text: review.comment || '',
+                platform: 'google',
+                date: review.createTime,
+                googleReviewId: review.name
+            };
+
+            const existingIndex = mockMessages.findIndex(r => r.googleReviewId === reviewData.googleReviewId);
+            if (existingIndex === -1) {
+                mockMessages.unshift(reviewData);
+            }
+        });
+
+        renderMessages();
+    }
+
+    async function replyToGoogleReview(reviewName, comment) {
+        try {
+            if (!USE_SUPABASE || !supabaseClient) {
+                console.error('Supabase not available');
+                return { success: false };
+            }
+
+            const session = (await supabaseClient.auth.getSession()).data.session;
+            const user = (await supabaseClient.auth.getUser()).data.user;
+
+            if (!session || !user) {
+                console.error('No session or user');
+                return { success: false };
+            }
+
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/reply-google-review`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    merchant_id: user.id,
+                    review_id: reviewName,
+                    comment: comment
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showToast('Succès', 'Réponse publiée sur Google !', 'success');
+            } else {
+                showToast('Erreur', 'Erreur: ' + (data.error || 'Publication échouée'), 'error');
+            }
+            return data;
+        } catch (error) {
+            console.error('Reply error:', error);
+            showToast('Erreur', 'Erreur de publication', 'error');
+            return { success: false };
+        }
+    }
+
+    async function disconnectGoogle() {
+        if (!confirm('Déconnecter votre Google Business Profile ?')) return;
+        try {
+            if (!USE_SUPABASE || !supabaseClient) return;
+
+            const user = (await supabaseClient.auth.getUser()).data.user;
+            if (!user) return;
+
+            await supabaseClient.from('google_tokens').delete().eq('merchant_id', user.id);
+
+            document.getElementById('google-not-connected').classList.remove('hidden');
+            document.getElementById('google-connected').classList.add('hidden');
+            document.getElementById('google-no-gbp').classList.add('hidden');
+
+            showToast('Info', 'Google déconnecté', 'info');
+        } catch (e) {
+            console.error('Disconnect error:', e);
+            showToast('Erreur', 'Erreur de déconnexion', 'error');
+        }
+    }
+
+    async function handleGoogleCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('google_connected') === 'true') {
+            showToast('Succès', 'Google Business Profile connecté avec succès !', 'success');
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(checkGoogleConnection, 1000);
+        }
+        if (urlParams.get('google_error')) {
+            showToast('Erreur', 'Erreur de connexion Google: ' + urlParams.get('google_error'), 'error');
+            window.history.replaceState({}, '', window.location.pathname);
+        }
     }
 
     // ============================================
@@ -4094,6 +4645,10 @@ Rédige une réponse professionnelle à cet avis.`;
                     }
                 }); } catch(e) {}
             }
+
+            // Google Business Profile Integration
+            try { handleGoogleCallback(); } catch(e) { console.error('handleGoogleCallback:', e); }
+            try { checkGoogleConnection(); } catch(e) { console.error('checkGoogleConnection:', e); }
         } catch(fatalErr) {
             console.error('REPWARD FATAL ERROR in DOMContentLoaded:', fatalErr);
             // Emergency fallback: at least show a tab
@@ -4215,6 +4770,440 @@ Rédige une réponse professionnelle à cet avis.`;
             showToast('Réponse copiée !', '', 'success');
         });
     }
+
+    // ============================================
+    // FEATURE 1: ROUE DE LA FORTUNE (FORTUNE WHEEL)
+    // ============================================
+    let wheelCanvas = null;
+    let wheelCtx = null;
+    let fortuneEnabled = true;
+    const wheelSegments = [
+        { text: "Dessert offert", color: "#f43f5e" },
+        { text: "10% de réduction", color: "#f59e0b" },
+        { text: "-5€", color: "#ec4899" },
+        { text: "Café offert", color: "#06b6d4" },
+        { text: "Rien", color: "#64748b" },
+        { text: "Boisson offerte", color: "#10b981" },
+        { text: "Apéritif offert", color: "#8b5cf6" },
+        { text: "Menu du jour -20%", color: "#14b8a6" }
+    ];
+
+    function initWheel() {
+        wheelCanvas = document.getElementById('wheel-canvas');
+        if (!wheelCanvas) return;
+        wheelCtx = wheelCanvas.getContext('2d');
+        wheelCanvas.width = 280;
+        wheelCanvas.height = 280;
+        drawWheel();
+        renderSegmentsList();
+    }
+
+    function drawWheel() {
+        if (!wheelCtx) return;
+        const cx = wheelCanvas.width / 2;
+        const cy = wheelCanvas.height / 2;
+        const radius = 120;
+
+        wheelCtx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+
+        // Draw segments
+        const segmentAngle = (360 / wheelSegments.length) * Math.PI / 180;
+        wheelSegments.forEach((seg, i) => {
+            const startAngle = i * segmentAngle;
+            const endAngle = (i + 1) * segmentAngle;
+
+            // Draw segment
+            wheelCtx.beginPath();
+            wheelCtx.moveTo(cx, cy);
+            wheelCtx.arc(cx, cy, radius, startAngle, endAngle);
+            wheelCtx.closePath();
+            wheelCtx.fillStyle = seg.color;
+            wheelCtx.fill();
+            wheelCtx.strokeStyle = '#0f172a';
+            wheelCtx.lineWidth = 2;
+            wheelCtx.stroke();
+
+            // Draw text
+            const textAngle = startAngle + segmentAngle / 2;
+            const textX = cx + Math.cos(textAngle) * (radius * 0.65);
+            const textY = cy + Math.sin(textAngle) * (radius * 0.65);
+            wheelCtx.save();
+            wheelCtx.translate(textX, textY);
+            wheelCtx.rotate(textAngle + Math.PI / 2);
+            wheelCtx.fillStyle = '#0f172a';
+            wheelCtx.font = 'bold 11px Outfit';
+            wheelCtx.textAlign = 'center';
+            wheelCtx.fillText(seg.text, 0, 0);
+            wheelCtx.restore();
+        });
+
+        // Draw center circle
+        wheelCtx.beginPath();
+        wheelCtx.arc(cx, cy, 15, 0, Math.PI * 2);
+        wheelCtx.fillStyle = '#818cf8';
+        wheelCtx.fill();
+    }
+
+    function spinWheel() {
+        if (!fortuneEnabled) {
+            showToast('Roue désactivée', 'Activez la roue dans les paramètres', 'info');
+            return;
+        }
+        const btn = document.getElementById('spin-wheel-btn');
+        if (btn.disabled) return;
+        btn.disabled = true;
+
+        let currentRotation = 0;
+        const spins = 1800 + Math.random() * 360;
+        const duration = 3000;
+        const startTime = Date.now();
+
+        function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            currentRotation = spins * progress;
+            if (wheelCanvas) wheelCanvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                const winningIndex = Math.floor((currentRotation % 360) / (360 / wheelSegments.length));
+                const prize = wheelSegments[winningIndex];
+                showToast('🎉 Gagné!', `${prize.text}`, 'success');
+                confetti({ spread: 180, origin: { y: 0.6 } });
+                setTimeout(() => btn.disabled = false, 500);
+            }
+        }
+        animate();
+    }
+
+    function toggleFortune() {
+        const toggle = document.getElementById('fortune-toggle');
+        fortuneEnabled = toggle.checked;
+        showToast(fortuneEnabled ? 'Roue activée' : 'Roue désactivée', '', fortuneEnabled ? 'success' : 'info');
+    }
+
+    function renderSegmentsList() {
+        const list = document.getElementById('wheel-segments-list');
+        if (!list) return;
+        list.innerHTML = wheelSegments.map((seg, i) => `
+            <div class="flex items-center gap-2 p-2 bg-white/5 rounded">
+                <div class="w-4 h-4 rounded" style="background: ${seg.color}"></div>
+                <span class="text-xs text-white flex-1">${seg.text}</span>
+            </div>
+        `).join('');
+    }
+
+    function updateWheelColors() {
+        const c1 = document.getElementById('wheel-color-1')?.value || '#818cf8';
+        const c2 = document.getElementById('wheel-color-2')?.value || '#10b981';
+        const c3 = document.getElementById('wheel-color-3')?.value || '#f59e0b';
+        // Update segment colors cyclically
+        wheelSegments.forEach((seg, i) => {
+            const colorIndex = i % 3;
+            if (colorIndex === 0) seg.color = c1;
+            else if (colorIndex === 1) seg.color = c2;
+            else seg.color = c3;
+        });
+        drawWheel();
+        renderSegmentsList();
+    }
+
+    // ============================================
+    // FEATURE 2: FOMO / SOCIAL PROOF BUBBLE
+    // ============================================
+    const frenchFirstNames = ['Thomas', 'Marie', 'Lucas', 'Sophie', 'Jean', 'Amélie', 'Marc', 'Valérie', 'Pierre', 'Isabelle', 'Denis', 'Céline', 'Patrick', 'Muriel', 'Olivier'];
+    let fomoEnabled = true;
+    let fomoInterval = null;
+
+    function initFomoBubble() {
+        if (fomoEnabled && !fomoInterval) {
+            fomoInterval = setInterval(showFomoBubble, 30000);
+        }
+    }
+
+    function toggleFomoSetting() {
+        const toggle = document.getElementById('fomo-toggle');
+        fomoEnabled = toggle.checked;
+        if (fomoEnabled && !fomoInterval) {
+            fomoInterval = setInterval(showFomoBubble, 30000);
+        } else if (!fomoEnabled && fomoInterval) {
+            clearInterval(fomoInterval);
+            fomoInterval = null;
+        }
+        showToast(fomoEnabled ? 'Bulles FOMO activées' : 'Bulles FOMO désactivées', '', fomoEnabled ? 'success' : 'info');
+    }
+
+    function showFomoBubble() {
+        if (!fomoEnabled) return;
+
+        const name = frenchFirstNames[Math.floor(Math.random() * frenchFirstNames.length)];
+        const timeAgo = Math.floor(Math.random() * 50) + 1;
+        const messages = [
+            `🎁 ${name} vient de gagner un dessert il y a ${timeAgo} min`,
+            `⭐ ${name} a laissé un avis 5 étoiles il y a ${timeAgo} min`,
+            `🎰 ${name} vient de tourner la roue il y a ${timeAgo} min`,
+            `🏆 ${name} a rejoint les VIP il y a ${timeAgo} min`,
+            `💝 ${name} a utilisé un code promo il y a ${timeAgo} min`
+        ];
+        const message = messages[Math.floor(Math.random() * messages.length)];
+
+        const bubble = document.createElement('div');
+        bubble.className = 'fomo-bubble';
+        bubble.innerHTML = `
+            <div class="flex items-start justify-between gap-3 text-white">
+                <div class="flex-1">
+                    <p class="text-sm font-bold">${message}</p>
+                </div>
+                <button onclick="this.closest('.fomo-bubble').classList.add('slide-out'); setTimeout(() => this.closest('.fomo-bubble').remove(), 500)" class="fomo-close text-lg leading-none">×</button>
+            </div>
+        `;
+        document.body.appendChild(bubble);
+
+        setTimeout(() => {
+            if (bubble.parentNode) {
+                bubble.classList.add('slide-out');
+                setTimeout(() => bubble.remove(), 500);
+            }
+        }, 5000);
+    }
+
+    // ============================================
+    // FEATURE 3: MODE KIOSQUE (KIOSK MODE)
+    // ============================================
+    function activateKioskMode() {
+        const container = document.getElementById('main-content');
+        if (!container) return;
+
+        const html = `
+            <div class="kiosk-container">
+                <div class="kiosk-content">
+                    <div class="kiosk-logo">🏆</div>
+                    <h1 class="kiosk-message">Scannez pour<br>laisser un avis ⭐</h1>
+                    <div class="kiosk-qr">
+                        <canvas id="kiosk-qr-canvas"></canvas>
+                    </div>
+                    <div class="kiosk-reward-info">
+                        <p class="text-2xl font-bold">Gagnez des récompenses</p>
+                        <p class="text-base mt-2">Tapez 5 fois sur le logo pour quitter</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+
+        // Generate QR code
+        setTimeout(() => {
+            const qrCanvas = document.getElementById('kiosk-qr-canvas');
+            if (qrCanvas && window.QRCode) {
+                new QRCode(qrCanvas, {
+                    text: window.location.href,
+                    width: 300,
+                    height: 300,
+                    colorDark: '#0f172a',
+                    colorLight: '#ffffff'
+                });
+            }
+        }, 100);
+
+        // 5-tap exit gesture on logo
+        let tapCount = 0;
+        const logo = document.querySelector('.kiosk-logo');
+        if (logo) {
+            logo.addEventListener('click', () => {
+                tapCount++;
+                if (tapCount >= 5) {
+                    exitKioskMode();
+                }
+            });
+            setInterval(() => tapCount = 0, 2000);
+        }
+    }
+
+    function exitKioskMode() {
+        showToast('Mode kiosque désactivé', '', 'info');
+        switchTab('portal');
+        location.reload();
+    }
+
+    // ============================================
+    // FEATURE 4: LEADERBOARD EMPLOYÉS (EMPLOYEE LEADERBOARD)
+    // ============================================
+    let employees = [
+        { id: 1, name: 'Marie Dupont', reviews: 24, stars: 4.8, qrCode: 'emp-001' },
+        { id: 2, name: 'Jean Martin', reviews: 19, stars: 4.6, qrCode: 'emp-002' },
+        { id: 3, name: 'Sophie Bernard', reviews: 16, stars: 4.5, qrCode: 'emp-003' },
+        { id: 4, name: 'Pierre Leclerc', reviews: 12, stars: 4.3, qrCode: 'emp-004' },
+        { id: 5, name: 'Amélie Renoir', reviews: 10, stars: 4.2, qrCode: 'emp-005' }
+    ];
+
+    function initLeaderboard() {
+        renderPodium();
+        renderEmployeesList();
+    }
+
+    function renderPodium() {
+        const container = document.getElementById('podium-container');
+        if (!container) return;
+
+        const sorted = [...employees].sort((a, b) => b.reviews - a.reviews).slice(0, 3);
+        const medals = ['🥇', '🥈', '🥉'];
+        const classes = ['first', 'second', 'third'];
+
+        container.innerHTML = sorted.map((emp, i) => `
+            <div class="podium-place ${classes[i]}">
+                <div class="medal">${medals[i]}</div>
+                <div class="podium-rank">#${i + 1}</div>
+                <div class="podium-name">${emp.name}</div>
+                <div class="podium-stats">
+                    <p>${emp.reviews} avis</p>
+                    <p>⭐ ${emp.stars}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderEmployeesList() {
+        const container = document.getElementById('employees-list');
+        if (!container) return;
+
+        const sorted = [...employees].sort((a, b) => b.reviews - a.reviews);
+        container.innerHTML = sorted.map((emp, idx) => `
+            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-4 flex-1">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center text-lg font-bold text-white">${emp.name.charAt(0)}</div>
+                    <div>
+                        <p class="font-bold text-white">${emp.name}</p>
+                        <p class="text-xs text-slate-400">${emp.reviews} avis · ${emp.stars}⭐</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="downloadEmployeeQR('${emp.qrCode}')" class="px-3 py-1.5 bg-brand/20 text-brand-light rounded-lg text-xs font-bold hover:bg-brand/30 transition-all">
+                        <i class="fa-solid fa-qrcode"></i> QR
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openAddEmployeeModal() {
+        const name = prompt('Nom de l\'employé:');
+        if (name && name.trim()) {
+            const newEmp = {
+                id: employees.length + 1,
+                name: name.trim(),
+                reviews: 0,
+                stars: 5,
+                qrCode: 'emp-' + String(employees.length + 1).padStart(3, '0')
+            };
+            employees.push(newEmp);
+            initLeaderboard();
+            showToast('Employé ajouté', `${name} a été ajouté à l'équipe`, 'success');
+        }
+    }
+
+    function downloadEmployeeQR(qrCode) {
+        showToast('QR Code', `Prêt à télécharger pour ${qrCode}`, 'info');
+    }
+
+    // ============================================
+    // FEATURE 5: CONSIGNE VOCALE AI (VOICE INSTRUCTION)
+    // ============================================
+    let voiceInstruction = '';
+    let isRecording = false;
+
+    function initVoiceFeature() {
+        const settingsTab = document.getElementById('tab-settings');
+        if (!settingsTab) return;
+
+        const voiceSection = document.createElement('div');
+        voiceSection.className = 'glass-card p-6 rounded-2xl mt-6';
+        voiceSection.innerHTML = `
+            <h3 class="font-bold text-white mb-4 flex items-center">
+                <span class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center mr-3"><i class="fa-solid fa-microphone text-danger text-sm"></i></span>
+                Consigne Vocale IA
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Donnez des instructions vocales à l'IA pour personnaliser les réponses</p>
+            <div class="space-y-4">
+                <button id="voice-record-btn" onclick="toggleVoiceRecording()" class="w-full py-3.5 rounded-xl font-bold text-sm bg-danger/20 text-danger-light border border-danger/30 hover:bg-danger/30 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-microphone mr-2"></i> <span id="voice-btn-text">Enregistrer</span>
+                </button>
+                <textarea id="voice-instruction-text" class="w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm text-white resize-none focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 min-h-[100px]" placeholder="L'IA générera des réponses selon vos instructions..."></textarea>
+                <button onclick="saveVoiceInstruction()" class="w-full py-2.5 rounded-xl font-bold text-sm bg-brand/20 text-brand-light border border-brand/30 hover:bg-brand/30 transition-all">
+                    <i class="fa-solid fa-save mr-2"></i> Sauvegarder
+                </button>
+            </div>
+        `;
+
+        const accountSection = settingsTab.querySelector('.glass-card');
+        if (accountSection && accountSection.parentNode) {
+            accountSection.parentNode.insertBefore(voiceSection, accountSection.nextSibling);
+        }
+    }
+
+    function toggleVoiceRecording() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            showToast('Erreur', 'Votre navigateur ne supporte pas la reconnaissance vocale', 'error');
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'fr-FR';
+        const btn = document.getElementById('voice-record-btn');
+        const btnText = document.getElementById('voice-btn-text');
+
+        if (!isRecording) {
+            isRecording = true;
+            btn.classList.add('animate-pulse');
+            btnText.textContent = 'En écoute...';
+            recognition.start();
+        } else {
+            isRecording = false;
+            btn.classList.remove('animate-pulse');
+            btnText.textContent = 'Enregistrer';
+            recognition.stop();
+        }
+
+        recognition.onresult = (event) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+            const textarea = document.getElementById('voice-instruction-text');
+            if (textarea) textarea.value = transcript;
+            voiceInstruction = transcript;
+            isRecording = false;
+            btnText.textContent = 'Enregistrer';
+            btn.classList.remove('animate-pulse');
+            showToast('Transcription complète', '', 'success');
+        };
+
+        recognition.onerror = () => {
+            isRecording = false;
+            btnText.textContent = 'Enregistrer';
+            btn.classList.remove('animate-pulse');
+            showToast('Erreur lors de l\'enregistrement', '', 'error');
+        };
+    }
+
+    function saveVoiceInstruction() {
+        const textarea = document.getElementById('voice-instruction-text');
+        if (textarea) {
+            voiceInstruction = textarea.value;
+            showToast('Consigne sauvegardée', 'L\'IA utilisera cette instruction', 'success');
+        }
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        initWheel();
+        initFomoBubble();
+        initLeaderboard();
+        initVoiceFeature();
+    });
 
     </script>
 
