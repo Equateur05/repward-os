@@ -2985,14 +2985,7 @@ Rédige une réponse professionnelle à cet avis.`;
             }
         } catch (e) { console.warn('Supabase reviews load error:', e); }
     }
-    function platformIcon(p) {
-        const icons = { google: 'fa-google', airbnb: 'fa-airbnb', booking: 'fa-bed', tripadvisor: 'fa-tripadvisor', trustpilot: 'fa-star', facebook: 'fa-facebook', instagram: 'fa-instagram', thefork: 'fa-utensils', expedia: 'fa-plane' };
-        return icons[p] || 'fa-comment';
-    }
-    function platformColor(p) {
-        const colors = { google: 'text-google', airbnb: 'text-airbnb', booking: 'text-blue-400', tripadvisor: 'text-tripadvisor', trustpilot: 'text-trustpilot', facebook: 'text-facebook', instagram: 'text-instagram', thefork: 'text-thefork', expedia: 'text-blue-500' };
-        return colors[p] || 'text-slate-400';
-    }
+    // platformIcon() et platformColor() définis plus bas (section ajout manuel d'avis)
     function timeAgo(dateStr) {
         if (!dateStr) return '';
         const diff = Date.now() - new Date(dateStr).getTime();
@@ -4649,6 +4642,12 @@ Rédige une réponse professionnelle à cet avis.`;
             // Google Business Profile Integration
             try { handleGoogleCallback(); } catch(e) { console.error('handleGoogleCallback:', e); }
             try { checkGoogleConnection(); } catch(e) { console.error('checkGoogleConnection:', e); }
+
+            // 5 Killer Features Init
+            try { initWheel(); } catch(e) { console.error('initWheel:', e); }
+            try { initFomoBubble(); } catch(e) { console.error('initFomoBubble:', e); }
+            try { initLeaderboard(); } catch(e) { console.error('initLeaderboard:', e); }
+            try { initVoiceFeature(); } catch(e) { console.error('initVoiceFeature:', e); }
         } catch(fatalErr) {
             console.error('REPWARD FATAL ERROR in DOMContentLoaded:', fatalErr);
             // Emergency fallback: at least show a tab
@@ -5110,7 +5109,7 @@ Rédige une réponse professionnelle à cet avis.`;
     // FEATURE 5: CONSIGNE VOCALE AI (VOICE INSTRUCTION)
     // ============================================
     let voiceInstruction = '';
-    let isRecording = false;
+    let isVoiceRecording = false;
 
     function initVoiceFeature() {
         const settingsTab = document.getElementById('tab-settings');
@@ -5153,13 +5152,13 @@ Rédige une réponse professionnelle à cet avis.`;
         const btn = document.getElementById('voice-record-btn');
         const btnText = document.getElementById('voice-btn-text');
 
-        if (!isRecording) {
-            isRecording = true;
+        if (!isVoiceRecording) {
+            isVoiceRecording = true;
             btn.classList.add('animate-pulse');
             btnText.textContent = 'En écoute...';
             recognition.start();
         } else {
-            isRecording = false;
+            isVoiceRecording = false;
             btn.classList.remove('animate-pulse');
             btnText.textContent = 'Enregistrer';
             recognition.stop();
@@ -5173,14 +5172,14 @@ Rédige une réponse professionnelle à cet avis.`;
             const textarea = document.getElementById('voice-instruction-text');
             if (textarea) textarea.value = transcript;
             voiceInstruction = transcript;
-            isRecording = false;
+            isVoiceRecording = false;
             btnText.textContent = 'Enregistrer';
             btn.classList.remove('animate-pulse');
             showToast('Transcription complète', '', 'success');
         };
 
         recognition.onerror = () => {
-            isRecording = false;
+            isVoiceRecording = false;
             btnText.textContent = 'Enregistrer';
             btn.classList.remove('animate-pulse');
             showToast('Erreur lors de l\'enregistrement', '', 'error');
@@ -5195,15 +5194,7 @@ Rédige une réponse professionnelle à cet avis.`;
         }
     }
 
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
-        initWheel();
-        initFomoBubble();
-        initLeaderboard();
-        initVoiceFeature();
-    });
+    // (Initialization merged into main DOMContentLoaded above)
 
     </script>
 
