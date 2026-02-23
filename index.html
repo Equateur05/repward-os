@@ -150,13 +150,67 @@
         /* Smooth number counter */
         .counter { display: inline-block; }
 
-        /* ========== FORTUNE WHEEL ========== */
-        .wheel-container { perspective: 1000px; }
+        /* ========== FORTUNE WHEEL — PREMIUM ========== */
+        .wheel-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .wheel-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -18px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #fbbf24, #f59e0b, #d97706, #fbbf24, #f59e0b, #d97706, #fbbf24);
+            z-index: 0;
+            animation: wheelRingGlow 4s linear infinite;
+        }
+        .wheel-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        @keyframes wheelRingGlow {
+            0% { filter: brightness(1) drop-shadow(0 0 8px rgba(251,191,36,0.4)); }
+            50% { filter: brightness(1.2) drop-shadow(0 0 20px rgba(251,191,36,0.7)); }
+            100% { filter: brightness(1) drop-shadow(0 0 8px rgba(251,191,36,0.4)); }
+        }
+        .wheel-container { perspective: 1000px; position: relative; z-index: 2; }
         .wheel-canvas {
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             margin: 0 auto;
-            transition: all 0.3s ease;
+            border-radius: 50%;
+            filter: drop-shadow(0 0 24px rgba(99, 102, 241, 0.3));
+            transition: filter 0.3s ease;
+        }
+        .wheel-canvas:hover {
+            filter: drop-shadow(0 0 32px rgba(99, 102, 241, 0.5));
+        }
+        /* Triangle pointer at top */
+        .wheel-pointer {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: 0; height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 32px solid #fbbf24;
+            filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.6));
+        }
+        .wheel-pointer::after {
+            content: '';
+            position: absolute;
+            top: -32px; left: -12px;
+            width: 0; height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 22px solid #fde68a;
         }
         .wheel-spinning {
             animation: wheelSpin 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1;
@@ -166,16 +220,28 @@
             to { transform: rotate(1800deg); }
         }
         .wheel-btn {
-            background: linear-gradient(135deg, #818cf8, #6366f1);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            background: linear-gradient(135deg, #818cf8, #6366f1, #7c3aed);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 14px;
         }
         .wheel-btn:hover {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #6366f1, #4f46e5, #6d28d9);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(99, 102, 241, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);
         }
         .wheel-btn:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(0.98);
+        }
+        .wheel-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            animation: wheelBtnPulse 1s ease-in-out infinite;
+        }
+        @keyframes wheelBtnPulse {
+            0%, 100% { box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 8px 32px rgba(99, 102, 241, 0.7); }
         }
 
         /* ========== FOMO BUBBLE ========== */
@@ -377,78 +443,101 @@
                 <p class="text-[10px] text-slate-600 mt-2">Free registration · No credit card required</p>
             </div>
 
-            <!-- Step 2: Account creation -->
+            <!-- Step 2: Type de commerce -->
             <div id="onboard-step-2" class="animate-fade-in" style="display: none;">
-                <div class="text-center mb-6">
-                    <span class="text-xs font-bold text-brand-light bg-brand/10 px-3 py-1 rounded-full">Étape 1/2</span>
-                    <h2 class="text-2xl font-extrabold text-white mt-3">Créez votre compte</h2>
-                    <p class="text-sm text-slate-400 mt-1">Vos informations personnelles</p>
+                <div class="text-center mb-5">
+                    <span class="text-xs font-bold text-brand-light bg-brand/10 px-3 py-1 rounded-full" data-i18n="onboardStepIndustry">Votre activité</span>
+                    <h2 class="text-2xl font-extrabold text-white mt-3" data-i18n="onboardIndustryTitle">Quel est votre commerce ?</h2>
+                    <p class="text-sm text-slate-400 mt-1" data-i18n="onboardIndustrySubtitle">Repward s'adapte à votre métier</p>
                 </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Nom complet</label>
-                        <input id="onboard-name" type="text" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="Jean Dupont">
+                <div class="grid grid-cols-2 gap-2.5 mb-5" id="industry-grid">
+                    <button onclick="chooseIndustry('restaurant')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🍽️</span><span class="text-[11px] font-bold text-white leading-tight">Restaurant & Bar</span>
+                    </button>
+                    <button onclick="chooseIndustry('coffee')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">☕</span><span class="text-[11px] font-bold text-white leading-tight">Coffee Shop</span>
+                    </button>
+                    <button onclick="chooseIndustry('streetfood')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🌮</span><span class="text-[11px] font-bold text-white leading-tight">Street Food</span>
+                    </button>
+                    <button onclick="chooseIndustry('hotel')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🏨</span><span class="text-[11px] font-bold text-white leading-tight">Hôtel & Spa</span>
+                    </button>
+                    <button onclick="chooseIndustry('airbnb')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🔑</span><span class="text-[11px] font-bold text-white leading-tight">Airbnb</span>
+                    </button>
+                    <button onclick="chooseIndustry('beauty')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">✂️</span><span class="text-[11px] font-bold text-white leading-tight">Coiffure & Beauté</span>
+                    </button>
+                    <button onclick="chooseIndustry('retail')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🛍️</span><span class="text-[11px] font-bold text-white leading-tight">Boutique & Retail</span>
+                    </button>
+                    <button onclick="chooseIndustry('bakery')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🥐</span><span class="text-[11px] font-bold text-white leading-tight">Boulangerie</span>
+                    </button>
+                    <button onclick="chooseIndustry('gym')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">💪</span><span class="text-[11px] font-bold text-white leading-tight">Sport & Fitness</span>
+                    </button>
+                    <button onclick="chooseIndustry('garage')" class="industry-btn flex flex-col items-center gap-1.5 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-brand/10 hover:border-brand/40 transition-all text-center">
+                        <span class="text-3xl">🔧</span><span class="text-[11px] font-bold text-white leading-tight">Garage & Auto</span>
+                    </button>
+                </div>
+                <button onclick="onboardNext(1)" class="w-full text-sm text-slate-500 hover:text-slate-300 transition-colors py-2">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Retour
+                </button>
+            </div>
+
+            <!-- Step 3: Compte + Commerce (tout en un) -->
+            <div id="onboard-step-3" class="animate-fade-in" style="display: none;">
+                <div class="text-center mb-4">
+                    <div id="onboard-industry-display" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand/10 border border-brand/20 mb-3">
+                        <span id="onboard-industry-emoji" class="text-lg">🍽️</span>
+                        <span id="onboard-industry-label" class="text-xs font-bold text-white">Restaurant & Bar</span>
+                        <button onclick="onboardNext(2)" class="text-[10px] text-brand-light hover:text-white transition-colors ml-1"><i class="fa-solid fa-pen"></i></button>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white mt-1">Créez votre compte</h2>
+                    <p class="text-sm text-slate-400 mt-1">Dernière étape avant de commencer</p>
+                </div>
+                <input type="hidden" id="onboard-industry" value="restaurant">
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Nom complet</label>
+                            <input id="onboard-name" type="text" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="Jean Dupont">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Nom de l'établissement</label>
+                            <input id="onboard-business" type="text" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="Le Gourmet">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Email professionnel</label>
-                        <input id="onboard-email" type="email" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="jean@moncommerce.fr">
+                        <input id="onboard-email" type="email" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="jean@moncommerce.fr">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Mot de passe</label>
-                        <input id="onboard-password" type="password" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="Min. 6 caractères">
+                        <input id="onboard-password" type="password" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="Min. 6 caractères">
                     </div>
-                    <button onclick="onboardNext(3)" class="btn-primary w-full py-3.5">
-                        Continuer <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </button>
-                    <p id="onboard-error-2" class="text-danger text-xs text-center hidden"></p>
-                </div>
-            </div>
-
-            <!-- Step 3: Business info + promo code -->
-            <div id="onboard-step-3" class="animate-fade-in" style="display: none;">
-                <div class="text-center mb-6">
-                    <span class="text-xs font-bold text-brand-light bg-brand/10 px-3 py-1 rounded-full">Étape 2/2</span>
-                    <h2 class="text-2xl font-extrabold text-white mt-3">Votre commerce</h2>
-                    <p class="text-sm text-slate-400 mt-1">Informations sur votre établissement</p>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Nom de l'établissement</label>
-                        <input id="onboard-business" type="text" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="Restaurant Le Gourmet">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Type de commerce</label>
-                        <select id="onboard-industry" class="w-full bg-slate-800 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none appearance-none cursor-pointer transition-all" style="color-scheme: dark;">
-                            <option value="restaurant" style="background:#1e293b;color:#f8fafc">🍽️ Restaurant & Bar</option>
-                            <option value="coffee" style="background:#1e293b;color:#f8fafc">☕ Coffee Shop & Salon de Thé</option>
-                            <option value="streetfood" style="background:#1e293b;color:#f8fafc">🌮 Street Food & Fast Food</option>
-                            <option value="hotel" style="background:#1e293b;color:#f8fafc">🏨 Hôtel & Spa</option>
-                            <option value="airbnb" style="background:#1e293b;color:#f8fafc">🔑 Airbnb & Conciergerie</option>
-                            <option value="beauty" style="background:#1e293b;color:#f8fafc">✂️ Coiffure & Beauté</option>
-                            <option value="retail" style="background:#1e293b;color:#f8fafc">🛍️ Boutique & Retail</option>
-                            <option value="bakery" style="background:#1e293b;color:#f8fafc">🥐 Boulangerie & Pâtisserie</option>
-                            <option value="gym" style="background:#1e293b;color:#f8fafc">🏋️ Salle de Sport & Fitness</option>
-                            <option value="garage" style="background:#1e293b;color:#f8fafc">🔧 Garage & Auto</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Téléphone (optionnel)</label>
-                        <input id="onboard-phone" type="tel" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3.5 text-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="+33 6 12 34 56 78">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Code promo (optionnel)</label>
-                        <div class="flex gap-2">
-                            <input id="onboard-promo" type="text" class="flex-1 bg-slate-800/80 border border-white/10 rounded-xl p-3.5 text-white font-mono uppercase focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all tracking-wider" placeholder="EX: DEMO2026">
-                            <button onclick="validatePromoCode()" class="bg-brand/20 text-brand-light border border-brand/30 px-4 rounded-xl font-bold text-xs hover:bg-brand/30 transition-all whitespace-nowrap">
-                                <i class="fa-solid fa-tag mr-1"></i> Valider
-                            </button>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Téléphone (optionnel)</label>
+                            <input id="onboard-phone" type="tel" class="w-full bg-slate-800/80 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all" placeholder="+33 6 12 34 56 78">
                         </div>
-                        <p id="promo-status" class="text-[10px] text-slate-500 mt-1.5 hidden"></p>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Code promo (optionnel)</label>
+                            <div class="flex gap-1.5">
+                                <input id="onboard-promo" type="text" class="flex-1 bg-slate-800/80 border border-white/10 rounded-xl p-3 text-white text-sm font-mono uppercase focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all tracking-wider" placeholder="DEMO2026">
+                                <button onclick="validatePromoCode()" class="bg-brand/20 text-brand-light border border-brand/30 px-3 rounded-xl font-bold text-[10px] hover:bg-brand/30 transition-all">
+                                    <i class="fa-solid fa-tag"></i>
+                                </button>
+                            </div>
+                            <p id="promo-status" class="text-[10px] text-slate-500 mt-1 hidden"></p>
+                        </div>
                     </div>
                     <button onclick="completeOnboarding()" class="btn-primary w-full py-3.5">
                         <i class="fa-solid fa-rocket mr-2"></i> Lancer Repward
                     </button>
-                    <button onclick="onboardNext(2)" class="w-full text-sm text-slate-500 hover:text-slate-300 transition-colors py-2">
+                    <button onclick="onboardNext(2)" class="w-full text-sm text-slate-500 hover:text-slate-300 transition-colors py-1">
                         <i class="fa-solid fa-arrow-left mr-1"></i> Retour
                     </button>
                     <p id="onboard-error-3" class="text-danger text-xs text-center hidden"></p>
@@ -543,25 +632,24 @@
 
             <!-- CONTENU : PORTAL (QR & CADEAUX) -->
             <div id="tab-portal" class="hidden">
-                <div class="space-y-6 max-w-7xl mx-auto">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="space-y-4 max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between">
                         <div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-white">QR Code & Récompenses</h2>
-                            <p class="text-sm text-slate-400 mt-1">Configurez votre système de collecte d'avis</p>
+                            <h2 class="text-xl md:text-2xl font-extrabold text-white">QR Code & Récompenses</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Configurez votre système de collecte d'avis</p>
                         </div>
                     </div>
 
-                    <div class="flex flex-col xl:flex-row gap-8">
-                        <div class="flex-1 space-y-6">
+                    <div class="flex flex-col xl:flex-row gap-4">
+                        <div class="flex-1 space-y-3">
                             <!-- Industry selector -->
-                            <div class="glass-card p-5 md:p-6 rounded-2xl border-brand/20 border">
-                                <h3 class="font-bold mb-1 flex items-center text-white">
-                                    <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-store text-brand text-sm"></i></span>
+                            <div class="glass-card p-4 rounded-2xl border-brand/20 border">
+                                <h3 class="font-bold mb-1 flex items-center text-white text-sm">
+                                    <span class="w-7 h-7 rounded-lg bg-brand/10 flex items-center justify-center mr-2"><i class="fa-solid fa-store text-brand text-xs"></i></span>
                                     Type de commerce
                                 </h3>
-                                <p class="text-xs text-slate-400 mb-4 ml-11">L'IA s'adapte automatiquement à votre secteur</p>
                                 <label for="ind-selector" class="sr-only">Type de commerce</label>
-                                <select id="ind-selector" onchange="updateInd()" class="w-full bg-slate-800 border border-white/10 rounded-xl p-4 text-white font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none appearance-none cursor-pointer transition-all" style="color-scheme: dark;">
+                                <select id="ind-selector" onchange="updateInd()" class="w-full bg-slate-800 border border-white/10 rounded-xl p-3 text-sm text-white font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none appearance-none cursor-pointer transition-all" style="color-scheme: dark;">
                                     <option value="restaurant" style="background:#1e293b;color:#f8fafc;padding:8px">🍽️ Restaurant & Bar</option>
                                     <option value="coffee" style="background:#1e293b;color:#f8fafc;padding:8px">☕ Coffee Shop & Salon de Thé</option>
                                     <option value="streetfood" style="background:#1e293b;color:#f8fafc;padding:8px">🌮 Street Food & Fast Food</option>
@@ -576,49 +664,43 @@
                             </div>
 
                             <!-- Rewards grid -->
-                            <div class="glass-card p-5 md:p-6 rounded-2xl">
-                                <h3 class="font-bold mb-1 flex items-center text-white">
-                                    <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center mr-3"><i class="fa-solid fa-gift text-brand text-sm"></i></span>
-                                    Récompense client (adaptée aux étoiles)
+                            <div class="glass-card p-4 rounded-2xl">
+                                <h3 class="font-bold mb-1 flex items-center text-white text-sm">
+                                    <span class="w-7 h-7 rounded-lg bg-brand/10 flex items-center justify-center mr-2"><i class="fa-solid fa-gift text-brand text-xs"></i></span>
+                                    Récompense client
                                 </h3>
-                                <p class="text-xs text-slate-400 mb-4 ml-11">Choisissez le cadeau à offrir à vos clients</p>
-                                <div id="rew-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-                                <div class="mt-6 pt-5 border-t border-white/5 space-y-3">
-                                    <div id="qr-code-container" class="flex justify-center p-4 bg-white rounded-xl hidden">
+                                <p class="text-[10px] text-slate-400 mb-3 ml-9">Choisissez le cadeau à offrir</p>
+                                <div id="rew-grid" class="grid grid-cols-2 gap-2"></div>
+                                <div class="mt-4 pt-3 border-t border-white/5 space-y-2">
+                                    <div id="qr-code-container" class="flex justify-center p-3 bg-white rounded-xl hidden">
                                         <canvas id="qr-canvas"></canvas>
                                     </div>
-                                    <button class="btn-primary w-full flex items-center justify-center" onclick="generateQRCode()">
-                                        <i class="fa-solid fa-qrcode mr-2"></i> Générer le QR Code
-                                    </button>
-                                    <button id="btn-download-qr" class="w-full flex items-center justify-center text-sm font-bold text-brand-light hover:text-white transition-all py-2 hidden" onclick="downloadQR()">
-                                        <i class="fa-solid fa-download mr-2"></i> Télécharger en PNG
-                                    </button>
+                                    <div class="flex gap-2">
+                                        <button class="btn-primary flex-1 flex items-center justify-center text-sm py-2.5" onclick="generateQRCode()">
+                                            <i class="fa-solid fa-qrcode mr-1.5"></i> Générer QR
+                                        </button>
+                                        <button id="btn-download-qr" class="flex-1 flex items-center justify-center text-sm font-bold text-brand-light hover:text-white border border-brand/20 rounded-xl transition-all py-2.5 hidden" onclick="downloadQR()">
+                                            <i class="fa-solid fa-download mr-1.5"></i> PNG
+                                        </button>
+                                    </div>
                                     <!-- Short Link -->
-                                    <div class="mt-4 pt-4 border-t border-white/5">
-                                        <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-link text-brand text-[10px]"></i> Lien de partage direct</h4>
-                                        <p class="text-[10px] text-slate-400 mb-2">Envoyez ce lien par SMS, WhatsApp ou email — même expérience sans QR</p>
+                                    <div class="mt-3 pt-3 border-t border-white/5">
+                                        <h4 class="text-[10px] font-bold text-white mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-link text-brand text-[10px]"></i> Lien direct</h4>
                                         <div class="flex gap-2">
-                                            <input id="short-link-display" type="text" readonly class="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-brand-light font-mono cursor-pointer" onclick="this.select();copyShortLink()" value="">
-                                            <button onclick="copyShortLink()" class="px-3 bg-brand/20 text-brand-light border border-brand/30 rounded-lg text-[10px] font-bold hover:bg-brand/30 transition-all">
+                                            <input id="short-link-display" type="text" readonly class="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-[10px] text-brand-light font-mono cursor-pointer" onclick="this.select();copyShortLink()" value="">
+                                            <button onclick="copyShortLink()" class="px-2.5 bg-brand/20 text-brand-light border border-brand/30 rounded-lg text-[10px] font-bold hover:bg-brand/30 transition-all">
                                                 <i class="fa-solid fa-copy"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <!-- Kiosk Mode -->
-                                    <div class="mt-4 pt-4 border-t border-white/5">
-                                        <button onclick="activateKioskMode()" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
-                                            <span class="text-lg">📱</span> Mode Kiosque (iPad)
-                                            <span class="text-[10px] bg-white/30 px-2 py-0.5 rounded-full font-black">NEW</span>
+                                    <!-- Kiosk + NFC side by side -->
+                                    <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-white/5">
+                                        <button onclick="activateKioskMode()" class="py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1.5">
+                                            📱 Kiosque
                                         </button>
-                                        <p class="text-[10px] text-slate-500 text-center mt-2">Interface client-facing pour comptoir · Tapez 5x le logo pour quitter</p>
-                                    </div>
-                                    <!-- NFC Plates Upsell -->
-                                    <div class="mt-4 pt-4 border-t border-white/5">
-                                        <button onclick="showNFCModal()" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2">
-                                            <span class="text-lg">📡</span> Commander des Plaques NFC
-                                            <span class="text-[10px] bg-white/30 px-2 py-0.5 rounded-full font-black">49€</span>
+                                        <button onclick="showNFCModal()" class="py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-1.5">
+                                            📡 NFC <span class="text-[9px] bg-white/30 px-1 py-0.5 rounded-full font-black">49€</span>
                                         </button>
-                                        <p class="text-[10px] text-slate-500 text-center mt-2">Scan NFC sans QR code · Design premium · Livraison offerte</p>
                                     </div>
                                 </div>
                             </div>
@@ -1389,8 +1471,11 @@
                                     Aperçu de la roue
                                 </h3>
                                 <div class="flex flex-col items-center gap-8">
-                                    <div class="wheel-container">
-                                        <canvas id="wheel-canvas" class="wheel-canvas"></canvas>
+                                    <div class="wheel-wrapper">
+                                        <div class="wheel-pointer"></div>
+                                        <div class="wheel-container">
+                                            <canvas id="wheel-canvas" class="wheel-canvas"></canvas>
+                                        </div>
                                     </div>
                                     <button id="spin-wheel-btn" onclick="spinWheel()" class="wheel-btn px-8 py-3.5 rounded-xl text-white font-bold transition-all">
                                         <i class="fa-solid fa-play mr-2"></i> Tester la roue
@@ -1417,11 +1502,15 @@
 
                             <!-- Segments Configuration -->
                             <div class="glass-card p-5 rounded-2xl">
-                                <h4 class="font-bold text-white mb-3 flex items-center">
-                                    <i class="fa-solid fa-palette text-brand mr-2"></i> Segments
+                                <h4 class="font-bold text-white mb-3 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-gift text-brand mr-2"></i> Récompenses</span>
+                                    <button onclick="addSegment()" class="text-[10px] bg-brand/20 text-brand-light border border-brand/30 px-2.5 py-1 rounded-lg hover:bg-brand/30 transition-all font-bold">
+                                        <i class="fa-solid fa-plus mr-1"></i> Ajouter
+                                    </button>
                                 </h4>
-                                <div class="space-y-2 max-h-[400px] overflow-y-auto">
-                                    <div id="wheel-segments-list"></div>
+                                <div class="space-y-1.5 max-h-[300px] overflow-y-auto" id="wheel-segments-list"></div>
+                                <div class="mt-3 pt-3 border-t border-white/10">
+                                    <p class="text-[10px] text-slate-500"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Cliquez sur un texte pour le modifier. Max 12 segments.</p>
                                 </div>
                             </div>
 
@@ -2037,6 +2126,8 @@
         return (i18n[currentLang] && i18n[currentLang][key]) || (i18n.fr[key]) || key;
     }
 
+    let selectedIndustry = 'restaurant';
+
     function chooseLang(lang) {
         currentLang = lang;
         try { localStorage.setItem('repward_lang', lang); } catch(e) {}
@@ -2044,8 +2135,44 @@
         // Apply translations to onboarding immediately
         applyTranslations();
 
-        // Move to step 2
+        // Move to step 2 (industry selection)
         onboardNext(2);
+    }
+
+    function chooseIndustry(industry) {
+        selectedIndustry = industry;
+        // Highlight selected button
+        document.querySelectorAll('.industry-btn').forEach(btn => {
+            btn.classList.remove('bg-brand/10', 'border-brand/40', 'ring-2', 'ring-brand/30');
+            btn.classList.add('bg-white/[0.03]', 'border-white/10');
+        });
+        const clickedBtn = event.currentTarget;
+        clickedBtn.classList.remove('bg-white/[0.03]', 'border-white/10');
+        clickedBtn.classList.add('bg-brand/10', 'border-brand/40', 'ring-2', 'ring-brand/30');
+
+        // Update hidden input + display in step 4
+        const industryNames = {
+            restaurant: { emoji: '🍽️', label: 'Restaurant & Bar' },
+            coffee: { emoji: '☕', label: 'Coffee Shop' },
+            streetfood: { emoji: '🌮', label: 'Street Food' },
+            hotel: { emoji: '🏨', label: 'Hôtel & Spa' },
+            airbnb: { emoji: '🔑', label: 'Airbnb' },
+            beauty: { emoji: '✂️', label: 'Coiffure & Beauté' },
+            retail: { emoji: '🛍️', label: 'Boutique & Retail' },
+            bakery: { emoji: '🥐', label: 'Boulangerie' },
+            gym: { emoji: '💪', label: 'Sport & Fitness' },
+            garage: { emoji: '🔧', label: 'Garage & Auto' }
+        };
+        const info = industryNames[industry] || industryNames.restaurant;
+        const emojiEl = document.getElementById('onboard-industry-emoji');
+        const labelEl = document.getElementById('onboard-industry-label');
+        const hiddenEl = document.getElementById('onboard-industry');
+        if (emojiEl) emojiEl.textContent = info.emoji;
+        if (labelEl) labelEl.textContent = info.label;
+        if (hiddenEl) hiddenEl.value = industry;
+
+        // Auto-advance to step 3 (compte + commerce) after short delay
+        setTimeout(() => onboardNext(3), 350);
     }
 
     function applyTranslations() {
@@ -2075,43 +2202,22 @@
         setText('welcome-title', 'welcomeTitle');
         setText('welcome-subtitle', 'welcomeSubtitle');
 
-        // All label elements in onboarding — we target by querying within steps
-        const step2 = document.getElementById('onboard-step-2');
+        // Step 3 (compte + commerce fusionnés)
         const step3 = document.getElementById('onboard-step-3');
-
-        if (step2) {
-            const labels = step2.querySelectorAll('label');
-            const keys2 = ['fullName', 'proEmail', 'password'];
-            labels.forEach((l, i) => { if (keys2[i]) l.textContent = t(keys2[i]); });
-            const span = step2.querySelector('span.text-xs');
-            if (span) span.textContent = t('step1of2');
-            const h2 = step2.querySelector('h2');
-            if (h2) h2.textContent = t('createAccount');
-            const p = step2.querySelector('.text-center p.text-sm');
-            if (p) p.textContent = t('personalInfo');
-            const btn = step2.querySelector('button.btn-primary');
-            if (btn) btn.innerHTML = t('continue') + ' <i class="fa-solid fa-arrow-right ml-2"></i>';
-            setPlaceholder('onboard-name', 'fullName');
-            setPlaceholder('onboard-email', 'proEmail');
-            setPlaceholder('onboard-password', 'minChars');
-        }
 
         if (step3) {
             const labels = step3.querySelectorAll('label');
-            const keys3 = ['businessName', 'businessType', 'phoneOptional', 'promoOptional'];
+            const keys3 = ['fullName', 'businessName', 'proEmail', 'password', 'phoneOptional', 'promoOptional'];
             labels.forEach((l, i) => { if (keys3[i]) l.textContent = t(keys3[i]); });
-            const span = step3.querySelector('span.text-xs');
-            if (span) span.textContent = t('step2of2');
             const h2 = step3.querySelector('h2');
-            if (h2) h2.textContent = t('yourBusiness');
+            if (h2) h2.textContent = t('createAccount');
             const p = step3.querySelector('.text-center p.text-sm');
-            if (p) p.textContent = t('businessInfo');
+            if (p) p.textContent = t('personalInfo');
             const btnPrimary = step3.querySelector('button.btn-primary');
             if (btnPrimary) btnPrimary.innerHTML = '<i class="fa-solid fa-rocket mr-2"></i> ' + t('launchRepward');
-            const btnBack = step3.querySelectorAll('button')[2]; // back button
-            if (btnBack && btnBack.textContent.trim() !== '') {
-                btnBack.innerHTML = '<i class="fa-solid fa-arrow-left mr-1"></i> ' + t('back');
-            }
+            setPlaceholder('onboard-name', 'fullName');
+            setPlaceholder('onboard-email', 'proEmail');
+            setPlaceholder('onboard-password', 'minChars');
         }
     }
 
@@ -2227,28 +2333,6 @@
     }
 
     function onboardNext(step) {
-        // Validate current step before moving forward
-        if (step === 3) {
-            const name = document.getElementById('onboard-name')?.value.trim();
-            const email = document.getElementById('onboard-email')?.value.trim();
-            const password = document.getElementById('onboard-password')?.value;
-            const errEl = document.getElementById('onboard-error-2');
-
-            if (!name || !email || !password) {
-                if (errEl) { errEl.textContent = 'Veuillez remplir tous les champs'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (password.length < 6) {
-                if (errEl) { errEl.textContent = 'Le mot de passe doit faire au moins 6 caractères'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (!email.includes('@')) {
-                if (errEl) { errEl.textContent = 'Veuillez entrer un email valide'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (errEl) errEl.classList.add('hidden');
-        }
-
         // Show target step, hide others
         for (let i = 1; i <= 3; i++) {
             const s = document.getElementById('onboard-step-' + i);
@@ -2257,19 +2341,27 @@
     }
 
     function completeOnboarding() {
+        const name = document.getElementById('onboard-name')?.value.trim();
+        const email = document.getElementById('onboard-email')?.value.trim();
+        const password = document.getElementById('onboard-password')?.value;
         const business = document.getElementById('onboard-business')?.value.trim();
         const errEl = document.getElementById('onboard-error-3');
 
-        if (!business) {
-            if (errEl) { errEl.textContent = "Veuillez entrer le nom de votre établissement"; errEl.classList.remove('hidden'); }
+        if (!name || !email || !password || !business) {
+            if (errEl) { errEl.textContent = 'Veuillez remplir tous les champs obligatoires'; errEl.classList.remove('hidden'); }
+            return;
+        }
+        if (password.length < 6) {
+            if (errEl) { errEl.textContent = 'Le mot de passe doit faire au moins 6 caractères'; errEl.classList.remove('hidden'); }
+            return;
+        }
+        if (!email.includes('@')) {
+            if (errEl) { errEl.textContent = 'Veuillez entrer un email valide'; errEl.classList.remove('hidden'); }
             return;
         }
         if (errEl) errEl.classList.add('hidden');
 
-        const name = document.getElementById('onboard-name')?.value.trim();
-        const email = document.getElementById('onboard-email')?.value.trim();
-        const password = document.getElementById('onboard-password')?.value;
-        const industry = document.getElementById('onboard-industry')?.value;
+        const industry = document.getElementById('onboard-industry')?.value || selectedIndustry;
         const phone = document.getElementById('onboard-phone')?.value.trim();
 
         // Save account to localStorage (fallback / offline mode)
@@ -2592,6 +2684,10 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             reward: currentRew,
             autoPilot: document.getElementById('auto-pilot-toggle')?.checked || false,
             filter: currentFilter,
+            fortuneEnabled: fortuneEnabled,
+            fomoEnabled: fomoEnabled,
+            voiceInstruction: voiceInstruction,
+            wheelSegments: wheelSegments,
             account: {
                 name: document.getElementById('input-nom-etab')?.value || '',
                 email: document.getElementById('input-email-etab')?.value || '',
@@ -2616,6 +2712,27 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                 if (toggle) { toggle.checked = true; toggleAutoPilot(); }
             }
             if (prefs.filter) { currentFilter = prefs.filter; }
+            if (typeof prefs.fortuneEnabled !== 'undefined') {
+                fortuneEnabled = prefs.fortuneEnabled;
+                const ft = document.getElementById('fortune-toggle');
+                if (ft) ft.checked = fortuneEnabled;
+            }
+            if (typeof prefs.fomoEnabled !== 'undefined') {
+                fomoEnabled = prefs.fomoEnabled;
+                const fmt = document.getElementById('fomo-toggle');
+                if (fmt) fmt.checked = fomoEnabled;
+            }
+            if (prefs.voiceInstruction) {
+                voiceInstruction = prefs.voiceInstruction;
+                const vText = document.getElementById('voice-instruction-text');
+                if (vText) vText.value = voiceInstruction;
+            }
+            if (prefs.wheelSegments && Array.isArray(prefs.wheelSegments) && prefs.wheelSegments.length >= 2) {
+                wheelSegments.length = 0;
+                prefs.wheelSegments.forEach(s => wheelSegments.push(s));
+                drawWheel();
+                renderSegmentsList();
+            }
             if (prefs.account) {
                 if (prefs.account.name) { const el = document.getElementById('input-nom-etab'); if(el) el.value = prefs.account.name; }
                 if (prefs.account.email) { const el = document.getElementById('input-email-etab'); if(el) el.value = prefs.account.email; }
@@ -3922,12 +4039,14 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             app.innerHTML = `
             <div class="flex flex-col h-full bg-gradient-to-b ${theme.gradient} items-center justify-center p-6 text-white text-center">
                 <h2 class="text-2xl font-extrabold mb-6">Faites tourner la roue !</h2>
-                <div class="wheel-container mb-8 relative">
-                    <canvas id="client-wheel-canvas" class="wheel-canvas"></canvas>
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-4 text-3xl drop-shadow-lg z-10">&#128071;</div>
+                <div class="wheel-wrapper" style="margin-bottom:2rem;">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel-container">
+                        <canvas id="client-wheel-canvas" class="wheel-canvas"></canvas>
+                    </div>
                 </div>
-                <button id="client-spin-btn" onclick="spinClientWheel()" class="w-full max-w-xs py-4 bg-white text-slate-900 font-extrabold rounded-xl shadow-2xl hover:bg-white/90 transition-all text-lg animate-pulse">
-                    Tenter ma chance !
+                <button id="client-spin-btn" onclick="spinClientWheel()" class="wheel-btn w-full max-w-xs py-4 rounded-xl text-white font-extrabold shadow-2xl transition-all text-lg animate-pulse">
+                    <i class="fa-solid fa-play mr-2"></i> Tenter ma chance !
                 </button>
             </div>`;
 
@@ -3936,7 +4055,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                 wheelCanvas = document.getElementById('client-wheel-canvas');
                 if (wheelCanvas) {
                     wheelCtx = wheelCanvas.getContext('2d');
-                    wheelCanvas.width = 280; wheelCanvas.height = 280;
+                    wheelCanvas.width = 300; wheelCanvas.height = 300;
                     drawWheel();
                 }
             }, 100);
@@ -4036,6 +4155,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                     <div class="border-2 border-dashed border-slate-200 bg-slate-50 rounded-2xl py-4">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Code à présenter</p>
                         <p class="text-2xl font-mono font-black tracking-wider" style="color: ${theme.primary}">${escapeHtml(code)}</p>
+                        <div id="reward-qr-container" class="mt-3 flex justify-center"><canvas id="reward-qr-canvas"></canvas></div>
                     </div>
                     <!-- 48h Timer -->
                     <div class="flex items-center justify-center gap-2 mt-3 text-[10px] text-slate-400">
@@ -4073,6 +4193,20 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#ffffff', theme.primary, theme.accent, '#10b981'] });
             }
         }, 300);
+
+        // Generate QR code with the reward code for presentation
+        setTimeout(() => {
+            const qrCanvas = document.getElementById('reward-qr-canvas');
+            if (qrCanvas && typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(qrCanvas, code, {
+                    width: 140,
+                    margin: 1,
+                    color: { dark: '#0f172a', light: '#f8fafc' }
+                }, function(err) {
+                    if (err) console.error('Reward QR error:', err);
+                });
+            }
+        }, 200);
 
         // Google Maps redirect countdown for 5★
         if (customerSelectedStars === 5 && googleMapsUrl) {
@@ -5119,8 +5253,8 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         wheelCanvas = document.getElementById('wheel-canvas');
         if (!wheelCanvas) return;
         wheelCtx = wheelCanvas.getContext('2d');
-        wheelCanvas.width = 280;
-        wheelCanvas.height = 280;
+        wheelCanvas.width = 300;
+        wheelCanvas.height = 300;
         drawWheel();
         renderSegmentsList();
     }
@@ -5129,46 +5263,94 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (!wheelCtx) return;
         const cx = wheelCanvas.width / 2;
         const cy = wheelCanvas.height / 2;
-        const radius = 120;
+        const radius = 135;
 
         wheelCtx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
 
-        // Draw segments
-        const segmentAngle = (360 / wheelSegments.length) * Math.PI / 180;
-        wheelSegments.forEach((seg, i) => {
-            const startAngle = i * segmentAngle;
-            const endAngle = (i + 1) * segmentAngle;
+        // Outer decorative ring
+        wheelCtx.beginPath();
+        wheelCtx.arc(cx, cy, radius + 6, 0, Math.PI * 2);
+        wheelCtx.strokeStyle = 'rgba(251,191,36,0.3)';
+        wheelCtx.lineWidth = 4;
+        wheelCtx.stroke();
 
-            // Draw segment
+        // Draw segments with gradient fills
+        const segCount = wheelSegments.length;
+        const segmentAngle = (Math.PI * 2) / segCount;
+
+        wheelSegments.forEach((seg, i) => {
+            const startAngle = i * segmentAngle - Math.PI / 2;
+            const endAngle = (i + 1) * segmentAngle - Math.PI / 2;
+
+            // Gradient from center to edge
+            const midAngle = (startAngle + endAngle) / 2;
+            const gx = cx + Math.cos(midAngle) * radius;
+            const gy = cy + Math.sin(midAngle) * radius;
+            const grad = wheelCtx.createLinearGradient(cx, cy, gx, gy);
+            grad.addColorStop(0, seg.color + 'cc');
+            grad.addColorStop(0.5, seg.color);
+            grad.addColorStop(1, seg.color + 'aa');
+
             wheelCtx.beginPath();
             wheelCtx.moveTo(cx, cy);
             wheelCtx.arc(cx, cy, radius, startAngle, endAngle);
             wheelCtx.closePath();
-            wheelCtx.fillStyle = seg.color;
+            wheelCtx.fillStyle = grad;
             wheelCtx.fill();
-            wheelCtx.strokeStyle = '#0f172a';
-            wheelCtx.lineWidth = 2;
+
+            // Thin separator lines
+            wheelCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+            wheelCtx.lineWidth = 1.5;
             wheelCtx.stroke();
 
-            // Draw text
+            // Draw text — white with shadow
             const textAngle = startAngle + segmentAngle / 2;
-            const textX = cx + Math.cos(textAngle) * (radius * 0.65);
-            const textY = cy + Math.sin(textAngle) * (radius * 0.65);
+            const textR = radius * 0.62;
+            const textX = cx + Math.cos(textAngle) * textR;
+            const textY = cy + Math.sin(textAngle) * textR;
             wheelCtx.save();
             wheelCtx.translate(textX, textY);
             wheelCtx.rotate(textAngle + Math.PI / 2);
-            wheelCtx.fillStyle = '#0f172a';
+            wheelCtx.shadowColor = 'rgba(0,0,0,0.6)';
+            wheelCtx.shadowBlur = 4;
+            wheelCtx.shadowOffsetX = 1;
+            wheelCtx.shadowOffsetY = 1;
+            wheelCtx.fillStyle = '#ffffff';
             wheelCtx.font = 'bold 11px Outfit';
             wheelCtx.textAlign = 'center';
+            wheelCtx.textBaseline = 'middle';
             wheelCtx.fillText(seg.text, 0, 0);
             wheelCtx.restore();
         });
 
-        // Draw center circle
+        // Decorative inner ring
         wheelCtx.beginPath();
-        wheelCtx.arc(cx, cy, 15, 0, Math.PI * 2);
-        wheelCtx.fillStyle = '#818cf8';
+        wheelCtx.arc(cx, cy, 28, 0, Math.PI * 2);
+        wheelCtx.fillStyle = 'rgba(0,0,0,0.3)';
         wheelCtx.fill();
+
+        // Center hub — premium gradient
+        const centerGrad = wheelCtx.createRadialGradient(cx - 3, cy - 3, 2, cx, cy, 22);
+        centerGrad.addColorStop(0, '#a5b4fc');
+        centerGrad.addColorStop(0.5, '#818cf8');
+        centerGrad.addColorStop(1, '#6366f1');
+        wheelCtx.beginPath();
+        wheelCtx.arc(cx, cy, 22, 0, Math.PI * 2);
+        wheelCtx.fillStyle = centerGrad;
+        wheelCtx.fill();
+        wheelCtx.strokeStyle = 'rgba(255,255,255,0.4)';
+        wheelCtx.lineWidth = 2;
+        wheelCtx.stroke();
+
+        // Center star icon
+        wheelCtx.shadowColor = 'rgba(0,0,0,0.4)';
+        wheelCtx.shadowBlur = 3;
+        wheelCtx.fillStyle = '#fbbf24';
+        wheelCtx.font = 'bold 16px sans-serif';
+        wheelCtx.textAlign = 'center';
+        wheelCtx.textBaseline = 'middle';
+        wheelCtx.fillText('★', cx, cy);
+        wheelCtx.shadowBlur = 0;
     }
 
     function spinWheel() {
@@ -5208,17 +5390,62 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const toggle = document.getElementById('fortune-toggle');
         fortuneEnabled = toggle.checked;
         showToast(fortuneEnabled ? 'Roue activée' : 'Roue désactivée', '', fortuneEnabled ? 'success' : 'info');
+        savePrefs();
     }
 
     function renderSegmentsList() {
         const list = document.getElementById('wheel-segments-list');
         if (!list) return;
         list.innerHTML = wheelSegments.map((seg, i) => `
-            <div class="flex items-center gap-2 p-2 bg-white/5 rounded">
-                <div class="w-4 h-4 rounded" style="background: ${seg.color}"></div>
-                <span class="text-xs text-white flex-1">${seg.text}</span>
+            <div class="flex items-center gap-1.5 p-1.5 bg-white/5 rounded-lg group hover:bg-white/10 transition-all">
+                <div class="w-3 h-3 rounded-sm flex-shrink-0" style="background: ${seg.color}"></div>
+                <input type="text" value="${seg.text}" onchange="updateSegmentText(${i}, this.value)" class="flex-1 bg-transparent text-xs text-white border-0 outline-none focus:bg-white/10 rounded px-1 py-0.5 transition-all cursor-text" />
+                <button onclick="removeSegment(${i})" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-all text-[10px] px-1" title="Supprimer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
         `).join('');
+    }
+
+    function updateSegmentText(index, newText) {
+        if (!newText.trim()) return;
+        wheelSegments[index].text = newText.trim();
+        drawWheel();
+        savePrefs();
+    }
+
+    function addSegment() {
+        if (wheelSegments.length >= 12) {
+            showToast('Maximum 12 segments', '', 'warning');
+            return;
+        }
+        const colors = ['#818cf8', '#10b981', '#f59e0b', '#f43f5e', '#ec4899', '#06b6d4', '#8b5cf6', '#14b8a6'];
+        const newColor = colors[wheelSegments.length % colors.length];
+        wheelSegments.push({ text: 'Autre récompense', color: newColor });
+        drawWheel();
+        renderSegmentsList();
+        savePrefs();
+        // Focus the new input for immediate editing
+        setTimeout(() => {
+            const list = document.getElementById('wheel-segments-list');
+            const inputs = list?.querySelectorAll('input[type="text"]');
+            if (inputs && inputs.length > 0) {
+                const lastInput = inputs[inputs.length - 1];
+                lastInput.focus();
+                lastInput.select();
+            }
+        }, 100);
+    }
+
+    function removeSegment(index) {
+        if (wheelSegments.length <= 2) {
+            showToast('Minimum 2 segments requis', '', 'warning');
+            return;
+        }
+        wheelSegments.splice(index, 1);
+        drawWheel();
+        renderSegmentsList();
+        savePrefs();
     }
 
     function updateWheelColors() {
@@ -5259,6 +5486,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             fomoInterval = null;
         }
         showToast(fomoEnabled ? 'Bulles FOMO activées' : 'Bulles FOMO désactivées', '', fomoEnabled ? 'success' : 'info');
+        savePrefs();
     }
 
     function showFomoBubble() {
@@ -5523,6 +5751,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (textarea) {
             voiceInstruction = textarea.value;
             showToast('Consigne sauvegardée', 'L\'IA utilisera cette instruction', 'success');
+            savePrefs();
         }
     }
 
