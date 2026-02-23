@@ -5619,23 +5619,26 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             wheelCtx.lineWidth = 1.5;
             wheelCtx.stroke();
 
-            // Draw text — white with shadow
+            // Draw text — radial orientation (center → edge), white with shadow
             const textAngle = startAngle + segmentAngle / 2;
-            const textR = radius * 0.62;
-            const textX = cx + Math.cos(textAngle) * textR;
-            const textY = cy + Math.sin(textAngle) * textR;
             wheelCtx.save();
-            wheelCtx.translate(textX, textY);
-            wheelCtx.rotate(textAngle + Math.PI / 2);
+            wheelCtx.translate(cx, cy);
+            wheelCtx.rotate(textAngle);
             wheelCtx.shadowColor = 'rgba(0,0,0,0.6)';
             wheelCtx.shadowBlur = 4;
             wheelCtx.shadowOffsetX = 1;
             wheelCtx.shadowOffsetY = 1;
             wheelCtx.fillStyle = '#ffffff';
-            wheelCtx.font = 'bold 11px Outfit';
+            const fontSize = segCount > 8 ? 9 : segCount > 6 ? 10 : 11;
+            wheelCtx.font = `bold ${fontSize}px Outfit`;
             wheelCtx.textAlign = 'center';
             wheelCtx.textBaseline = 'middle';
-            wheelCtx.fillText(seg.text, 0, 0);
+            // Truncate long text
+            let label = seg.text;
+            if (label.length > 16) label = label.substring(0, 15) + '…';
+            // Position text in the middle of the segment radius
+            const textR = radius * 0.6;
+            wheelCtx.fillText(label, textR, 0);
             wheelCtx.restore();
         });
 
