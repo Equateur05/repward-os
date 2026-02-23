@@ -21,9 +21,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" onerror="
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js" onerror="
         var s=document.createElement('script');
-        s.src='https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js';
+        s.src='https://unpkg.com/qrious@4.0.2/dist/qrious.min.js';
         document.head.appendChild(s);
     "></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" async defer onerror="console.warn('Supabase CDN unavailable, running in offline mode')"></script>
@@ -3010,21 +3010,20 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const qrUrl = `${window.location.origin}?t=${token}`;
 
         // Fallback: charger la librairie dynamiquement si absente
-        if (typeof QRCode === 'undefined') {
+        if (typeof QRious === 'undefined') {
             showToast('Chargement', 'Chargement de la librairie QR...', 'info');
             try {
                 await new Promise((resolve, reject) => {
                     const s = document.createElement('script');
-                    s.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
+                    s.src = 'https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js';
+                    s.onload = resolve;
                     s.onerror = () => {
                         const s2 = document.createElement('script');
-                        s2.src = 'https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js';
+                        s2.src = 'https://unpkg.com/qrious@4.0.2/dist/qrious.min.js';
                         s2.onload = resolve;
                         s2.onerror = reject;
                         document.head.appendChild(s2);
                     };
-                    s.onload = resolve;
-                    s.onerror = reject;
                     document.head.appendChild(s);
                 });
             } catch(e) {
@@ -3033,17 +3032,22 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             }
         }
 
-        if (typeof QRCode !== 'undefined') {
-            QRCode.toCanvas(canvas, qrUrl, {
-                width: 250,
-                margin: 2,
-                color: { dark: '#0f172a', light: '#ffffff' }
-            }, function(error) {
-                if (error) { showToast('Erreur', 'Impossible de générer le QR code', 'error'); return; }
+        if (typeof QRious !== 'undefined') {
+            try {
+                new QRious({
+                    element: canvas,
+                    value: qrUrl,
+                    size: 250,
+                    foreground: '#0f172a',
+                    background: '#ffffff',
+                    level: 'M'
+                });
                 container.classList.remove('hidden');
                 if (dlBtn) dlBtn.classList.remove('hidden');
                 showToast('QR Code généré', 'Valable 6 mois · Usage unique', 'success');
-            });
+            } catch(error) {
+                showToast('Erreur', 'Impossible de générer le QR code', 'error');
+            }
         } else {
             showToast('Erreur', 'Librairie QR indisponible. Rechargez la page.', 'error');
         }
@@ -4459,14 +4463,19 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         // Generate QR code with the reward code for presentation
         setTimeout(() => {
             const qrCanvas = document.getElementById('reward-qr-canvas');
-            if (qrCanvas && typeof QRCode !== 'undefined') {
-                QRCode.toCanvas(qrCanvas, code, {
-                    width: 140,
-                    margin: 1,
-                    color: { dark: '#0f172a', light: '#f8fafc' }
-                }, function(err) {
-                    if (err) console.error('Reward QR error:', err);
-                });
+            if (qrCanvas && typeof QRious !== 'undefined') {
+                try {
+                    new QRious({
+                        element: qrCanvas,
+                        value: code,
+                        size: 140,
+                        foreground: '#0f172a',
+                        background: '#f8fafc',
+                        level: 'M'
+                    });
+                } catch(err) {
+                    console.error('Reward QR error:', err);
+                }
             }
         }, 200);
 
@@ -5902,14 +5911,19 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         // Generate QR code
         setTimeout(() => {
             const qrCanvas = document.getElementById('kiosk-qr-canvas');
-            if (qrCanvas && typeof QRCode !== 'undefined') {
-                QRCode.toCanvas(qrCanvas, window.location.href, {
-                    width: 300,
-                    margin: 2,
-                    color: { dark: '#0f172a', light: '#ffffff' }
-                }, function(error) {
-                    if (error) console.error('Kiosk QR error:', error);
-                });
+            if (qrCanvas && typeof QRious !== 'undefined') {
+                try {
+                    new QRious({
+                        element: qrCanvas,
+                        value: window.location.href,
+                        size: 300,
+                        foreground: '#0f172a',
+                        background: '#ffffff',
+                        level: 'M'
+                    });
+                } catch(error) {
+                    console.error('Kiosk QR error:', error);
+                }
             }
         }, 100);
 
