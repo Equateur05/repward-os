@@ -2828,6 +2828,11 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                         const edgeData = await edgeRes.json();
                         if (edgeData.response) return edgeData.response;
                     } else {
+                        if (edgeRes.status === 429) {
+                            handleRateLimit({ status: 429 }, 'generateAIResponse');
+                            return null;
+                        }
+                        showToast('Erreur serveur', 'L\'IA est temporairement indisponible.', 'error');
                         const errData = await edgeRes.json().catch(() => ({}));
                         console.error('Edge Function error:', edgeRes.status, errData);
                     }
@@ -3684,10 +3689,17 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                             platform: msg.platform,
                         }),
                     });
-                    if (pubRes.ok) published = true;
+                    if (pubRes.ok) {
+                        published = true;
+                    } else if (pubRes.status === 429) {
+                        handleRateLimit({ status: 429 }, 'publishAIResponse');
+                    } else {
+                        showToast('Erreur', 'Échec de la publication sur la plateforme', 'error');
+                    }
                 }
             } catch (pubErr) {
                 console.warn('Publish via Edge Function failed, saving locally:', pubErr);
+                showToast('Erreur réseau', 'Impossible de contacter le serveur', 'error');
             }
         }
 
