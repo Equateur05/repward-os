@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://*.supabase.com;">
     <title>Repward OS — Plateforme de Réputation Intelligente</title>
     <meta name="description" content="Repward OS transforme vos avis clients en levier de croissance grâce à l'IA. Réponses automatiques, QR codes, récompenses et analyse multi-plateformes.">
     <meta name="theme-color" content="#0f172a">
@@ -1089,8 +1090,9 @@
                                 </div>
                                 <div class="bg-slate-900/60 rounded-xl p-3 space-y-1.5">
                                     <p class="text-[10px] text-slate-300"><i class="fa-solid fa-arrow-right text-brand mr-1"></i> Allez sur <span class="text-white font-bold">admin.booking.com</span> &rarr; Guest Reviews</p>
-                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-wand-magic-sparkles text-brand mr-1"></i> Le bouton Repward appara&icirc;t automatiquement</p>
+                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-copy text-brand mr-1"></i> Copiez la r&eacute;ponse IA g&eacute;n&eacute;r&eacute;e et collez-la directement</p>
                                 </div>
+                                <p class="text-[10px] text-amber-400/80 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> R&eacute;ponse manuelle uniquement (copier-coller). Pas d'API officielle disponible.</p>
                                 <p class="text-[10px] text-slate-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-blue-400 rounded-full"></span> Mod&eacute;ration Booking 24-72h. R&eacute;ponse en langue de l'avis ou anglais uniquement.</p>
                             </div>
 
@@ -1105,9 +1107,9 @@
                                 </div>
                                 <div class="bg-slate-900/60 rounded-xl p-3 space-y-1.5">
                                     <p class="text-[10px] text-slate-300"><i class="fa-solid fa-arrow-right text-brand mr-1"></i> Allez sur <span class="text-white font-bold">tripadvisor.com/Owners</span></p>
-                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-wand-magic-sparkles text-brand mr-1"></i> Le bouton Repward appara&icirc;t automatiquement</p>
+                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-copy text-brand mr-1"></i> Copiez la r&eacute;ponse IA g&eacute;n&eacute;r&eacute;e et collez-la directement</p>
                                 </div>
-                                <p class="text-[10px] text-slate-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-tripadvisor rounded-full"></span> API lecture seule (5 avis). Aucune API pour r&eacute;pondre &rarr; Extension indispensable.</p>
+                                <p class="text-[10px] text-amber-400/80 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> R&eacute;ponse manuelle uniquement (copier-coller). Aucune API officielle pour r&eacute;pondre.</p>
                             </div>
 
                             <!-- TheFork -->
@@ -1121,9 +1123,9 @@
                                 </div>
                                 <div class="bg-slate-900/60 rounded-xl p-3 space-y-1.5">
                                     <p class="text-[10px] text-slate-300"><i class="fa-solid fa-arrow-right text-brand mr-1"></i> Allez sur <span class="text-white font-bold">manager.thefork.com</span></p>
-                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-wand-magic-sparkles text-brand mr-1"></i> Le bouton Repward appara&icirc;t automatiquement</p>
+                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-copy text-brand mr-1"></i> Copiez la r&eacute;ponse IA g&eacute;n&eacute;r&eacute;e et collez-la sur manager.thefork.com</p>
                                 </div>
-                                <p class="text-[10px] text-slate-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-thefork rounded-full"></span> Aucune API. Droit de r&eacute;ponse limit&eacute; &agrave; 3 mois.</p>
+                                <p class="text-[10px] text-amber-400/80 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> R&eacute;ponse manuelle uniquement (copier-coller). Aucune API. Droit de r&eacute;ponse limit&eacute; &agrave; 3 mois.</p>
                             </div>
 
                             <!-- Expedia -->
@@ -1137,9 +1139,9 @@
                                 </div>
                                 <div class="bg-slate-900/60 rounded-xl p-3 space-y-1.5">
                                     <p class="text-[10px] text-slate-300"><i class="fa-solid fa-arrow-right text-brand mr-1"></i> Allez sur <span class="text-white font-bold">partner.expedia.com</span></p>
-                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-wand-magic-sparkles text-brand mr-1"></i> Le bouton Repward appara&icirc;t automatiquement</p>
+                                    <p class="text-[10px] text-slate-300"><i class="fa-solid fa-copy text-brand mr-1"></i> Copiez la r&eacute;ponse IA g&eacute;n&eacute;r&eacute;e et collez-la sur partner.expedia.com</p>
                                 </div>
-                                <p class="text-[10px] text-slate-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-yellow-400 rounded-full"></span> Aucune API. Via Expedia Partner Central.</p>
+                                <p class="text-[10px] text-amber-400/80 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> R&eacute;ponse manuelle uniquement (copier-coller). Aucune API officielle disponible.</p>
                             </div>
 
                         </div>
@@ -1435,8 +1437,8 @@
                                 <p class="text-[10px] text-slate-400">Events temps réel</p>
                             </div>
                         </div>
-                        <button onclick="window.open('https://docs.repward.com/api','_blank')" class="w-full py-3 rounded-xl font-bold text-sm bg-brand/20 text-brand-light border border-brand/30 hover:bg-brand/30 transition-all">
-                            <i class="fa-solid fa-book mr-2"></i> Documentation API · À partir de 500€/mois
+                        <button disabled class="w-full py-3 rounded-xl font-bold text-sm bg-white/5 text-slate-500 border border-white/10 cursor-not-allowed opacity-60">
+                            <i class="fa-solid fa-book mr-2"></i> Documentation API <span class="ml-2 text-[9px] bg-warning/10 text-warning px-2 py-0.5 rounded-full">Bientôt — Enterprise</span>
                         </button>
                     </div>
 
@@ -2229,6 +2231,43 @@
     // ============================================
     // DATA LAYER — Supabase first, localStorage fallback
     // ============================================
+    // ============================================
+    // RATE LIMITING & QUOTA UI
+    // ============================================
+    let rateLimitedUntil = null;
+
+    function handleRateLimit(error, context) {
+        if (error && (error.status === 429 || error.message?.includes('429') || error.message?.includes('rate limit'))) {
+            rateLimitedUntil = Date.now() + 60000; // Block for 1 min
+            showToast('Limite atteinte', 'Trop de requêtes. Réessayez dans 1 minute.', 'error');
+            disableGenerationButtons(true);
+            setTimeout(() => {
+                rateLimitedUntil = null;
+                disableGenerationButtons(false);
+                showToast('Prêt', 'Vous pouvez à nouveau générer des réponses', 'success');
+            }, 60000);
+            return true;
+        }
+        return false;
+    }
+
+    function handleQuotaExceeded() {
+        showToast('Quota dépassé', 'Limite atteinte pour votre plan. Passez Pro ou attendez la réinitialisation mensuelle.', 'error');
+        disableGenerationButtons(true);
+    }
+
+    function disableGenerationButtons(disabled) {
+        const btns = document.querySelectorAll('[onclick*="regenerateDraft"], [onclick*="publishResponse"]');
+        btns.forEach(btn => {
+            btn.disabled = disabled;
+            if (disabled) {
+                btn.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        });
+    }
+
     const db = {
         // Save merchant profile to Supabase (+ localStorage fallback)
         async saveMerchant(fields) {
@@ -5230,6 +5269,32 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                 return;
             }
 
+            // === AUTH GUARD: Block dashboard if not authenticated ===
+            if (USE_SUPABASE && supabaseClient) {
+                try {
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (!user) {
+                        // No authenticated user — force onboarding
+                        showOnboarding();
+                        return;
+                    }
+                    supabaseUser = user;
+
+                    // Listen for auth state changes (session expiry)
+                    supabaseClient.auth.onAuthStateChange((event, session) => {
+                        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' && !session) {
+                            supabaseUser = null;
+                            supabaseMerchant = null;
+                            showOnboarding();
+                            showToast('Session expirée', 'Veuillez vous reconnecter', 'error');
+                        }
+                    });
+                } catch(e) {
+                    console.warn('Auth guard check failed:', e);
+                    // Fallback to localStorage check (offline mode)
+                }
+            }
+
             // === Normal merchant dashboard load ===
             try { loadGeminiKey(); } catch(e) { console.error('loadGeminiKey:', e); }
             try { loadAccountData(); } catch(e) { console.error('loadAccountData:', e); }
@@ -5709,7 +5774,8 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const evt = fomoRecentEvents[Math.floor(Math.random() * fomoRecentEvents.length)];
         const minsAgo = Math.max(1, Math.floor((Date.now() - new Date(evt.used_at).getTime()) / 60000));
         const timeLabel = minsAgo < 60 ? `il y a ${minsAgo} min` : minsAgo < 1440 ? `il y a ${Math.floor(minsAgo / 60)}h` : 'récemment';
-        const message = `🎁 Un client vient de gagner "${evt.reward}" ${timeLabel}`;
+        const rewardText = typeof escapeHtml === 'function' ? escapeHtml(evt.reward || '') : (evt.reward || '');
+        const message = `🎁 Un client vient de gagner "${rewardText}" ${timeLabel}`;
 
         const bubble = document.createElement('div');
         bubble.className = 'fomo-bubble';
@@ -5792,61 +5858,23 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // ============================================
     // FEATURE 4: LEADERBOARD EMPLOYÉS (EMPLOYEE LEADERBOARD)
     // ============================================
-    let employees = [
-        { id: 1, name: 'Marie Dupont', reviews: 24, stars: 4.8, qrCode: 'emp-001' },
-        { id: 2, name: 'Jean Martin', reviews: 19, stars: 4.6, qrCode: 'emp-002' },
-        { id: 3, name: 'Sophie Bernard', reviews: 16, stars: 4.5, qrCode: 'emp-003' },
-        { id: 4, name: 'Pierre Leclerc', reviews: 12, stars: 4.3, qrCode: 'emp-004' },
-        { id: 5, name: 'Amélie Renoir', reviews: 10, stars: 4.2, qrCode: 'emp-005' }
-    ];
+    // Leaderboard — Bientôt disponible (V2, données réelles Supabase)
+    let employees = [];
 
     function initLeaderboard() {
-        renderPodium();
-        renderEmployeesList();
+        // Bientôt disponible — afficher état vide
+        const podium = document.getElementById('podium-container');
+        if (podium) podium.innerHTML = '<div class="text-center py-8 opacity-60"><div class="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-medal text-2xl text-warning/50"></i></div><p class="text-sm font-bold text-slate-400">Leaderboard équipe</p><p class="text-[10px] text-slate-500 mt-1">Bientôt disponible</p><span class="inline-block mt-2 text-[9px] font-bold bg-warning/10 text-warning px-2 py-0.5 rounded-full">V2</span></div>';
+        const list = document.getElementById('employees-list');
+        if (list) list.innerHTML = '<p class="text-xs text-slate-500 text-center py-6 opacity-60">Ajoutez vos employés pour suivre leurs performances individuelles</p>';
     }
 
     function renderPodium() {
-        const container = document.getElementById('podium-container');
-        if (!container) return;
-
-        const sorted = [...employees].sort((a, b) => b.reviews - a.reviews).slice(0, 3);
-        const medals = ['🥇', '🥈', '🥉'];
-        const classes = ['first', 'second', 'third'];
-
-        container.innerHTML = sorted.map((emp, i) => `
-            <div class="podium-place ${classes[i]}">
-                <div class="medal">${medals[i]}</div>
-                <div class="podium-rank">#${i + 1}</div>
-                <div class="podium-name">${emp.name}</div>
-                <div class="podium-stats">
-                    <p>${emp.reviews} avis</p>
-                    <p>⭐ ${emp.stars}</p>
-                </div>
-            </div>
-        `).join('');
+        // Handled by initLeaderboard()
     }
 
     function renderEmployeesList() {
-        const container = document.getElementById('employees-list');
-        if (!container) return;
-
-        const sorted = [...employees].sort((a, b) => b.reviews - a.reviews);
-        container.innerHTML = sorted.map((emp, idx) => `
-            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
-                <div class="flex items-center gap-4 flex-1">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center text-lg font-bold text-white">${emp.name.charAt(0)}</div>
-                    <div>
-                        <p class="font-bold text-white">${emp.name}</p>
-                        <p class="text-xs text-slate-400">${emp.reviews} avis · ${emp.stars}⭐</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="downloadEmployeeQR('${emp.qrCode}')" class="px-3 py-1.5 bg-brand/20 text-brand-light rounded-lg text-xs font-bold hover:bg-brand/30 transition-all">
-                        <i class="fa-solid fa-qrcode"></i> QR
-                    </button>
-                </div>
-            </div>
-        `).join('');
+        // Handled by initLeaderboard()
     }
 
     function openAddEmployeeModal() {
