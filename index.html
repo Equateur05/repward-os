@@ -637,7 +637,7 @@
 
             <!-- CONTENU : PORTAL (QR & CADEAUX) -->
             <div id="tab-portal" class="hidden">
-                <div class="space-y-4 max-w-7xl mx-auto">
+                <div class="space-y-2 max-w-7xl mx-auto">
                     <div class="flex items-center justify-between">
                         <div>
                             <h2 class="text-xl md:text-2xl font-extrabold text-white">QR Code & Récompenses</h2>
@@ -645,7 +645,7 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col xl:flex-row gap-4">
+                    <div class="flex flex-col xl:flex-row gap-3">
                         <!-- GAUCHE: Config -->
                         <div class="flex-1 space-y-3">
                             <!-- Industry badge (read-only, set by onboarding) -->
@@ -701,10 +701,10 @@
                                 </div>
                                 <!-- Kiosk + NFC -->
                                 <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-white/5">
-                                    <button onclick="activateKioskMode()" class="py-2 rounded-xl font-bold text-[11px] bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1">
+                                    <button onclick="activateKioskMode()" class="py-1.5 rounded-xl font-bold text-[10px] bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1">
                                         📱 Kiosque
                                     </button>
-                                    <button onclick="showNFCModal()" class="py-2 rounded-xl font-bold text-[11px] bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-1">
+                                    <button onclick="showNFCModal()" class="py-1.5 rounded-xl font-bold text-[10px] bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-1">
                                         📡 NFC <span class="text-[9px] bg-white/30 px-1 py-0.5 rounded-full font-black">49€</span>
                                     </button>
                                 </div>
@@ -712,12 +712,12 @@
                         </div>
 
                         <!-- DROITE: iPhone preview -->
-                        <div class="hidden lg:flex w-[340px] flex-col items-center flex-shrink-0">
+                        <div class="hidden xl:flex w-[300px] flex-col items-center flex-shrink-0">
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
                                 Aperçu en temps réel
                             </p>
-                            <div class="iphone-frame animate-float" style="transform-origin: top center; transform: scale(0.92);">
+                            <div class="iphone-frame animate-float" style="transform-origin: top center; transform: scale(0.82);">
                                 <div class="iphone-notch"></div>
                                 <div class="iphone-screen" id="preview-screen" aria-hidden="true">
                                 </div>
@@ -4022,14 +4022,18 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
 
         const grid = document.getElementById('rew-grid');
         if (grid) {
-            if (!data.rewards.includes(currentRew) && !currentRew.startsWith('✏️')) currentRew = data.rewards[0];
-            const isCustomActive = !data.rewards.includes(currentRew);
+            // Check if custom reward was saved (localStorage or already set)
+            const savedCustom = (() => { try { return localStorage.getItem('repward_custom_reward') || ''; } catch(e) { return ''; } })();
+            const isCustomActive = !data.rewards.includes(currentRew) && currentRew !== data.rewards[0];
+            // Only reset to default if currentRew is empty/undefined
+            if (!currentRew || (!data.rewards.includes(currentRew) && !isCustomActive)) currentRew = data.rewards[0];
+            const customLabel = isCustomActive ? currentRew : (savedCustom || '✏️ Autre');
             grid.innerHTML = data.rewards.map(r => `
-                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-2 border rounded-lg text-[11px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[48px] transition-all leading-tight tabindex='0' role='button' ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
+                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-1.5 border rounded-lg text-[10px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[36px] transition-all leading-tight tabindex='0' role='button' ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
                     ${r}
                 </div>`).join('') + `
-                <div onclick="showCustomRewardInput()" class="reward-card p-2 border rounded-lg text-[11px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[48px] transition-all leading-tight ${isCustomActive ? 'selected border-brand bg-brand/10 text-white' : 'border-dashed border-white/20 text-slate-400 hover:bg-white/5 hover:border-white/30'}">
-                    ✏️ Autre
+                <div onclick="showCustomRewardInput()" class="reward-card p-1.5 border rounded-lg text-[10px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[36px] transition-all leading-tight ${isCustomActive ? 'selected border-brand bg-brand/10 text-white' : 'border-dashed border-white/20 text-slate-400 hover:bg-white/5 hover:border-white/30'}">
+                    ${isCustomActive ? escapeHtml(customLabel) : '✏️ Autre'}
                 </div>`;
         }
 
@@ -5890,13 +5894,13 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         // Generate QR code
         setTimeout(() => {
             const qrCanvas = document.getElementById('kiosk-qr-canvas');
-            if (qrCanvas && window.QRCode) {
-                new QRCode(qrCanvas, {
-                    text: window.location.href,
+            if (qrCanvas && typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(qrCanvas, window.location.href, {
                     width: 300,
-                    height: 300,
-                    colorDark: '#0f172a',
-                    colorLight: '#ffffff'
+                    margin: 2,
+                    color: { dark: '#0f172a', light: '#ffffff' }
+                }, function(error) {
+                    if (error) console.error('Kiosk QR error:', error);
                 });
             }
         }, 100);
