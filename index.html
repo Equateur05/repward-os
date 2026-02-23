@@ -641,83 +641,82 @@
                     </div>
 
                     <div class="flex flex-col xl:flex-row gap-4">
+                        <!-- GAUCHE: Config -->
                         <div class="flex-1 space-y-3">
-                            <!-- Industry selector -->
-                            <div class="glass-card p-4 rounded-2xl border-brand/20 border">
-                                <h3 class="font-bold mb-1 flex items-center text-white text-sm">
-                                    <span class="w-7 h-7 rounded-lg bg-brand/10 flex items-center justify-center mr-2"><i class="fa-solid fa-store text-brand text-xs"></i></span>
-                                    Type de commerce
-                                </h3>
-                                <label for="ind-selector" class="sr-only">Type de commerce</label>
-                                <select id="ind-selector" onchange="updateInd()" class="w-full bg-slate-800 border border-white/10 rounded-xl p-3 text-sm text-white font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none appearance-none cursor-pointer transition-all" style="color-scheme: dark;">
-                                    <option value="restaurant" style="background:#1e293b;color:#f8fafc;padding:8px">🍽️ Restaurant & Bar</option>
-                                    <option value="coffee" style="background:#1e293b;color:#f8fafc;padding:8px">☕ Coffee Shop & Salon de Thé</option>
-                                    <option value="streetfood" style="background:#1e293b;color:#f8fafc;padding:8px">🌮 Street Food & Fast Food</option>
-                                    <option value="hotel" style="background:#1e293b;color:#f8fafc;padding:8px">🏨 Hôtel & Spa</option>
-                                    <option value="airbnb" style="background:#1e293b;color:#f8fafc;padding:8px">🔑 Airbnb & Conciergerie</option>
-                                    <option value="beauty" style="background:#1e293b;color:#f8fafc;padding:8px">✂️ Coiffure & Beauté</option>
-                                    <option value="retail" style="background:#1e293b;color:#f8fafc;padding:8px">🛍️ Boutique & Retail</option>
-                                    <option value="bakery" style="background:#1e293b;color:#f8fafc;padding:8px">🥐 Boulangerie & Pâtisserie</option>
-                                    <option value="gym" style="background:#1e293b;color:#f8fafc;padding:8px">🏋️ Salle de Sport & Fitness</option>
-                                    <option value="garage" style="background:#1e293b;color:#f8fafc;padding:8px">🔧 Garage & Auto</option>
-                                </select>
+                            <!-- Industry badge (read-only, set by onboarding) -->
+                            <div id="portal-industry-badge" class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-brand/5 border border-brand/10">
+                                <span id="portal-industry-emoji" class="text-lg">🍽️</span>
+                                <span id="portal-industry-name" class="text-sm font-bold text-white">Restaurant & Bar</span>
+                                <span class="ml-auto text-[9px] text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">Défini à l'inscription</span>
                             </div>
+                            <!-- Hidden select kept for JS compatibility -->
+                            <select id="ind-selector" onchange="updateInd()" class="hidden" style="display:none;">
+                                <option value="restaurant">Restaurant & Bar</option>
+                                <option value="coffee">Coffee Shop & Salon de Thé</option>
+                                <option value="streetfood">Street Food & Fast Food</option>
+                                <option value="hotel">Hôtel & Spa</option>
+                                <option value="airbnb">Airbnb & Conciergerie</option>
+                                <option value="beauty">Coiffure & Beauté</option>
+                                <option value="retail">Boutique & Retail</option>
+                                <option value="bakery">Boulangerie & Pâtisserie</option>
+                                <option value="gym">Salle de Sport & Fitness</option>
+                                <option value="garage">Garage & Auto</option>
+                            </select>
 
-                            <!-- Rewards grid -->
-                            <div class="glass-card p-4 rounded-2xl">
-                                <h3 class="font-bold mb-1 flex items-center text-white text-sm">
-                                    <span class="w-7 h-7 rounded-lg bg-brand/10 flex items-center justify-center mr-2"><i class="fa-solid fa-gift text-brand text-xs"></i></span>
+                            <!-- Rewards grid (compact) -->
+                            <div class="glass-card p-3 rounded-2xl">
+                                <h3 class="font-bold mb-2 flex items-center text-white text-sm">
+                                    <span class="w-6 h-6 rounded-lg bg-brand/10 flex items-center justify-center mr-2"><i class="fa-solid fa-gift text-brand text-[10px]"></i></span>
                                     Récompense client
                                 </h3>
-                                <p class="text-[10px] text-slate-400 mb-3 ml-9">Choisissez le cadeau à offrir</p>
-                                <div id="rew-grid" class="grid grid-cols-2 gap-2"></div>
-                                <div class="mt-4 pt-3 border-t border-white/5 space-y-2">
-                                    <div id="qr-code-container" class="flex justify-center p-3 bg-white rounded-xl hidden">
-                                        <canvas id="qr-canvas"></canvas>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button class="btn-primary flex-1 flex items-center justify-center text-sm py-2.5" onclick="generateQRCode()">
-                                            <i class="fa-solid fa-qrcode mr-1.5"></i> Générer QR
-                                        </button>
-                                        <button id="btn-download-qr" class="flex-1 flex items-center justify-center text-sm font-bold text-brand-light hover:text-white border border-brand/20 rounded-xl transition-all py-2.5 hidden" onclick="downloadQR()">
-                                            <i class="fa-solid fa-download mr-1.5"></i> PNG
-                                        </button>
-                                    </div>
-                                    <!-- Short Link -->
-                                    <div class="mt-3 pt-3 border-t border-white/5">
-                                        <h4 class="text-[10px] font-bold text-white mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-link text-brand text-[10px]"></i> Lien direct</h4>
-                                        <div class="flex gap-2">
-                                            <input id="short-link-display" type="text" readonly class="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-[10px] text-brand-light font-mono cursor-pointer" onclick="this.select();copyShortLink()" value="">
-                                            <button onclick="copyShortLink()" class="px-2.5 bg-brand/20 text-brand-light border border-brand/30 rounded-lg text-[10px] font-bold hover:bg-brand/30 transition-all">
-                                                <i class="fa-solid fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <!-- Kiosk + NFC side by side -->
-                                    <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-white/5">
-                                        <button onclick="activateKioskMode()" class="py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1.5">
-                                            📱 Kiosque
-                                        </button>
-                                        <button onclick="showNFCModal()" class="py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-1.5">
-                                            📡 NFC <span class="text-[9px] bg-white/30 px-1 py-0.5 rounded-full font-black">49€</span>
+                                <div id="rew-grid" class="grid grid-cols-3 gap-1.5"></div>
+                            </div>
+
+                            <!-- QR Code + Actions (compact) -->
+                            <div class="glass-card p-3 rounded-2xl">
+                                <div id="qr-code-container" class="flex justify-center p-2 bg-white rounded-xl mb-2 hidden">
+                                    <canvas id="qr-canvas"></canvas>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="btn-primary flex-1 flex items-center justify-center text-xs py-2" onclick="generateQRCode()">
+                                        <i class="fa-solid fa-qrcode mr-1.5"></i> Générer QR
+                                    </button>
+                                    <button id="btn-download-qr" class="flex-1 flex items-center justify-center text-xs font-bold text-brand-light hover:text-white border border-brand/20 rounded-xl transition-all py-2 hidden" onclick="downloadQR()">
+                                        <i class="fa-solid fa-download mr-1.5"></i> PNG
+                                    </button>
+                                </div>
+                                <!-- Short Link -->
+                                <div class="mt-2 pt-2 border-t border-white/5">
+                                    <div class="flex gap-1.5">
+                                        <input id="short-link-display" type="text" readonly class="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-[10px] text-brand-light font-mono cursor-pointer" onclick="this.select();copyShortLink()" value="">
+                                        <button onclick="copyShortLink()" class="px-2.5 bg-brand/20 text-brand-light border border-brand/30 rounded-lg text-[10px] font-bold hover:bg-brand/30 transition-all">
+                                            <i class="fa-solid fa-copy"></i>
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-
-                        <!-- Phone preview -->
-                        <div class="w-full xl:w-[370px] flex flex-col items-center flex-shrink-0">
-                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
-                                Aperçu en temps réel
-                            </p>
-                            <div class="iphone-frame animate-float">
-                                <div class="iphone-notch"></div>
-                                <div class="iphone-screen" id="preview-screen" aria-hidden="true">
+                                <!-- Kiosk + NFC -->
+                                <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-white/5">
+                                    <button onclick="activateKioskMode()" class="py-2 rounded-xl font-bold text-[11px] bg-gradient-to-r from-cyan-400 to-cyan-600 text-slate-900 hover:from-cyan-300 hover:to-cyan-500 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1">
+                                        📱 Kiosque
+                                    </button>
+                                    <button onclick="showNFCModal()" class="py-2 rounded-xl font-bold text-[11px] bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-1">
+                                        📡 NFC <span class="text-[9px] bg-white/30 px-1 py-0.5 rounded-full font-black">49€</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- DROITE: iPhone preview -->
+                        <div class="hidden xl:flex w-[340px] flex-col items-center flex-shrink-0">
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
+                                Aperçu en temps réel
+                            </p>
+                            <div class="iphone-frame animate-float" style="transform-origin: top center; transform: scale(0.92);">
+                                <div class="iphone-notch"></div>
+                                <div class="iphone-screen" id="preview-screen" aria-hidden="true">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -816,26 +815,16 @@
                         </div>
                     </div>
 
-                    <!-- Concurrents Radar -->
-                    <div class="glass-card p-5 md:p-6 rounded-2xl border-warning/10">
-                        <div class="flex items-center justify-between mb-4">
+                    <!-- Concurrents Radar (Bientôt disponible) -->
+                    <div class="glass-card p-5 md:p-6 rounded-2xl border-warning/10 opacity-60">
+                        <div class="flex items-center justify-between mb-3">
                             <h3 class="font-bold text-white flex items-center">
                                 <span class="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center mr-3"><i class="fa-solid fa-binoculars text-warning text-sm"></i></span>
                                 Concurrents Radar
                             </h3>
-                            <span class="text-[10px] font-bold text-warning bg-warning/10 px-3 py-1 rounded-full">Plan Pro+</span>
+                            <span class="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full animate-pulse"><i class="fa-solid fa-clock mr-1"></i> Bientôt disponible</span>
                         </div>
-                        <p class="text-xs text-slate-400 mb-4">Entrez jusqu'à 3 concurrents pour analyser leurs avis</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                            <input id="competitor-1" type="text" placeholder="Nom concurrent 1" class="bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-warning outline-none">
-                            <input id="competitor-2" type="text" placeholder="Nom concurrent 2" class="bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-warning outline-none">
-                            <input id="competitor-3" type="text" placeholder="Nom concurrent 3" class="bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-warning outline-none">
-                        </div>
-                        <button onclick="analyzeCompetitors()" class="px-6 py-2.5 bg-warning/20 text-warning border border-warning/30 rounded-xl font-bold text-xs hover:bg-warning/30 transition-all">
-                            <i class="fa-solid fa-magnifying-glass-chart mr-2"></i> Analyser
-                        </button>
-                        <div id="competitor-results" class="mt-4 hidden">
-                        </div>
+                        <p class="text-xs text-slate-400">Analysez automatiquement les avis de vos concurrents grâce à l'API Google Places. Cette fonctionnalité sera disponible dans une prochaine mise à jour.</p>
                     </div>
                 </div>
             </div>
@@ -970,9 +959,9 @@
                                 <p class="text-sm text-brand-light font-bold mb-2">Couvre 5 plateformes d'un coup : Airbnb, Booking, TripAdvisor, TheFork, Expedia</p>
                                 <p class="text-xs text-slate-300">L'extension d&eacute;tecte automatiquement vos avis et injecte un bouton <strong class="text-white">R&eacute;pondre avec IA</strong> directement sur chaque plateforme.</p>
                             </div>
-                            <a href="https://chrome.google.com/webstore" target="_blank" class="flex-shrink-0 px-6 py-3 bg-white text-slate-900 rounded-xl font-black text-sm hover:bg-slate-100 transition-all flex items-center gap-2 shadow-lg">
-                                <i class="fa-brands fa-chrome"></i> Installer l'Extension
-                            </a>
+                            <button disabled class="flex-shrink-0 px-6 py-3 bg-white/20 text-white/70 rounded-xl font-black text-sm cursor-not-allowed flex items-center gap-2 border border-white/10">
+                                <i class="fa-solid fa-clock"></i> Bientôt disponible
+                            </button>
                         </div>
                         <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand/10 rounded-full blur-3xl"></div>
                     </div>
@@ -1062,13 +1051,14 @@
                         </div>
                     </div>
 
-                    <!-- ===== SECTION 2 : VIA EXTENSION CHROME ===== -->
-                    <div>
+                    <!-- ===== SECTION 2 : VIA EXTENSION CHROME (Bientôt) ===== -->
+                    <div class="relative">
                         <h3 class="text-sm font-bold text-white mb-1 flex items-center gap-2">
                             <span class="w-5 h-5 rounded-md bg-brand/20 flex items-center justify-center"><span class="w-2 h-2 bg-brand rounded-full"></span></span>
                             Via Extension Chrome
+                            <span class="text-[9px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full animate-pulse"><i class="fa-solid fa-clock mr-1"></i>Bientôt</span>
                         </h3>
-                        <p class="text-xs text-slate-400 mb-4">L'IA vous assiste directement sur le site &mdash; Installez l'extension une seule fois, elle fonctionne sur toutes ces plateformes</p>
+                        <p class="text-xs text-slate-400 mb-4">L'IA vous assistera directement sur le site &mdash; L'extension est en cours de développement</p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
@@ -2237,6 +2227,161 @@
     }
 
     // ============================================
+    // DATA LAYER — Supabase first, localStorage fallback
+    // ============================================
+    const db = {
+        // Save merchant profile to Supabase (+ localStorage fallback)
+        async saveMerchant(fields) {
+            // Always save to localStorage as fallback
+            try {
+                const existing = JSON.parse(localStorage.getItem(ACCOUNT_KEY) || '{}');
+                Object.assign(existing, fields);
+                localStorage.setItem(ACCOUNT_KEY, JSON.stringify(existing));
+            } catch(e) {}
+
+            if (!USE_SUPABASE || !supabaseClient || !supabaseUser) return;
+            try {
+                const { error } = await supabaseClient
+                    .from('merchants')
+                    .update(fields)
+                    .eq('id', supabaseUser.id);
+                if (error) console.warn('db.saveMerchant error:', error);
+            } catch(e) { console.warn('db.saveMerchant:', e); }
+        },
+
+        // Load merchant profile from Supabase (fallback localStorage)
+        async loadMerchant() {
+            if (USE_SUPABASE && supabaseClient && supabaseUser) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('merchants')
+                        .select('*')
+                        .eq('id', supabaseUser.id)
+                        .single();
+                    if (!error && data) {
+                        supabaseMerchant = data;
+                        return data;
+                    }
+                } catch(e) { console.warn('db.loadMerchant:', e); }
+            }
+            // Fallback to localStorage
+            try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY) || 'null'); } catch(e) { return null; }
+        },
+
+        // Save alerts to Supabase alerts table
+        async saveAlerts(emailOn, smsOn) {
+            try { localStorage.setItem('repward_alerts', JSON.stringify({ email: emailOn, sms: smsOn })); } catch(e) {}
+            if (!USE_SUPABASE || !supabaseClient || !supabaseUser) return;
+            try {
+                await supabaseClient.from('alerts').upsert({
+                    merchant_id: supabaseUser.id,
+                    email_alerts: emailOn,
+                    sms_alerts: smsOn
+                }, { onConflict: 'merchant_id' });
+            } catch(e) { console.warn('db.saveAlerts:', e); }
+        },
+
+        // Save response to history
+        async saveResponseHistory(entry) {
+            // localStorage fallback
+            try {
+                const h = JSON.parse(localStorage.getItem('repward_history') || '[]');
+                h.unshift(entry);
+                if (h.length > 200) h.length = 200;
+                localStorage.setItem('repward_history', JSON.stringify(h));
+            } catch(e) {}
+            if (!USE_SUPABASE || !supabaseClient || !supabaseUser) return;
+            try {
+                await supabaseClient.from('response_history').insert({
+                    merchant_id: supabaseUser.id,
+                    review_id: entry.supabase_review_id || null,
+                    author_name: entry.author,
+                    rating: entry.rating,
+                    platform: entry.platform,
+                    response_text: entry.response,
+                    published: entry.published || false,
+                });
+            } catch(e) { console.warn('db.saveResponseHistory:', e); }
+        },
+
+        // Load response history
+        async loadResponseHistory() {
+            if (USE_SUPABASE && supabaseClient && supabaseUser) {
+                try {
+                    const { data } = await supabaseClient
+                        .from('response_history')
+                        .select('*')
+                        .eq('merchant_id', supabaseUser.id)
+                        .order('created_at', { ascending: false })
+                        .limit(200);
+                    if (data && data.length > 0) return data.map(r => ({
+                        author: r.author_name, rating: r.rating, platform: r.platform,
+                        response: r.response_text, published: r.published, date: r.created_at
+                    }));
+                } catch(e) { console.warn('db.loadResponseHistory:', e); }
+            }
+            try { return JSON.parse(localStorage.getItem('repward_history') || '[]'); } catch(e) { return []; }
+        },
+
+        // Save collected contact (phone/email from QR)
+        async saveContact(phone, email, source) {
+            try {
+                const phones = JSON.parse(localStorage.getItem('repward_collected_phones') || '[]');
+                if (phone) phones.push(phone);
+                localStorage.setItem('repward_collected_phones', JSON.stringify(phones));
+            } catch(e) {}
+            if (!USE_SUPABASE || !supabaseClient || !supabaseUser) return;
+            try {
+                await supabaseClient.from('collected_contacts').insert({
+                    merchant_id: supabaseUser.id, phone, email, source: source || 'qr'
+                });
+            } catch(e) { console.warn('db.saveContact:', e); }
+        },
+
+        // Save manual review to Supabase reviews table
+        async saveManualReview(review) {
+            try {
+                const saved = JSON.parse(localStorage.getItem('repward_manual_reviews') || '[]');
+                saved.unshift(review);
+                if (saved.length > 100) saved.length = 100;
+                localStorage.setItem('repward_manual_reviews', JSON.stringify(saved));
+            } catch(e) {}
+            if (!USE_SUPABASE || !supabaseClient || !supabaseUser) return;
+            try {
+                await supabaseClient.from('reviews').insert({
+                    merchant_id: supabaseUser.id,
+                    platform: review.platform || 'manual',
+                    author_name: review.author,
+                    rating: review.rating,
+                    text: review.text,
+                    lang: review.lang || 'fr',
+                });
+            } catch(e) { console.warn('db.saveManualReview:', e); }
+        },
+
+        // Save platform connection status
+        async savePlatform(platformName, connectionData) {
+            try {
+                const platforms = JSON.parse(localStorage.getItem('repward_platforms') || '{}');
+                platforms[platformName] = connectionData;
+                localStorage.setItem('repward_platforms', JSON.stringify(platforms));
+            } catch(e) {}
+            if (!USE_SUPABASE || !supabaseClient || !supabaseUser) return;
+            try {
+                await supabaseClient.from('platforms').upsert({
+                    merchant_id: supabaseUser.id,
+                    platform: platformName,
+                    connected: connectionData.is_active || false,
+                    account_name: connectionData.accountName || null,
+                    account_id: connectionData.accountId || null,
+                    location_id: connectionData.locationId || null,
+                    connected_at: connectionData.is_active ? new Date().toISOString() : null,
+                }, { onConflict: 'merchant_id,platform' });
+            } catch(e) { console.warn('db.savePlatform:', e); }
+        }
+    };
+
+    // ============================================
     // ONBOARDING / AUTH SYSTEM
     // ============================================
     const ACCOUNT_KEY = 'repward_account';
@@ -2441,6 +2586,7 @@
         const indSelector = document.getElementById('ind-selector');
         if (indSelector) indSelector.value = industry;
         currentInd = industry;
+        updatePortalIndustryBadge(industry);
 
         const nameInput = document.getElementById('input-nom-etab');
         if (nameInput) nameInput.value = business;
@@ -2551,6 +2697,7 @@
                 const indSelector = document.getElementById('ind-selector');
                 if (indSelector) indSelector.value = account.industry;
                 currentInd = account.industry;
+                updatePortalIndustryBadge(account.industry);
             }
         } catch(e) {}
 
@@ -2695,6 +2842,20 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             }
         };
         try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch(e) {}
+
+        // Sync to Supabase merchants table
+        db.saveMerchant({
+            industry: currentInd,
+            auto_pilot: prefs.autoPilot,
+            fortune_enabled: fortuneEnabled,
+            fomo_enabled: fomoEnabled,
+            voice_instruction: voiceInstruction,
+            wheel_segments: wheelSegments,
+            ai_tone: currentAiTone,
+            business_name: prefs.account.name || undefined,
+            email: prefs.account.email || undefined,
+            phone: prefs.account.tel || undefined,
+        });
     }
 
     function loadPrefs() {
@@ -2705,6 +2866,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             if (prefs.industry) {
                 const sel = document.getElementById('ind-selector');
                 if (sel) { sel.value = prefs.industry; currentInd = prefs.industry; }
+                updatePortalIndustryBadge(prefs.industry);
             }
             if (prefs.reward) currentRew = prefs.reward;
             if (prefs.autoPilot) {
@@ -2802,7 +2964,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         }
 
         // URL avec token unique (au lieu de paramètres en clair)
-        const qrUrl = `https://repward.vercel.app?t=${token}`;
+        const qrUrl = `${window.location.origin}?t=${token}`;
 
         if (typeof QRCode !== 'undefined') {
             QRCode.toCanvas(canvas, qrUrl, {
@@ -3152,32 +3314,8 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         }
     };
 
-    const mockMessages = [
-        {
-            id: 1, platform: 'google', icon: 'fa-brands fa-google', color: 'text-google',
-            author: 'Jean-Pierre M.', time: 'Il y a 1h', rating: 1, lang: 'fr',
-            text: "Très déçu de ma visite. Le service était beaucoup trop lent et le plat est arrivé froid. Je ne recommande pas.",
-            baseDraft: "Bonjour Jean-Pierre,\n\nNous sommes sincèrement désolés d'apprendre que votre expérience n'a pas été à la hauteur de vos attentes. Nous prenons très au sérieux vos remarques concernant la lenteur du service et la température de votre plat.\n\nNous avons immédiatement fait le point avec notre équipe en cuisine et en salle pour corriger ces deux points. L'excellence de notre accueil et de nos plats est notre priorité absolue.\n\nNous aimerions avoir l'opportunité de vous prouver notre engagement."
-        },
-        {
-            id: 2, platform: 'airbnb', icon: 'fa-brands fa-airbnb', color: 'text-airbnb',
-            author: 'Sophie L.', time: 'Hier', rating: 3, lang: 'fr',
-            text: "Le logement est vraiment propre et bien décoré. Seul bémol : la rue est très bruyante la nuit, difficile de dormir.",
-            baseDraft: "Bonjour Sophie,\n\nMerci beaucoup d'avoir souligné la propreté et la décoration de notre logement, cela nous touche !\n\nNous sommes navrés que le bruit de la rue ait perturbé votre sommeil. Étant situés en plein centre-ville, l'animation nocturne peut effectivement être présente certains soirs. Nous avons d'ailleurs mis à disposition des bouchons d'oreilles dans la table de chevet pour plus de confort.\n\nNous envisageons également l'installation de doubles vitrages renforcés dans les prochaines semaines."
-        },
-        {
-            id: 3, platform: 'thefork', icon: 'fa-solid fa-utensils', color: 'text-thefork',
-            author: 'Marc T.', time: 'Il y a 2 jours', rating: 4, lang: 'fr',
-            text: "Très bon repas dans l'ensemble, le serveur Maxime était très agréable et de bon conseil. Un petit peu cher pour les portions proposées cependant.",
-            baseDraft: "Bonjour Marc,\n\nMerci infiniment pour ce retour très positif ! Nous sommes ravis que le repas et le service de Maxime vous aient plu — nous lui transmettrons votre compliment, il en sera ravi.\n\nConcernant nos tarifs, ils reflètent notre choix d'utiliser exclusivement des produits frais et locaux, préparés chaque jour par notre chef. Nous pensons que la qualité justifie cet investissement, et nous travaillons continuellement à offrir le meilleur rapport qualité-prix."
-        },
-        {
-            id: 4, platform: 'google', icon: 'fa-brands fa-google', color: 'text-google',
-            author: 'James W.', time: '3 days ago', rating: 5, lang: 'en',
-            text: "Absolutely wonderful experience! The food was incredible, the staff was so welcoming and attentive. The ambiance is perfect for a romantic dinner. We'll definitely come back when we visit Paris again!",
-            baseDraft: "Dear James,\n\nThank you so much for this wonderful review! We are truly delighted that you enjoyed your dining experience with us — the food, the service, and the ambiance.\n\nIt means the world to us to know that we made your visit to Paris even more special. Our team works hard every day to create unforgettable moments for our guests.\n\nWe would be absolutely thrilled to welcome you back on your next trip to Paris!\n\nWarm regards,\nThe Management."
-        }
-    ];
+    // Reviews array — populated from Supabase or manual input (no more fake mock data)
+    const mockMessages = [];
 
     // ============================================
     // STATE
@@ -3311,17 +3449,19 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const container = document.getElementById('message-list-container');
         if (!container) return;
 
-        const messages = realReviews || mockMessages;
-        const filtered = messages.filter(m => currentFilter === 'all' || m.platform === currentFilter);
+        const messages = realReviews || (mockMessages.length > 0 ? mockMessages : null);
+        const filtered = messages ? messages.filter(m => currentFilter === 'all' || m.platform === currentFilter) : [];
 
         if (filtered.length === 0) {
+            const isFilterActive = currentFilter !== 'all';
             container.innerHTML = `
                 <div class="flex flex-col items-center justify-center h-full text-slate-500 py-16">
                     <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-inbox text-2xl"></i>
+                        <i class="fa-solid ${isFilterActive ? 'fa-filter' : 'fa-comments'} text-2xl"></i>
                     </div>
-                    <p class="text-sm font-bold text-center">Aucun avis sur cette plateforme</p>
-                    <p class="text-xs text-slate-600 mt-1">Les nouveaux avis apparaîtront ici</p>
+                    <p class="text-sm font-bold text-center">${isFilterActive ? 'Aucun avis sur cette plateforme' : 'Aucun avis pour le moment'}</p>
+                    <p class="text-xs text-slate-600 mt-1 text-center max-w-[260px]">${isFilterActive ? 'Essayez un autre filtre' : 'Connectez Google ou ajoutez un avis manuellement pour commencer'}</p>
+                    ${!isFilterActive ? '<button onclick="openManualReviewModal()" class="mt-4 px-4 py-2 bg-brand/20 text-brand-light rounded-lg text-xs font-bold hover:bg-brand/30 transition-all"><i class="fa-solid fa-plus mr-1.5"></i>Ajouter un avis</button>' : ''}
                 </div>`;
             return;
         }
@@ -3362,7 +3502,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const textarea = document.getElementById('ai-draft-textarea');
         if (!textarea) return;
 
-        const msg = mockMessages.find(m => m.id === currentMessageId);
+        const msg = (realReviews || mockMessages).find(m => m.id === currentMessageId);
         if (!msg) return;
 
         const data = industries[currentInd];
@@ -3757,6 +3897,26 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // ============================================
     // INDUSTRY UPDATE
     // ============================================
+    function updatePortalIndustryBadge(industryKey) {
+        const industryInfo = {
+            restaurant: { emoji: '🍽️', label: 'Restaurant & Bar' },
+            coffee: { emoji: '☕', label: 'Coffee Shop' },
+            streetfood: { emoji: '🌮', label: 'Street Food' },
+            hotel: { emoji: '🏨', label: 'Hôtel & Spa' },
+            airbnb: { emoji: '🔑', label: 'Airbnb' },
+            beauty: { emoji: '✂️', label: 'Coiffure & Beauté' },
+            retail: { emoji: '🛍️', label: 'Boutique & Retail' },
+            bakery: { emoji: '🥐', label: 'Boulangerie & Pâtisserie' },
+            gym: { emoji: '💪', label: 'Sport & Fitness' },
+            garage: { emoji: '🔧', label: 'Garage & Auto' }
+        };
+        const info = industryInfo[industryKey] || industryInfo.restaurant;
+        const emojiEl = document.getElementById('portal-industry-emoji');
+        const nameEl = document.getElementById('portal-industry-name');
+        if (emojiEl) emojiEl.textContent = info.emoji;
+        if (nameEl) nameEl.textContent = info.label;
+    }
+
     function updateInd() {
         const indSelector = document.getElementById('ind-selector');
         if (!indSelector) return;
@@ -3797,7 +3957,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (grid) {
             if (!data.rewards.includes(currentRew)) currentRew = data.rewards[0];
             grid.innerHTML = data.rewards.map(r => `
-                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-4 border rounded-xl text-sm font-bold text-center cursor-pointer flex items-center justify-center min-h-[72px] transition-all tabindex='0' role='button' ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
+                <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-2 border rounded-lg text-[11px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[48px] transition-all leading-tight tabindex='0' role='button' ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
                     ${r}
                 </div>`).join('');
         }
@@ -4026,11 +4186,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             const phone = phoneInput ? phoneInput.value.trim() : '';
             if (phone) {
                 app.dataset.phone = phone;
-                try {
-                    const phones = JSON.parse(localStorage.getItem('repward_collected_phones') || '[]');
-                    phones.push({ phone: phone, date: new Date().toISOString(), industry: currentInd, stars: customerSelectedStars });
-                    localStorage.setItem('repward_collected_phones', JSON.stringify(phones));
-                } catch(e) {}
+                db.saveContact(phone, null, 'qr');
             }
         }
 
@@ -4329,6 +4485,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             }
         });
         try { localStorage.setItem('repward_ai_tone', tone); } catch(e) {}
+        db.saveMerchant({ ai_tone: tone });
         showToast('Ton IA', 'Style de réponse : ' + {professional:'Professionnel',casual:'Décontracté',warm:'Chaleureux',humor:'Humour'}[tone], 'success');
     }
 
@@ -4338,7 +4495,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     function applyTemplate(style) {
         const textarea = document.getElementById('ai-draft-textarea');
         if (!textarea) return;
-        const msg = mockMessages.find(m => m.id === currentMessageId);
+        const msg = (realReviews || mockMessages).find(m => m.id === currentMessageId);
         if (!msg) return;
         const name = msg.author.split(' ')[0];
         const templates = {
@@ -4364,45 +4521,96 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // ============================================
     // HEATMAP RENDERING (GitHub-style)
     // ============================================
-    function updateMarketplaceStats() {
-        // Calculate from localStorage data
-        const history = JSON.parse(localStorage.getItem('repward_history') || '[]');
-        const codes = JSON.parse(localStorage.getItem('repward_codes_generated') || '0');
-        const used = JSON.parse(localStorage.getItem('repward_codes_used') || '0');
-        const codesGen = parseInt(codes) || history.length * 3; // estimate based on history
-        const codesUsed = parseInt(used) || Math.floor(codesGen * 0.36);
-        const conversion = codesGen > 0 ? Math.round((codesUsed / codesGen) * 100) : 0;
-        const revenue = codesUsed * 20; // ~20€ average per conversion
-
+    async function updateMarketplaceStats() {
         const el1 = document.getElementById('stat-codes-gen');
         const el2 = document.getElementById('stat-codes-used');
         const el3 = document.getElementById('stat-conversion');
         const el4 = document.getElementById('stat-revenue');
-        if (el1) el1.textContent = codesGen || '0';
-        if (el2) el2.textContent = codesUsed || '0';
-        if (el3) el3.textContent = conversion + '%';
-        if (el4) el4.textContent = revenue.toLocaleString('fr-FR') + '€';
+
+        // Tenter de lire depuis Supabase (données réelles)
+        if (USE_SUPABASE && supabaseClient) {
+            try {
+                const user = (await supabaseClient.auth.getUser()).data.user;
+                if (user) {
+                    const { count: totalGen } = await supabaseClient
+                        .from('qr_tokens')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('merchant_id', user.id);
+
+                    const { count: totalUsed } = await supabaseClient
+                        .from('qr_tokens')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('merchant_id', user.id)
+                        .eq('used', true);
+
+                    const codesGen = totalGen || 0;
+                    const codesUsed = totalUsed || 0;
+                    const conversion = codesGen > 0 ? Math.round((codesUsed / codesGen) * 100) : 0;
+                    const revenue = codesUsed * 20; // ~20€ moyenne par conversion
+
+                    if (el1) el1.textContent = codesGen;
+                    if (el2) el2.textContent = codesUsed;
+                    if (el3) el3.textContent = conversion + '%';
+                    if (el4) el4.textContent = revenue.toLocaleString('fr-FR') + '€';
+                    return;
+                }
+            } catch (e) {
+                console.warn('Stats Supabase error, fallback local:', e);
+            }
+        }
+
+        // Fallback: afficher 0 si pas de Supabase
+        if (el1) el1.textContent = '0';
+        if (el2) el2.textContent = '0';
+        if (el3) el3.textContent = '0%';
+        if (el4) el4.textContent = '0€';
     }
 
-    function renderHeatmap() {
+    async function renderHeatmap() {
         const container = document.getElementById('heatmap-container');
         if (!container) return;
         const today = new Date();
-        // Seeded random based on date so heatmap is stable per day
-        function seededRand(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+
+        // Charger les vrais avis des 30 derniers jours depuis Supabase
+        let reviewCounts = {}; // { 'YYYY-MM-DD': count }
+
+        if (USE_SUPABASE && supabaseClient) {
+            try {
+                const user = (await supabaseClient.auth.getUser()).data.user;
+                if (user) {
+                    const thirtyDaysAgo = new Date(today);
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+                    const { data } = await supabaseClient
+                        .from('reviews')
+                        .select('created_at')
+                        .eq('merchant_id', user.id)
+                        .gte('created_at', thirtyDaysAgo.toISOString());
+
+                    if (data) {
+                        data.forEach(r => {
+                            const day = r.created_at.substring(0, 10); // YYYY-MM-DD
+                            reviewCounts[day] = (reviewCounts[day] || 0) + 1;
+                        });
+                    }
+                }
+            } catch(e) { console.warn('Heatmap load error:', e); }
+        }
+
         let html = '';
         for (let i = 29; i >= 0; i--) {
             const d = new Date(today);
             d.setDate(d.getDate() - i);
+            const dayKey = d.toISOString().substring(0, 10);
             const dayNum = d.getDate();
-            const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-            const seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + dayNum;
-            const count = isWeekend ? Math.floor(seededRand(seed) * 8) + 2 : Math.floor(seededRand(seed + 1) * 5);
+            const count = reviewCounts[dayKey] || 0;
+
             let color = 'bg-slate-800';
             if (count >= 8) color = 'bg-brand';
             else if (count >= 5) color = 'bg-brand/80';
             else if (count >= 3) color = 'bg-brand/50';
             else if (count >= 1) color = 'bg-brand/20';
+
             const label = dayNum + '/' + (d.getMonth()+1) + ': ' + count + ' avis';
             html += `<div class="aspect-square ${color} rounded-sm cursor-pointer hover:ring-1 hover:ring-white/30 transition-all" title="${label}"></div>`;
         }
@@ -4441,7 +4649,8 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // EMERGENCY MODE (1★ viral detection)
     // ============================================
     function checkEmergencyMode() {
-        const oneStarCount = mockMessages.filter(m => m.rating === 1).length;
+        const allReviews = realReviews || mockMessages;
+        const oneStarCount = allReviews.filter(m => m.rating === 1).length;
         const badge = document.getElementById('emergency-badge');
         if (oneStarCount >= 1) {
             if (!badge) {
@@ -4501,11 +4710,17 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (!input) return;
         googleMapsUrl = input.value.trim();
         try { localStorage.setItem('repward_gmaps_url', googleMapsUrl); } catch(e) {}
+        db.saveMerchant({ google_maps_url: googleMapsUrl });
         showToast('Google Maps', googleMapsUrl ? 'Lien enregistré !' : 'Lien supprimé', 'success');
     }
 
     function loadGoogleMapsUrl() {
-        try { googleMapsUrl = localStorage.getItem('repward_gmaps_url') || ''; } catch(e) {}
+        // Try from supabaseMerchant first
+        if (supabaseMerchant && supabaseMerchant.google_maps_url) {
+            googleMapsUrl = supabaseMerchant.google_maps_url;
+        } else {
+            try { googleMapsUrl = localStorage.getItem('repward_gmaps_url') || ''; } catch(e) {}
+        }
         const input = document.getElementById('input-gmaps-url');
         if (input && googleMapsUrl) input.value = googleMapsUrl;
     }
@@ -4627,12 +4842,11 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         }
 
         // Sauvegarder
-        const platforms = JSON.parse(localStorage.getItem('repward_platforms') || '{}');
-        platforms[platform] = { connected_at: new Date().toISOString(), is_active: true, method: 'oauth' };
+        const connectionData = { connected_at: new Date().toISOString(), is_active: true, method: 'oauth' };
+        db.savePlatform(platform, connectionData);
         if (platform === 'facebook') {
-            platforms['instagram'] = { connected_at: new Date().toISOString(), is_active: true, method: 'oauth_via_facebook' };
+            db.savePlatform('instagram', { connected_at: new Date().toISOString(), is_active: true, method: 'oauth_via_facebook' });
         }
-        localStorage.setItem('repward_platforms', JSON.stringify(platforms));
 
         showToast(`${config.name} connecté !`, 'Vos avis seront synchronisés automatiquement', 'success');
     }
@@ -4698,27 +4912,10 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const url = document.getElementById('platform-url-input')?.value.trim();
         if (!url) { showToast('Erreur', 'Entrez une URL valide', 'error'); return; }
 
-        // Save to localStorage
-        const platforms = JSON.parse(localStorage.getItem('repward_platforms') || '{}');
-        platforms[platform] = { url, connected_at: new Date().toISOString(), is_active: true };
-        localStorage.setItem('repward_platforms', JSON.stringify(platforms));
-
-        // Save to Supabase if connected
-        if (USE_SUPABASE && supabaseClient && supabaseMerchant) {
-            try {
-                await supabaseClient.from('platforms').upsert({
-                    merchant_id: supabaseMerchant.id,
-                    platform: platform,
-                    listing_url: url,
-                    is_active: true,
-                    last_synced_at: new Date().toISOString(),
-                }, { onConflict: 'merchant_id,platform' });
-            } catch (e) { console.warn('Supabase platform save failed:', e); }
-        }
+        db.savePlatform(platform, { url, connected_at: new Date().toISOString(), is_active: true });
 
         document.getElementById('connect-modal')?.remove();
         showToast('Connecté !', `${platform} a été ajouté avec succès`, 'success');
-        // Update badge count
         updateIntegrationsBadge();
     }
 
@@ -4732,36 +4929,9 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // ============================================
     // CONCURRENTS RADAR
     // ============================================
+    // analyzeCompetitors() — Bientôt disponible (V2)
     function analyzeCompetitors() {
-        const names = [1,2,3].map(i => document.getElementById('competitor-'+i)?.value.trim()).filter(Boolean);
-        if (names.length === 0) { showToast('Erreur', 'Entrez au moins un concurrent', 'error'); return; }
-        const results = document.getElementById('competitor-results');
-        if (!results) return;
-        results.classList.remove('hidden');
-        results.innerHTML = '<div class="text-center py-6"><div class="w-10 h-10 border-4 border-warning/30 border-t-warning rounded-full animate-spin mx-auto mb-3"></div><p class="text-xs text-slate-400">Analyse en cours...</p></div>';
-        setTimeout(() => {
-            results.innerHTML = names.map(name => {
-                const score = (Math.random() * 2 + 2.5).toFixed(1);
-                const reviews = Math.floor(Math.random() * 200 + 20);
-                const weaknesses = ['Service lent', 'Prix élevés', 'Propreté', 'Accueil froid', 'Bruit', 'Portions petites', 'Attente longue'];
-                const picked = weaknesses.sort(() => Math.random() - 0.5).slice(0, 3);
-                return `
-                    <div class="p-4 bg-white/5 rounded-xl mb-3">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="font-bold text-white text-sm">${escapeHtml(name)}</h4>
-                            <div class="flex items-center gap-2">
-                                <span class="text-yellow-400">★</span>
-                                <span class="font-black text-white">${score}</span>
-                                <span class="text-[10px] text-slate-400">(${reviews} avis)</span>
-                            </div>
-                        </div>
-                        <p class="text-[10px] font-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Points faibles récurrents :</p>
-                        <div class="flex flex-wrap gap-1.5">
-                            ${picked.map(w => '<span class="text-[10px] px-2 py-0.5 bg-danger/10 text-danger rounded-full font-medium">' + w + '</span>').join('')}
-                        </div>
-                    </div>`;
-            }).join('');
-        }, 2000);
+        showToast('Bientôt', 'Le radar concurrents arrive dans une prochaine mise à jour', 'info');
     }
 
     // ============================================
@@ -4770,7 +4940,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     function saveAlertPrefs() {
         const emailOn = document.getElementById('alert-email-toggle')?.checked || false;
         const smsOn = document.getElementById('alert-sms-toggle')?.checked || false;
-        try { localStorage.setItem('repward_alerts', JSON.stringify({ email: emailOn, sms: smsOn })); } catch(e) {}
+        db.saveAlerts(emailOn, smsOn);
         showToast('Alertes', (emailOn ? 'Email ' : '') + (smsOn ? 'SMS ' : '') + 'activé(s)', 'success');
     }
 
@@ -4812,17 +4982,22 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     }
 
     function saveToHistory(author, rating, platform, response) {
-        const history = getResponseHistory();
-        history.unshift({
+        const entry = {
             id: Date.now(),
             date: new Date().toLocaleDateString('fr-FR'),
             author: author,
             rating: rating,
             platform: platform,
-            response: response
-        });
+            response: response,
+            published: false
+        };
+        // localStorage fallback
+        const history = getResponseHistory();
+        history.unshift(entry);
         if (history.length > 50) history.length = 50;
         try { localStorage.setItem('repward_history', JSON.stringify(history)); } catch(e) {}
+        // Supabase sync
+        db.saveResponseHistory(entry);
     }
 
     function renderHistory() {
@@ -4859,7 +5034,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const textarea = document.getElementById('widget-code');
         if (!textarea) return;
         const biz = document.getElementById('input-nom-etab')?.value || 'Mon Commerce';
-        textarea.value = `<!-- Repward Widget -->\n<div id="repward-widget" style="display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);font-family:Outfit,sans-serif">\n  <span style="color:#f59e0b;font-size:20px">★</span>\n  <span style="font-weight:900;font-size:18px;color:#0f172a">4.8</span>\n  <span style="color:#94a3b8;font-size:12px">· 84 avis Google</span>\n</div>\n<script src="https://repward.vercel.app/widget.js" data-biz="${escapeHtml(biz)}"><\/script>`;
+        textarea.value = `<!-- Repward Widget -->\n<div id="repward-widget" style="display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);font-family:Outfit,sans-serif">\n  <span style="color:#f59e0b;font-size:20px">★</span>\n  <span style="font-weight:900;font-size:18px;color:#0f172a">4.8</span>\n  <span style="color:#94a3b8;font-size:12px">· 84 avis Google</span>\n</div>\n<script src="${window.location.origin}/widget.js" data-biz="${escapeHtml(biz)}"><\/script>`;
     }
 
     function copyWidgetCode() {
@@ -4879,7 +5054,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (!display) return;
         const biz = document.getElementById('input-nom-etab')?.value || 'MonCommerce';
         const slug = biz.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/-+$/,'');
-        display.value = 'https://repward.vercel.app?biz=' + encodeURIComponent(biz) + '&ind=' + currentInd + '&rew=' + encodeURIComponent(currentRew);
+        display.value = `${window.location.origin}?biz=${encodeURIComponent(biz)}&ind=${currentInd}&rew=${encodeURIComponent(currentRew)}`;
     }
 
     function copyShortLink() {
@@ -4971,7 +5146,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // ============================================
     // INITIALIZATION
     // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
         try {
             // === CRITICAL: Read URL params from QR code scan ===
             const urlParams = new URLSearchParams(window.location.search);
@@ -5086,16 +5261,34 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             try { generateWidgetCode(); } catch(e) { console.error('generateWidgetCode:', e); }
             try { updateShortLink(); } catch(e) { console.error('updateShortLink:', e); }
             try { const savedTone = localStorage.getItem('repward_ai_tone'); if (savedTone) setAiTone(savedTone); } catch(e) {}
-            // Supabase (non-critical)
-            if (USE_SUPABASE) { try { loadSupabaseReviews(); } catch(e) {} }
+            // Supabase session restore (critical for data sync)
             if (USE_SUPABASE && supabaseClient) {
-                try { supabaseClient.auth.getSession().then(({ data }) => {
-                    if (data.session) {
-                        supabaseUser = data.session.user;
-                        supabaseClient.from('merchants').select('*').eq('email', data.session.user.email).single()
-                            .then(({ data: m }) => { if (m) supabaseMerchant = m; });
+                try {
+                    const { data: sessionData } = await supabaseClient.auth.getSession();
+                    if (sessionData?.session) {
+                        supabaseUser = sessionData.session.user;
+                        const { data: m } = await supabaseClient
+                            .from('merchants')
+                            .select('*')
+                            .eq('id', supabaseUser.id)
+                            .single();
+                        if (m) {
+                            supabaseMerchant = m;
+                            // Hydrate UI from Supabase data
+                            if (m.ai_tone) setAiTone(m.ai_tone);
+                            if (m.google_maps_url) { googleMapsUrl = m.google_maps_url; const gi = document.getElementById('input-gmaps-url'); if (gi) gi.value = googleMapsUrl; }
+                            if (m.auto_pilot) { const ap = document.getElementById('auto-pilot-toggle'); if (ap) { ap.checked = true; toggleAutoPilot(); } }
+                            if (m.industry) { currentInd = m.industry; updatePortalIndustryBadge(m.industry); }
+                            if (m.wheel_segments && Array.isArray(m.wheel_segments) && m.wheel_segments.length >= 2) {
+                                wheelSegments.length = 0;
+                                m.wheel_segments.forEach(s => wheelSegments.push(s));
+                                drawWheel(); renderSegmentsList();
+                            }
+                        }
+                        // Load reviews from Supabase
+                        loadSupabaseReviews();
                     }
-                }); } catch(e) {}
+                } catch(e) { console.warn('Supabase session restore:', e); }
             }
 
             // Google Business Profile Integration
@@ -5197,12 +5390,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     }
 
     function saveManualReview(review) {
-        try {
-            const saved = JSON.parse(localStorage.getItem('repward_manual_reviews') || '[]');
-            saved.unshift(review);
-            if (saved.length > 100) saved.length = 100;
-            localStorage.setItem('repward_manual_reviews', JSON.stringify(saved));
-        } catch(e) {}
+        db.saveManualReview(review);
     }
 
     function loadManualReviews() {
@@ -5222,7 +5410,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             return;
         }
         navigator.clipboard.writeText(textarea.value).then(() => {
-            const msg = mockMessages.find(m => m.id === currentMessageId);
+            const msg = (realReviews || mockMessages).find(m => m.id === currentMessageId);
             const platform = msg ? msg.platform.charAt(0).toUpperCase() + msg.platform.slice(1) : 'la plateforme';
             showToast('Réponse copiée !', `Allez la coller sur ${platform}`, 'success');
         }).catch(() => {
@@ -5466,11 +5654,30 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
     // ============================================
     // FEATURE 2: FOMO / SOCIAL PROOF BUBBLE
     // ============================================
-    const frenchFirstNames = ['Thomas', 'Marie', 'Lucas', 'Sophie', 'Jean', 'Amélie', 'Marc', 'Valérie', 'Pierre', 'Isabelle', 'Denis', 'Céline', 'Patrick', 'Muriel', 'Olivier'];
+    // FOMO / Social Proof — basé sur vrais événements QR récents
     let fomoEnabled = true;
     let fomoInterval = null;
+    let fomoRecentEvents = []; // Populated from Supabase qr_tokens
+
+    async function loadFomoEvents() {
+        if (!USE_SUPABASE || !supabaseClient) return;
+        try {
+            const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+            const { data } = await supabaseClient
+                .from('qr_tokens')
+                .select('reward, used_at, business_name')
+                .eq('used', true)
+                .gte('used_at', since)
+                .order('used_at', { ascending: false })
+                .limit(20);
+            if (data && data.length > 0) {
+                fomoRecentEvents = data;
+            }
+        } catch(e) { console.warn('FOMO events load error:', e); }
+    }
 
     function initFomoBubble() {
+        loadFomoEvents();
         if (fomoEnabled && !fomoInterval) {
             fomoInterval = setInterval(showFomoBubble, 30000);
         }
@@ -5496,16 +5703,13 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         const customerView = document.getElementById('view-customer');
         if (!customerView || customerView.classList.contains('view-hidden')) return;
 
-        const name = frenchFirstNames[Math.floor(Math.random() * frenchFirstNames.length)];
-        const timeAgo = Math.floor(Math.random() * 50) + 1;
-        const messages = [
-            `🎁 ${name} vient de gagner un dessert il y a ${timeAgo} min`,
-            `⭐ ${name} a laissé un avis 5 étoiles il y a ${timeAgo} min`,
-            `🎰 ${name} vient de tourner la roue il y a ${timeAgo} min`,
-            `🏆 ${name} a rejoint les VIP il y a ${timeAgo} min`,
-            `💝 ${name} a utilisé un code promo il y a ${timeAgo} min`
-        ];
-        const message = messages[Math.floor(Math.random() * messages.length)];
+        // Si pas d'événements réels, ne pas afficher de fausses bulles
+        if (fomoRecentEvents.length === 0) return;
+
+        const evt = fomoRecentEvents[Math.floor(Math.random() * fomoRecentEvents.length)];
+        const minsAgo = Math.max(1, Math.floor((Date.now() - new Date(evt.used_at).getTime()) / 60000));
+        const timeLabel = minsAgo < 60 ? `il y a ${minsAgo} min` : minsAgo < 1440 ? `il y a ${Math.floor(minsAgo / 60)}h` : 'récemment';
+        const message = `🎁 Un client vient de gagner "${evt.reward}" ${timeLabel}`;
 
         const bubble = document.createElement('div');
         bubble.className = 'fomo-bubble';
