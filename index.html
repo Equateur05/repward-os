@@ -4535,7 +4535,13 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (!grid) return;
 
         let currentPlan = 'starter';
-        try { currentPlan = localStorage.getItem('repward_plan') || 'starter'; } catch(e) {}
+        try {
+            if (supabaseMerchant && supabaseMerchant.plan) {
+                currentPlan = supabaseMerchant.plan;
+            } else {
+                currentPlan = localStorage.getItem('repward_plan') || 'starter';
+            }
+        } catch(e) {}
 
         grid.innerHTML = subscriptionPlans.map(plan => {
             const isActive = plan.id === currentPlan;
@@ -5349,7 +5355,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
 
                     // Listen for auth state changes (session expiry)
                     supabaseClient.auth.onAuthStateChange((event, session) => {
-                        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' && !session) {
+                        if (event === 'SIGNED_OUT' || (event === 'TOKEN_REFRESHED' && !session)) {
                             supabaseUser = null;
                             supabaseMerchant = null;
                             showOnboarding();
@@ -5406,6 +5412,8 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                             .single();
                         if (m) {
                             supabaseMerchant = m;
+                            // Hydrate plan from Supabase → localStorage (Stripe sync)
+                            if (m.plan) { try { localStorage.setItem('repward_plan', m.plan); } catch(e) {} }
                             // Hydrate UI from Supabase data
                             if (m.ai_tone) setAiTone(m.ai_tone);
                             if (m.google_maps_url) { googleMapsUrl = m.google_maps_url; const gi = document.getElementById('input-gmaps-url'); if (gi) gi.value = googleMapsUrl; }
