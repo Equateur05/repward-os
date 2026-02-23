@@ -21,7 +21,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" onerror="
+        var s=document.createElement('script');
+        s.src='https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js';
+        document.head.appendChild(s);
+    "></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" async defer onerror="console.warn('Supabase CDN unavailable, running in offline mode')"></script>
     <script>
         tailwind.config = {
@@ -708,7 +712,7 @@
                         </div>
 
                         <!-- DROITE: iPhone preview -->
-                        <div class="hidden xl:flex w-[340px] flex-col items-center flex-shrink-0">
+                        <div class="hidden lg:flex w-[340px] flex-col items-center flex-shrink-0">
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
                                 Aperçu en temps réel
@@ -960,8 +964,8 @@
                                 <p class="text-sm text-brand-light font-bold mb-2">Couvre 5 plateformes d'un coup : Airbnb, Booking, TripAdvisor, TheFork, Expedia</p>
                                 <p class="text-xs text-slate-300">L'extension d&eacute;tecte automatiquement vos avis et injecte un bouton <strong class="text-white">R&eacute;pondre avec IA</strong> directement sur chaque plateforme.</p>
                             </div>
-                            <button disabled class="flex-shrink-0 px-6 py-3 bg-white/20 text-white/70 rounded-xl font-black text-sm cursor-not-allowed flex items-center gap-2 border border-white/10">
-                                <i class="fa-solid fa-clock"></i> Bientôt disponible
+                            <button disabled class="flex-shrink-0 px-6 py-3 bg-white/20 text-white/70 rounded-xl font-black text-sm cursor-not-allowed flex items-center gap-2 border border-white/10" onclick="showToast('En développement', 'Extension Chrome en développement interne', 'info')">
+                                <i class="fa-solid fa-clock"></i> Bientôt disponible — Enterprise
                             </button>
                         </div>
                         <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand/10 rounded-full blur-3xl"></div>
@@ -3002,8 +3006,32 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             } catch(e) { console.error('QR token insert failed:', e); }
         }
 
-        // URL avec token unique (au lieu de paramètres en clair)
+        // URL avec token unique
         const qrUrl = `${window.location.origin}?t=${token}`;
+
+        // Fallback: charger la librairie dynamiquement si absente
+        if (typeof QRCode === 'undefined') {
+            showToast('Chargement', 'Chargement de la librairie QR...', 'info');
+            try {
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
+                    s.onerror = () => {
+                        const s2 = document.createElement('script');
+                        s2.src = 'https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js';
+                        s2.onload = resolve;
+                        s2.onerror = reject;
+                        document.head.appendChild(s2);
+                    };
+                    s.onload = resolve;
+                    s.onerror = reject;
+                    document.head.appendChild(s);
+                });
+            } catch(e) {
+                showToast('Erreur', 'Impossible de charger la librairie QR. Vérifiez votre connexion.', 'error');
+                return;
+            }
+        }
 
         if (typeof QRCode !== 'undefined') {
             QRCode.toCanvas(canvas, qrUrl, {
@@ -3017,7 +3045,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                 showToast('QR Code généré', 'Valable 6 mois · Usage unique', 'success');
             });
         } else {
-            showToast('Erreur', 'Librairie QR non chargée', 'error');
+            showToast('Erreur', 'Librairie QR indisponible. Rechargez la page.', 'error');
         }
     }
 
@@ -3042,7 +3070,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                     <svg width="40" height="40" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
                 </div>
                 <h2 style="color:#fff;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">Lien invalide</h2>
-                <p style="color:#94a3b8;font-size:0.95rem;line-height:1.6;margin-bottom:2rem;">${message}</p>
+                <p style="color:#94a3b8;font-size:0.95rem;line-height:1.6;margin-bottom:2rem;">${escapeHtml(message)}</p>
                 <p style="color:#475569;font-size:0.75rem;">Demandez un nouveau QR code au commerce.</p>
             </div>`;
         document.body.appendChild(overlay);
@@ -3994,11 +4022,15 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
 
         const grid = document.getElementById('rew-grid');
         if (grid) {
-            if (!data.rewards.includes(currentRew)) currentRew = data.rewards[0];
+            if (!data.rewards.includes(currentRew) && !currentRew.startsWith('✏️')) currentRew = data.rewards[0];
+            const isCustomActive = !data.rewards.includes(currentRew);
             grid.innerHTML = data.rewards.map(r => `
                 <div onclick="setRew('${r.replace(/'/g, "\\'")}', this)" class="reward-card p-2 border rounded-lg text-[11px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[48px] transition-all leading-tight tabindex='0' role='button' ${r === currentRew ? 'selected border-brand bg-brand/10 text-white' : 'border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20'}">
                     ${r}
-                </div>`).join('');
+                </div>`).join('') + `
+                <div onclick="showCustomRewardInput()" class="reward-card p-2 border rounded-lg text-[11px] font-bold text-center cursor-pointer flex items-center justify-center min-h-[48px] transition-all leading-tight ${isCustomActive ? 'selected border-brand bg-brand/10 text-white' : 'border-dashed border-white/20 text-slate-400 hover:bg-white/5 hover:border-white/30'}">
+                    ✏️ Autre
+                </div>`;
         }
 
         const winbackSelect = document.getElementById('winback-selector');
@@ -4023,6 +4055,45 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         }
         updateCustomerApp();
         savePrefs();
+    }
+
+    function showCustomRewardInput() {
+        const grid = document.getElementById('rew-grid');
+        if (!grid) return;
+        // Check if already showing input
+        if (document.getElementById('custom-reward-input')) {
+            document.getElementById('custom-reward-input').focus();
+            return;
+        }
+        const inputDiv = document.createElement('div');
+        inputDiv.className = 'col-span-3 flex gap-2 mt-1';
+        inputDiv.innerHTML = `
+            <input id="custom-reward-input" type="text" maxlength="40" placeholder="Ex: Cocktail offert" class="flex-1 bg-slate-900/50 border border-brand/30 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/30" autofocus />
+            <button onclick="applyCustomReward()" class="px-3 py-2 bg-brand/20 text-brand-light border border-brand/30 rounded-lg text-xs font-bold hover:bg-brand/30 transition-all">OK</button>
+        `;
+        grid.appendChild(inputDiv);
+        document.getElementById('custom-reward-input').focus();
+        document.getElementById('custom-reward-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') applyCustomReward();
+        });
+    }
+
+    async function applyCustomReward() {
+        const input = document.getElementById('custom-reward-input');
+        if (!input) return;
+        const val = input.value.trim();
+        if (!val) { showToast('Erreur', 'Entrez une récompense', 'error'); return; }
+        // Save to localStorage
+        try { localStorage.setItem('repward_custom_reward', val); } catch(e) {}
+        // Save to Supabase merchants table
+        if (USE_SUPABASE && supabaseClient && supabaseMerchant) {
+            try {
+                await supabaseClient.from('merchants').update({ custom_reward: val }).eq('id', supabaseMerchant.id);
+            } catch(e) { console.error('Custom reward save error:', e); }
+        }
+        setRew(val, null);
+        updateInd(); // Refresh grid to show selected state
+        showToast('Récompense personnalisée', val, 'success');
     }
 
     // ============================================
@@ -4073,7 +4144,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                             <div class="flex justify-center gap-2 mb-4" ${starsId}>
                                 ${[1,2,3,4,5].map(i => `<i class="fa-solid fa-star text-3xl sm:text-4xl text-slate-200 transition-all duration-200 ${pointerCls} hover:scale-110" ${onStarClick(i)}></i>`).join('')}
                             </div>
-                            ${isInteractive ? '<div id="vocal-review-section" class="mb-3 hidden"><button onclick="startVocalReview()" id="btn-vocal" class="w-full py-2.5 rounded-xl text-xs font-bold bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center gap-2 hover:bg-purple-100 transition-all"><i class="fa-solid fa-microphone"></i> Dicter mon avis (30s)</button><textarea id="vocal-text" class="hidden w-full mt-2 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 resize-none h-16" placeholder="Votre avis apparaîtra ici..."></textarea></div>' : ''}
+                            ${isInteractive ? '<div id="vocal-review-section" class="mb-3 hidden"><textarea id="vocal-text" class="w-full p-3 rounded-xl border border-slate-200 text-xs text-slate-700 resize-none h-20 mb-2 focus:border-purple-400 focus:outline-none" placeholder="Écrivez votre avis ici ou dictez-le..."></textarea><button onclick="startVocalReview()" id="btn-vocal" class="w-full py-2.5 rounded-xl text-xs font-bold bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center gap-2 hover:bg-purple-100 transition-all"><i class="fa-solid fa-microphone"></i> Ou dicter mon avis (30s)</button></div>' : ''}
                             ${isInteractive ? '<div id="phone-collect-section" class="mb-3 hidden"><div class="flex items-center gap-2"><span class="text-lg">🎁</span><input id="client-phone" type="tel" placeholder="+33 6 12 34 56 78" class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:border-purple-400 outline-none"></div><p class="text-[9px] text-slate-400 mt-1">Optionnel · Recevez votre code par SMS · <a href="#" class="underline">RGPD</a></p></div>' : ''}
                             <button ${btnId} ${onBtnClick} class="w-full bg-slate-200 text-slate-400 py-3.5 rounded-xl font-bold flex items-center justify-center pointer-events-none transition-all text-sm">
                                 Sélectionnez vos étoiles
@@ -4148,7 +4219,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         if (rating >= 4) {
             btn.classList.remove('pointer-events-none', 'bg-slate-200', 'text-slate-400');
             btn.classList.add('bg-google', 'text-white', 'shadow-lg', 'shadow-google/30', 'pointer-events-auto');
-            btn.innerHTML = `<i class="fa-brands fa-google mr-2 text-lg"></i> Publier sur Google`;
+            btn.innerHTML = `<i class="fa-brands fa-google mr-2 text-lg"></i> Laisser un avis Google`;
         } else if (rating === 3) {
             btn.classList.remove('pointer-events-none', 'bg-google', 'text-white', 'shadow-lg', 'shadow-google/30');
             btn.classList.add('bg-slate-200', 'text-slate-500', 'pointer-events-auto');
@@ -4192,23 +4263,15 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         app.dataset.reward = finalReward;
         app.dataset.theme = currentInd;
 
-        // === STEP 0: Phone collection screen ===
-        app.innerHTML = `
-            <div class="flex flex-col h-full bg-gradient-to-b ${theme.gradient} items-center justify-center p-6 text-white text-center">
-                <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-5 backdrop-blur-sm border border-white/20">
-                    <i class="fa-solid fa-sms text-4xl text-white"></i>
-                </div>
-                <h2 class="text-xl font-extrabold mb-2">Recevoir votre code par SMS 🎁</h2>
-                <p class="text-sm text-white/70 mb-6">Entrez votre numéro pour recevoir votre cadeau</p>
-                <input id="claim-phone-input" type="tel" placeholder="+33 6 12 34 56 78" class="w-full max-w-xs px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-center text-lg font-medium placeholder-white/40 focus:outline-none focus:border-white/50 focus:bg-white/15 transition-all mb-3" />
-                <p class="text-[10px] text-white/40 mb-6 max-w-xs">En entrant votre numéro vous acceptez de recevoir votre code cadeau par SMS. Conforme RGPD.</p>
-                <button onclick="claimWithPhone(true)" class="w-full max-w-xs py-3 bg-white text-slate-900 font-extrabold rounded-xl shadow-lg hover:bg-white/90 transition-all text-sm">
-                    <i class="fa-solid fa-arrow-right mr-2"></i> Continuer
-                </button>
-                <button onclick="claimWithPhone(false)" class="mt-3 text-sm text-white/50 hover:text-white/80 transition-all font-medium underline underline-offset-4 decoration-white/20">
-                    Non merci, passer directement
-                </button>
-            </div>`;
+        // Pour 4-5★ avec Google Maps URL → ouvrir Google Maps d'abord
+        if (customerSelectedStars >= 4 && googleMapsUrl) {
+            // Ouvrir Google Maps dans un nouvel onglet pour laisser un avis
+            window.open(googleMapsUrl, '_blank', 'noopener');
+            showToast('Google Maps', 'Laissez votre avis Google puis revenez ici pour votre cadeau !', 'success');
+        }
+
+        // Passer directement au cadeau/roue
+        claimWithPhone(false);
     }
 
     function claimWithPhone(collectPhone) {
@@ -5145,11 +5208,12 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
 
         speechRecognition = new SpeechRecognition();
         speechRecognition.lang = 'fr-FR';
-        speechRecognition.continuous = true;
+        speechRecognition.continuous = false;
         speechRecognition.interimResults = true;
         speechRecognition.maxAlternatives = 1;
 
-        let finalTranscript = '';
+        const existingText = textarea.value.trim();
+        let finalTranscript = existingText ? existingText + ' ' : '';
         speechRecognition.onresult = (event) => {
             let interim = '';
             for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -5157,7 +5221,6 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
                 else interim += event.results[i][0].transcript;
             }
             textarea.value = finalTranscript + interim;
-            textarea.classList.remove('hidden');
         };
 
         speechRecognition.onerror = () => { stopVocalReview(); };
@@ -5932,6 +5995,7 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
         }
     }
 
+    let _voiceRecognition = null;
     function toggleVoiceRecording() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
@@ -5939,26 +6003,30 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             return;
         }
 
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'fr-FR';
         const btn = document.getElementById('voice-record-btn');
         const btnText = document.getElementById('voice-btn-text');
 
-        if (!isVoiceRecording) {
-            isVoiceRecording = true;
-            btn.classList.add('animate-pulse');
-            btnText.textContent = 'En écoute...';
-            recognition.start();
-        } else {
+        if (isVoiceRecording && _voiceRecognition) {
+            _voiceRecognition.stop();
             isVoiceRecording = false;
             btn.classList.remove('animate-pulse');
             btnText.textContent = 'Enregistrer';
-            recognition.stop();
+            return;
         }
 
-        recognition.onresult = (event) => {
+        _voiceRecognition = new SpeechRecognition();
+        _voiceRecognition.lang = 'fr-FR';
+        _voiceRecognition.continuous = false;
+        _voiceRecognition.interimResults = false;
+
+        isVoiceRecording = true;
+        btn.classList.add('animate-pulse');
+        btnText.textContent = 'En écoute...';
+        _voiceRecognition.start();
+
+        _voiceRecognition.onresult = (event) => {
             let transcript = '';
-            for (let i = event.resultIndex; i < event.results.length; i++) {
+            for (let i = 0; i < event.results.length; i++) {
                 transcript += event.results[i][0].transcript;
             }
             const textarea = document.getElementById('voice-instruction-text');
@@ -5970,7 +6038,13 @@ Rédige une réponse professionnelle à cet avis en ${responseLang}.`;
             showToast('Transcription complète', '', 'success');
         };
 
-        recognition.onerror = () => {
+        _voiceRecognition.onend = () => {
+            isVoiceRecording = false;
+            if (btnText) btnText.textContent = 'Enregistrer';
+            if (btn) btn.classList.remove('animate-pulse');
+        };
+
+        _voiceRecognition.onerror = () => {
             isVoiceRecording = false;
             btnText.textContent = 'Enregistrer';
             btn.classList.remove('animate-pulse');
