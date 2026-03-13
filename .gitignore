@@ -1,0 +1,15 @@
+# Flutter/Dart
+.dart_tool/
+build/
+.flutter-plugins-dependencies
+*.iml
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Claude session
+.claude/
