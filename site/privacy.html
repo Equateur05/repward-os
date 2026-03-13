@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de confidentialite — Repward</title>
+    <meta name="description" content="Politique de confidentialite de l'application Repward.">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: { DEFAULT: '#7c3aed', light: '#a78bfa', dark: '#6d28d9' },
+                        slate: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-white font-outfit min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-white/10 px-6 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 hover:opacity-80 transition">
+                <div class="w-10 h-10 bg-brand rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"/>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold">Repward</span>
+            </a>
+            <a href="/" class="text-sm text-brand-light hover:text-white transition">Retour</a>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 px-6 py-16">
+        <div class="max-w-2xl mx-auto prose prose-invert">
+            <h1 class="text-4xl font-bold mb-2">Politique de confidentialite</h1>
+            <p class="text-slate-400 text-lg mb-12">Derniere mise a jour : 13 mars 2025</p>
+
+            <div class="space-y-8 text-slate-300 leading-relaxed">
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">1. Introduction</h2>
+                    <p>Repward ("nous", "notre", "l'application") s'engage a proteger la vie privee de ses utilisateurs ("vous", "votre"). Cette politique de confidentialite explique comment nous collectons, utilisons et protegeons vos informations personnelles lorsque vous utilisez notre application mobile et nos services web.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">2. Donnees collectees</h2>
+                    <p>Nous collectons les types de donnees suivants :</p>
+                    <ul class="list-disc pl-6 mt-3 space-y-2">
+                        <li><strong class="text-white">Informations de compte</strong> : nom de l'etablissement, adresse email, numero de telephone lors de l'inscription.</li>
+                        <li><strong class="text-white">Donnees d'avis</strong> : les avis clients que vous importez ou synchronisez depuis des plateformes tierces (Google, TripAdvisor, etc.).</li>
+                        <li><strong class="text-white">Historique des reponses</strong> : les reponses que vous generez et publiez via notre service.</li>
+                        <li><strong class="text-white">Contacts collectes</strong> : les informations clients collectees via le portail QR code (avec leur consentement).</li>
+                        <li><strong class="text-white">Donnees d'utilisation</strong> : statistiques d'utilisation anonymisees pour ameliorer notre service.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">3. Utilisation des donnees</h2>
+                    <p>Nous utilisons vos donnees pour :</p>
+                    <ul class="list-disc pl-6 mt-3 space-y-2">
+                        <li>Fournir et maintenir nos services de gestion de reputation.</li>
+                        <li>Generer des reponses intelligentes a vos avis clients via notre IA.</li>
+                        <li>Afficher vos statistiques et analyses de reputation.</li>
+                        <li>Vous envoyer des alertes et notifications relatives a vos avis (si active).</li>
+                        <li>Ameliorer notre service et corriger les bugs.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">4. Stockage et securite</h2>
+                    <p>Vos donnees sont stockees de maniere securisee sur les serveurs Supabase, situes dans l'Union europeenne. Nous utilisons le chiffrement en transit (TLS/SSL) et au repos pour proteger vos informations. L'acces a vos donnees est strictement limite aux services necessaires au fonctionnement de l'application.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">5. Partage des donnees</h2>
+                    <p>Nous ne vendons, ne louons et ne partageons jamais vos donnees personnelles avec des tiers a des fins publicitaires. Vos donnees peuvent etre partagees uniquement avec :</p>
+                    <ul class="list-disc pl-6 mt-3 space-y-2">
+                        <li><strong class="text-white">Supabase</strong> : notre fournisseur d'hebergement et de base de donnees.</li>
+                        <li><strong class="text-white">Google Gemini API</strong> : pour la generation de reponses IA (seul le contenu de l'avis est transmis, sans donnees personnelles identifiantes).</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">6. Vos droits</h2>
+                    <p>Conformement au RGPD, vous disposez des droits suivants :</p>
+                    <ul class="list-disc pl-6 mt-3 space-y-2">
+                        <li><strong class="text-white">Acces</strong> : demander une copie de vos donnees personnelles.</li>
+                        <li><strong class="text-white">Rectification</strong> : corriger vos donnees inexactes.</li>
+                        <li><strong class="text-white">Suppression</strong> : demander la suppression de vos donnees.</li>
+                        <li><strong class="text-white">Portabilite</strong> : recevoir vos donnees dans un format lisible par machine.</li>
+                        <li><strong class="text-white">Opposition</strong> : vous opposer au traitement de vos donnees.</li>
+                    </ul>
+                    <p class="mt-3">Pour exercer ces droits, contactez-nous a <a href="mailto:support@repward.app" class="text-brand-light hover:underline">support@repward.app</a>.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">7. Cookies et traceurs</h2>
+                    <p>L'application mobile Repward n'utilise pas de cookies. Le site web utilise uniquement des cookies techniques necessaires au fonctionnement du service (authentification). Aucun cookie publicitaire ou de suivi n'est utilise.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">8. Conservation des donnees</h2>
+                    <p>Vos donnees sont conservees tant que votre compte est actif. En cas de suppression de compte, vos donnees personnelles seront supprimees dans un delai de 30 jours. Les donnees anonymisees peuvent etre conservees a des fins statistiques.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">9. Achats et abonnements</h2>
+                    <p>L'application Repward est gratuite a telecharger et a utiliser. Les abonnements premium sont geres exclusivement sur notre site web (repward.vercel.app) et non via l'App Store. Aucune transaction financiere n'est effectuee au sein de l'application mobile.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">10. Modifications</h2>
+                    <p>Nous nous reservons le droit de modifier cette politique de confidentialite a tout moment. Les modifications seront publiees sur cette page avec une date de mise a jour. Nous vous encourageons a consulter regulierement cette page.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-3">11. Contact</h2>
+                    <p>Pour toute question concernant cette politique de confidentialite, contactez-nous :</p>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-4 mt-3">
+                        <p><strong class="text-white">Repward</strong></p>
+                        <p>Email : <a href="mailto:support@repward.app" class="text-brand-light hover:underline">support@repward.app</a></p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 px-6 py-8 text-center mt-16">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-slate-500 text-sm">&copy; 2025 Repward. Tous droits reserves.</p>
+            <div class="flex justify-center gap-6 mt-4">
+                <a href="/privacy.html" class="text-sm text-slate-400 hover:text-brand-light transition">Confidentialite</a>
+                <a href="/support.html" class="text-sm text-slate-400 hover:text-brand-light transition">Support</a>
+                <a href="/" class="text-sm text-slate-400 hover:text-brand-light transition">Accueil</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
