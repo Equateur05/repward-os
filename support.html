@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — Repward</title>
+    <meta name="description" content="Centre d'aide et support Repward. Contactez-nous pour toute question.">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: { DEFAULT: '#7c3aed', light: '#a78bfa', dark: '#6d28d9' },
+                        slate: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-white font-outfit min-h-screen flex flex-col">
+    <header class="border-b border-white/10 px-6 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 hover:opacity-80 transition">
+                <div class="w-10 h-10 bg-brand rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"/>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold">Repward</span>
+            </a>
+            <a href="/" class="text-sm text-brand-light hover:text-white transition">Retour</a>
+        </div>
+    </header>
+    <main class="flex-1 px-6 py-16">
+        <div class="max-w-2xl mx-auto">
+            <h1 class="text-4xl font-bold mb-4">Centre d'aide</h1>
+            <p class="text-slate-400 text-lg mb-12">Nous sommes la pour vous aider. Trouvez les reponses a vos questions ou contactez-nous directement.</p>
+            <div class="space-y-6 mb-16">
+                <h2 class="text-2xl font-bold mb-6">Questions frequentes</h2>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-2">Comment fonctionne Repward ?</h3>
+                    <p class="text-slate-400 leading-relaxed">Repward centralise tous vos avis clients (Google, TripAdvisor, Facebook, etc.) et utilise l'intelligence artificielle pour generer des reponses professionnelles.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-2">L'application est-elle gratuite ?</h3>
+                    <p class="text-slate-400 leading-relaxed">Oui, Repward est gratuit a telecharger. Des plans premium sont disponibles sur repward.vercel.app.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-2">Comment gerer mon abonnement ?</h3>
+                    <p class="text-slate-400 leading-relaxed">Les abonnements sont geres sur notre site web repward.vercel.app. Aucun achat via l'App Store.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-2">Quelles plateformes d'avis sont supportees ?</h3>
+                    <p class="text-slate-400 leading-relaxed">Google, TripAdvisor, Facebook, Instagram, Trustpilot, Booking, Airbnb et bien d'autres.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-2">Mes donnees sont-elles securisees ?</h3>
+                    <p class="text-slate-400 leading-relaxed">Oui, serveurs Supabase avec chiffrement. Consultez notre <a href="/privacy.html" class="text-brand-light hover:underline">politique de confidentialite</a>.</p>
+                </div>
+            </div>
+            <div class="bg-brand/10 border border-brand/30 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-4">Contactez-nous</h2>
+                <p class="text-slate-400 mb-6">Ecrivez-nous, nous repondons sous 24h.</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-brand/20 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-brand-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-400">Email</p>
+                        <a href="mailto:support@repward.app" class="text-brand-light hover:underline font-medium">support@repward.app</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="border-t border-white/10 px-6 py-8 text-center">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-slate-500 text-sm">&copy; 2025 Repward. Tous droits reserves.</p>
+            <div class="flex justify-center gap-6 mt-4">
+                <a href="/privacy.html" class="text-sm text-slate-400 hover:text-brand-light transition">Confidentialite</a>
+                <a href="/support.html" class="text-sm text-slate-400 hover:text-brand-light transition">Support</a>
+                <a href="/" class="text-sm text-slate-400 hover:text-brand-light transition">Accueil</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
